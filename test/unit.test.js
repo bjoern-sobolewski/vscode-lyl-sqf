@@ -25,6 +25,8 @@ test('diagnostic labels keep syntax, runtime, limitations and policy distinct', 
   assert.equal(category('L-S12'), 'likely runtime defect');
   assert.equal(category('L-S23'), 'policy');
   assert.equal(category('BOM', 'UTF-8 BOM is disallowed by encoding policy'), 'policy');
+  assert.equal(category('PW6', 'Include uses forward slash'), 'policy');
+  assert.equal(category('ULC', 'Unused lint configuration'), 'policy');
   assert.equal(category('UNKNOWN'), 'compatibility limitation');
 });
 test('rich hover retains every overload, raw prose, locality and explicit unknown restrictions', () => {

@@ -52,6 +52,9 @@ async function main() {
     assert.ok(stored.findings.every(f => f.severity === 'review'));
     const hover = hoverMarkdown(await host.request('hover', { command: 'owner' }));
     assert.ok(hover.includes('headless client') && hover.includes('server'));
+    // Upstream raw TOML lints must inspect the same dirty sources as the parser.
+    await fs.mkdir(path.join(stage, '.hemtt/lints'), { recursive: true });
+    await fs.writeFile(path.join(stage, '.hemtt/lints/raw.toml'), 'message = "Raw source marker"\n[sqf.file]\npatterns = ["DIRTY_MARKER"]\n[config.file]\npatterns = ["DIRTY_MARKER"]\n');
     transport = await startTransport(path.join(extension, 'server/hemtt-language-server.exe'), host, snapshot, fixture, l => log.push(l));
     rpc = createMessageConnection(transport.reader, transport.writer); const diags = new Map();
     const sendRequest = rpc.sendRequest.bind(rpc);
@@ -159,6 +162,21 @@ async function main() {
     await eventually(() => !diagnostics('shared/config.hpp').some(d => d.code === 'BOM'), 'included config-header BOM repair');
     await change('shared/config.hpp', '#define CFG_VALUE 1\nclass Test { value[] = {1,,}; };\n', 4);
     await eventually(() => [...diags.values()].flat().some(d => /^(CCHU|L-C01|L-C08)/.test(d.code)), 'config-header unsaved error');
+    await change('shared/config.hpp', '#define CFG_VALUE 1\nclass Test { value = CFG_VALUE; };\n', 5);
+    await change('mission/live.sqf', script + '\n// DIRTY_MARKER\n', 8);
+    await eventually(() => diagnostics('mission/live.sqf').some(d => d.code === 'L-TOML'), 'raw TOML lint sees dirty SQF comment');
+    await change('mission/live.sqf', script, 9);
+    await eventually(() => !diagnostics('mission/live.sqf').some(d => d.code === 'L-TOML'), 'raw TOML SQF repair clears without save');
+    await change('mission/description.ext', '#include "config.hpp"\n// DIRTY_MARKER\n', 4);
+    await eventually(() => diagnostics('mission/description.ext').some(d => d.code === 'L-TOML'), 'raw TOML lint sees dirty config comment');
+    await change('mission/description.ext', '#include "config.hpp"\n', 5);
+    await eventually(() => !diagnostics('mission/description.ext').some(d => d.code === 'L-TOML'), 'raw TOML config repair clears without save');
+    assert.equal(await fs.readFile(path.join(fixture, 'mission/live.sqf'), 'utf8'), script, 'SQF TOML checks never write original source');
+    assert.equal(await fs.readFile(path.join(fixture, 'mission/description.ext'), 'utf8'), '#include "config.hpp"\n#include "functions.hpp"\n', 'config TOML checks never write original source');
+    const copiedPath = await rpc.sendRequest('hemtt/path_copy', { url: uri('mission/live.sqf') });
+    assert.equal(typeof copiedPath, 'string');
+    assert.ok(copiedPath.endsWith('\\live.sqf') && !copiedPath.includes('/'), 'upstream path-copy endpoint retained alongside structure/performance methods');
+    console.log('PASS dirty SQF/config raw TOML findings and repair; upstream path copy');
     const forbidden = diagnostics('mission/compat.sqf').filter(d => /^(SPE|PE)/.test(d.code));
     assert.deepEqual(forbidden, [], 'all fork compatibility regressions pass through actual LSP');
     console.log('PASS: shared layout, installed headers, HC/unscheduled and unresolved contexts, rich hover, unsaved SQF/config diagnostics, header invalidation, macro navigation, completion, fork compatibility regressions; worktree untouched.');

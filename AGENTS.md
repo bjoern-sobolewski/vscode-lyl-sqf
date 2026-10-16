@@ -23,3 +23,12 @@ preserved. Project function names must come from HEMTT's exact-root config AST;
 root declarations stay in Arma's tests/sqf/functions.json. Test dirty includes,
 unresolved registrations, nested command arguments and existing macro hints in
 the packaged editor. Keep excluded theme/RPT/CBA/ACE features out of this scope.
+
+Upstream maintenance: merge upstream main into the HEMTT lyl-compat branch; do
+not rewrite published history. Coordinate with active feature chats before
+packaging, retain their completed baseline for sequential comparisons, and run
+all compatibility, real-HLS and packaged editor regressions. Raw TOML lints must
+observe dirty buffers and repair. Inspect every diagnostic difference, including
+inherited nondeterministic expected-token ordering; retain raw inventories.
+Release immutable GitHub versions with all assets uploaded before publication,
+exact source/tool hashes, corresponding source and licenses. Verify a fresh cache.

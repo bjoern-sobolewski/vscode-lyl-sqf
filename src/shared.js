@@ -85,7 +85,7 @@ class Host {
 }
 
 function category(code, message = '') {
-  if (code === 'BOM') return 'policy';
+  if (['BOM', 'PW6', 'ULC'].includes(code)) return 'policy';
   if (/^(CCHU|L-C(?:01|06|07|08|10))$/.test(code)) return 'syntax';
   if (code === 'L-C04') return 'compatibility limitation';
   if (/^(SPE|PE)/.test(code)) return /unsupported|not supported|has_include|missing|not found/i.test(message) ? 'compatibility limitation' : 'syntax';

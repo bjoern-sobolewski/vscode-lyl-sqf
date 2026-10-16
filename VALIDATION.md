@@ -201,3 +201,59 @@ Current local evidence: `z_cmd/.generated/sqf-performance-*.log`,
 `test-results/performance/{profiled-baseline,baseline-repeat,final-1,final-2,cli-final}/`.
 The package has a freshly generated source archive for the exact fork commit.
 The repository launcher was republished with the shared C# implementation.
+
+## Release 0.2.1, upstream main integration (2026-10-17)
+
+HEMTT source `16dd5b0059fb62891b5c6c3c7f6cbc3d0d971016` merges upstream
+`b888164616dbaf1007400485be4e4ee2b3521818` and completed lyl.6 features without
+rewriting published history. The feature baseline 0.2.0 was committed/released by
+its owning chat before this update touched the shared checkouts. Existing unrelated
+Arma simulator/scratch work was preserved.
+
+Local Rust validation: 589 unit/integration tests plus one documentation example
+passed; two inherited upstream tests remain ignored (wiki examples and manual
+SQFC A/B helper). Core/common/workspace/preprocessor/config/SQF/HLS tests ran in
+the release test profile; CLI fixtures ran in their intended debug test profile
+with nocapture. Supporting format/signing/audio suites and cargo fmt passed.
+The stale upstream output-capture doctest type name was corrected. No lint or
+regression was disabled.
+
+The 15 JavaScript unit tests and actual bundled HLS protocol pass. New protocol
+checks observe/clear raw TOML findings in dirty SQF/config buffers without writing
+disk and retain upstream path-copy beside config-structure/performance endpoints.
+Existing command metadata, BOM rejection/repair, shared failed/successful includes,
+UTF-16, provisional function discovery, unsaved registrations and macro hints
+remain covered. The packaged VS Code 1.105.1 suite validates the actual 0.2.1 VSIX
+with isolated profile/storage and effective SQF/config auto-save disabled.
+
+Full Arma staging maps 4,018 sources, hashes 2,171 original source/rule inputs and
+installed game header archives, and reports no staging limitations. Full CLI
+analysis fails before SQF compilation with 2,189 annotations in both lyl.6 and
+this update. The sole raw difference is random ordering of the same CCHU expected
+token alternatives; location/severity/token set are unchanged. Compared with old
+lyl.5, correct quoted-comment handling exposes strict unsupported EXEC instead
+of the swallowed-URL parse error. Full config failure is not a full SQF pass.
+
+Full HLS workloads retain 4,832 findings and add three upstream L-S05
+recommendations, with no removed/changed existing findings. The refreshed narrower
+1,833-file saved-SQF workload similarly adds three annotations (4,101 to 4,104).
+These follow upstream's narrower isNil exemption and were reviewed, not applied
+blindly. Exact inventories repeat within each version; strict cross-version
+comparators retain their expected failures. See PERFORMANCE.md and
+upstream-performance-results.json for every scope/timing, including the measured
+startup/transient-memory regression. Raw inventories and source hashes stay local.
+
+The corresponding-source archive matches all 1,526 exact Git source files and
+verifies 45,352 vendored file hashes across 561 packages. Locked offline dependency
+resolution passes. It contains Rust 1.99.1 selection, Cargo.lock, all source
+replacements, original licenses/notices and the exact embedded wiki data; offline
+build instructions cover CLI and HLS. The archive/tool SHA-256 values and unchanged
+Arma shared-source stamps are recorded in server/tools.json. No shared C# change
+was made by this update, so the existing published launcher needs no rebuild.
+
+This is static tooling/editor evidence. Packaged suite execution of loot.matching
+is separately labelled SQF-VM. No new native Arma or real multiplayer coverage is
+claimed; existing native investigation remains historical evidence. Full repository
+static findings and unresolved contexts remain failures/reviews. No source,
+execution-context contract or category was changed to obtain a pass. Releases
+use local verification only, immutable GitHub assets and no Marketplace publishing.

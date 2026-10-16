@@ -38,6 +38,9 @@ foreach ($iteration in 1..$Runs) {
         [Array]::Sort($headings, [StringComparer]::Ordinal)
         [Array]::Sort($inventory, [StringComparer]::Ordinal)
         $compiled = @([regex]::Matches($log, 'Compiled (\d+) sqf files') | ForEach-Object { [int]$_.Groups[1].Value })
+        if ($compiled.Count -eq 0 -or @($compiled | Where-Object { $_ -gt 0 }).Count -eq 0) {
+            throw "No SQF compilation in $label; retain logs as a failed preflight/config gate, not a compiler benchmark."
+        }
         $fingerprint = [ordered]@{ exit=$process.ExitCode; compiled=$compiled; headings=$headings; diagnostics=$inventory } | ConvertTo-Json -Depth 5 -Compress
         $fingerprint | Set-Content -LiteralPath (Join-Path $Output ($label + '.inventory.json')) -Encoding UTF8
         if ($null -eq $expected) { $expected = $fingerprint }

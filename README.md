@@ -302,3 +302,22 @@ its protocol and existing test entry point; do not create a second implementatio
 of project rules. Changing shared C# code requires a matching VSIX release and
 launcher rebuild. Changing project JSON data requires a session restart, without
 publishing mission-specific policy to this public repository.
+
+## Upstream integration 0.2.1
+
+This release uses the upstream-main merge in HEMTT v1.22.1-lyl.1, retaining the
+completed 0.2.0 authoring features. The source pins Rust 1.99.1. Generic parser,
+command-reference, BOM, incremental/dirty-buffer and provisional config-structure
+behavior stays in the fork; Arma project policy stays in the shared adapter.
+
+Raw SQF/config TOML lints now observe dirty buffers and repairs through the real
+HLS. The protocol regression also checks upstream path-copy alongside our custom
+endpoints. Known include-slash and lint-configuration diagnostics are shown as
+policy findings. No finding is suppressed. The saved CLI benchmark refuses to
+report a compiler workload when preprocessing/config failures compile no SQF.
+
+Use immutable GitHub releases: upload every asset while the release is a draft,
+then publish once and verify public digests. Keep exact executable/source pins,
+vendored corresponding source, embedded wiki data and all license notices. The
+source archive documents offline builds for both CLI and HLS. See VALIDATION.md
+and PERFORMANCE.md for this update's findings, regressions and measured limits.

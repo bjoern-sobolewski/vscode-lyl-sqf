@@ -191,3 +191,54 @@ sessions have profiling disabled. No script contents are included in Rust timers
 
 CPU profiles/logs can contain local paths and should remain local.
 
+
+## Upstream-main integration, 2026-10-17
+
+Published lyl.6/0.2.0 baseline versus HEMTT 1.22.1-lyl.1 and extension 0.2.1,
+using the same current Arma bytes, command snapshot, installed game headers and
+Node 24.19.0. All measurements ran sequentially with builds/tests finished. Four
+real-HLS runs per version include reversed old/new ordering. Scalar results are
+in `upstream-performance-results.json`; raw inventories/profiles stay private.
+
+| HLS workload median | Before | After |
+| --- | ---: | ---: |
+| Initial analysis | 7.32 s | 8.04 s |
+| Dirty edit/repair completion | 21.57 ms | 21.58 ms |
+| Shared-header change | 2.92 s | 2.93 s |
+| HLS process CPU, full workload | 78.94 s | 78.57 s |
+| Peak working set | 1,062.99 MiB | 1,113.98 MiB |
+| End working set | 797.34 MiB | 798.01 MiB |
+| Final findings | 4,832 | 4,835 |
+
+Startup is 9.8% slower (before range 6.96-7.63s; after 7.69-8.48s), and transient
+peak memory rises 51MiB/4.8%. Reversing order confirmed the increase. Startup
+process CPU remains around 38s; aggregate lint/preprocessor phase totals did not
+increase comparably, and final memory is nearly unchanged. The available timers
+include parallel work/lock waits and do not isolate the critical-path cause.
+This startup/transient-memory cost is retained as an explicit limitation of the
+upstream/toolchain/dependency update. No claim of universal editor speedup is
+made. Dirty edits, consumer invalidation and retained incremental publication
+performance remain intact; no check was removed to improve these numbers.
+
+Inventories match exactly within each version. Cross-version comparators correctly
+fail on three added L-S05 recommendations and zero removals. Upstream narrowed
+its broad isNil exemption to skip only a returned variable matching the guarded
+name. The three locations were reviewed and left unchanged; these are static
+recommendations, not proof that eager select is safe in every execution context.
+No normalization was required for HLS inventories beyond disposable path prefixes.
+
+The original historical CLI workspace now fails on 85 leading BOMs before SQF
+compilation in both versions. Its roughly 0.7s warm preflight timings are not SQF
+compiler evidence. The benchmark now rejects zero-compilation runs. A separate
+copy refreshes all 1,833 historical selected source files with their unchanged
+current bytes, retaining the same four synthetic addon configs and installed
+headers. This is a narrower compiler workload, separate from the failed full
+production-config gate; no production source or lint setting was changed.
+
+Three alternating CLI runs per version all compile 1,833 files and exit 1. Median
+wall time is 13.75s before/12.42s after (9.7% lower); median CPU 38.08s/37.69s
+(1.0% lower). Wall ranges 13.55-13.76s/11.05-13.35s show host variation. Annotation
+records rise 4,101 to 4,104 and headings 4,857 to 4,860 solely for the same three
+L-S05 additions. Raw strict comparison failure is retained; repeated inventories
+within each version are exact. Staged and production source hashes are unchanged.
+These findings are not passing-file counts or native/multiplayer evidence.

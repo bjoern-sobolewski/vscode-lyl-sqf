@@ -1,0 +1,285 @@
+{
+  "runs": {
+    "before-1": {
+      "prepare": 1766.1,
+      "connect": 324.18,
+      "initialize": 2.36,
+      "startupAnalysis": 6963.94,
+      "openFile": 312.75,
+      "commandHover20": 8.54,
+      "contextChecks20": 15.23,
+      "openSharedHeader": 3072.15,
+      "changeSharedHeader": 3018.05,
+      "editCompleteMedianMs": 21.446350000000166,
+      "hlsCpuSeconds": 78.125,
+      "hlsPeakMiB": 1056.96875,
+      "hlsFinalMiB": 799.03515625,
+      "hostCpuSeconds": 2.078125,
+      "notifications": 878,
+      "diagnosticBytes": 1420027,
+      "findings": 4832
+    },
+    "before-2": {
+      "prepare": 1645.29,
+      "connect": 62.01,
+      "initialize": 2.33,
+      "startupAnalysis": 7197.91,
+      "openFile": 314.01,
+      "commandHover20": 6.55,
+      "contextChecks20": 11.79,
+      "openSharedHeader": 3141.56,
+      "changeSharedHeader": 2934.3,
+      "editCompleteMedianMs": 22.19434999999976,
+      "hlsCpuSeconds": 80.1875,
+      "hlsPeakMiB": 1058.26953125,
+      "hlsFinalMiB": 796.6796875,
+      "hostCpuSeconds": 2.125,
+      "notifications": 878,
+      "diagnosticBytes": 1420027,
+      "findings": 4832
+    },
+    "before-3": {
+      "prepare": 1625.64,
+      "connect": 64.69,
+      "initialize": 2.05,
+      "startupAnalysis": 7629.77,
+      "openFile": 313.74,
+      "commandHover20": 6.57,
+      "contextChecks20": 11.15,
+      "openSharedHeader": 2843.55,
+      "changeSharedHeader": 2898.11,
+      "editCompleteMedianMs": 21.69050000000061,
+      "hlsCpuSeconds": 78.3125,
+      "hlsPeakMiB": 1079.0703125,
+      "hlsFinalMiB": 796.3046875,
+      "hostCpuSeconds": 1.96875,
+      "notifications": 877,
+      "diagnosticBytes": 1418535,
+      "findings": 4832
+    },
+    "before-4": {
+      "prepare": 2047.53,
+      "connect": 57.64,
+      "initialize": 2,
+      "startupAnalysis": 7443.54,
+      "openFile": 315.08,
+      "commandHover20": 7.87,
+      "contextChecks20": 12.4,
+      "openSharedHeader": 2629.08,
+      "changeSharedHeader": 2791.52,
+      "editCompleteMedianMs": 21.442149999999856,
+      "hlsCpuSeconds": 79.5625,
+      "hlsPeakMiB": 1067.71484375,
+      "hlsFinalMiB": 797.9921875,
+      "hostCpuSeconds": 2.109375,
+      "notifications": 877,
+      "diagnosticBytes": 1418535,
+      "findings": 4832
+    },
+    "after-1": {
+      "prepare": 1715.7,
+      "connect": 287.77,
+      "initialize": 2.41,
+      "startupAnalysis": 7692.54,
+      "openFile": 312.3,
+      "commandHover20": 8.88,
+      "contextChecks20": 12.6,
+      "openSharedHeader": 2997.47,
+      "changeSharedHeader": 2915.14,
+      "editCompleteMedianMs": 21.659849999999096,
+      "hlsCpuSeconds": 78.765625,
+      "hlsPeakMiB": 1113.5625,
+      "hlsFinalMiB": 798.7109375,
+      "hostCpuSeconds": 2.09375,
+      "notifications": 877,
+      "diagnosticBytes": 1419371,
+      "findings": 4835
+    },
+    "after-2": {
+      "prepare": 2095.37,
+      "connect": 58.75,
+      "initialize": 2.14,
+      "startupAnalysis": 8327.94,
+      "openFile": 315.55,
+      "commandHover20": 7.57,
+      "contextChecks20": 10.78,
+      "openSharedHeader": 2894.37,
+      "changeSharedHeader": 2947.99,
+      "editCompleteMedianMs": 21.701449999999568,
+      "hlsCpuSeconds": 78.375,
+      "hlsPeakMiB": 1123.1875,
+      "hlsFinalMiB": 797.3125,
+      "hostCpuSeconds": 2.0625,
+      "notifications": 878,
+      "diagnosticBytes": 1420863,
+      "findings": 4835
+    },
+    "after-3": {
+      "prepare": 1584.71,
+      "connect": 57.91,
+      "initialize": 1.91,
+      "startupAnalysis": 7744.92,
+      "openFile": 312.46,
+      "commandHover20": 6.56,
+      "contextChecks20": 10.81,
+      "openSharedHeader": 2960.1,
+      "changeSharedHeader": 2992.99,
+      "editCompleteMedianMs": 21.490199999999277,
+      "hlsCpuSeconds": 78.125,
+      "hlsPeakMiB": 1072.609375,
+      "hlsFinalMiB": 798.99609375,
+      "hostCpuSeconds": 1.953125,
+      "notifications": 877,
+      "diagnosticBytes": 1419371,
+      "findings": 4835
+    },
+    "after-4": {
+      "prepare": 2373.24,
+      "connect": 60.66,
+      "initialize": 2.72,
+      "startupAnalysis": 8475.64,
+      "openFile": 311.31,
+      "commandHover20": 8.86,
+      "contextChecks20": 13.37,
+      "openSharedHeader": 2634.06,
+      "changeSharedHeader": 2877.88,
+      "editCompleteMedianMs": 21.334350000000995,
+      "hlsCpuSeconds": 78.96875,
+      "hlsPeakMiB": 1114.390625,
+      "hlsFinalMiB": 795.71875,
+      "hostCpuSeconds": 2.265625,
+      "notifications": 877,
+      "diagnosticBytes": 1419371,
+      "findings": 4835
+    }
+  },
+  "medians": {
+    "before": {
+      "prepare": 1705.695,
+      "connect": 63.349999999999994,
+      "initialize": 2.19,
+      "startupAnalysis": 7320.725,
+      "openFile": 313.875,
+      "commandHover20": 7.220000000000001,
+      "contextChecks20": 12.094999999999999,
+      "openSharedHeader": 2957.8500000000004,
+      "changeSharedHeader": 2916.205,
+      "editCompleteMedianMs": 21.56842500000039,
+      "hlsCpuSeconds": 78.9375,
+      "hlsPeakMiB": 1062.9921875,
+      "hlsFinalMiB": 797.3359375,
+      "hostCpuSeconds": 2.09375,
+      "notifications": 877.5,
+      "diagnosticBytes": 1419281.0,
+      "findings": 4832.0
+    },
+    "after": {
+      "prepare": 1905.5349999999999,
+      "connect": 59.705,
+      "initialize": 2.2750000000000004,
+      "startupAnalysis": 8036.43,
+      "openFile": 312.38,
+      "commandHover20": 8.215,
+      "contextChecks20": 11.705,
+      "openSharedHeader": 2927.2349999999997,
+      "changeSharedHeader": 2931.5649999999996,
+      "editCompleteMedianMs": 21.575024999999187,
+      "hlsCpuSeconds": 78.5703125,
+      "hlsPeakMiB": 1113.9765625,
+      "hlsFinalMiB": 798.01171875,
+      "hostCpuSeconds": 2.078125,
+      "notifications": 877.0,
+      "diagnosticBytes": 1419371.0,
+      "findings": 4835.0
+    }
+  },
+  "diagnosticDifference": {
+    "removed": 0,
+    "added": 3,
+    "code": "L-S05"
+  },
+  "sameInventoryWithinEachVersion": true,
+  "date": "2026-10-17",
+  "forkBefore": "5a407869a64ac1115d1e13533f4d80afd61537f6",
+  "forkAfter": "16dd5b0059fb62891b5c6c3c7f6cbc3d0d971016",
+  "node": "v24.19.0",
+  "cli": {
+    "before": {
+      "runs": [
+        {
+          "label": "before-1",
+          "elapsedSeconds": 13.761400499992305,
+          "cpuSeconds": 39.046875,
+          "peakWorkingSetBytes": 973139968,
+          "exit": 1,
+          "compiled": [
+            "1833"
+          ]
+        },
+        {
+          "label": "before-2",
+          "elapsedSeconds": 13.75483359998907,
+          "cpuSeconds": 38.078125,
+          "peakWorkingSetBytes": 932110336,
+          "exit": 1,
+          "compiled": [
+            "1833"
+          ]
+        },
+        {
+          "label": "before-3",
+          "elapsedSeconds": 13.550342599992291,
+          "cpuSeconds": 36.109375,
+          "peakWorkingSetBytes": 973025280,
+          "exit": 1,
+          "compiled": [
+            "1833"
+          ]
+        }
+      ],
+      "medianWallSeconds": 13.75483359998907,
+      "medianCpuSeconds": 38.078125,
+      "annotationRecords": 4101,
+      "headings": 4857
+    },
+    "after": {
+      "runs": [
+        {
+          "label": "after-1",
+          "elapsedSeconds": 13.35152849998849,
+          "cpuSeconds": 37.96875,
+          "peakWorkingSetBytes": 958341120,
+          "exit": 1,
+          "compiled": [
+            "1833"
+          ]
+        },
+        {
+          "label": "after-2",
+          "elapsedSeconds": 11.046133499999996,
+          "cpuSeconds": 34.5625,
+          "peakWorkingSetBytes": 913489920,
+          "exit": 1,
+          "compiled": [
+            "1833"
+          ]
+        },
+        {
+          "label": "after-3",
+          "elapsedSeconds": 12.418771700002253,
+          "cpuSeconds": 37.6875,
+          "peakWorkingSetBytes": 930910208,
+          "exit": 1,
+          "compiled": [
+            "1833"
+          ]
+        }
+      ],
+      "medianWallSeconds": 12.418771700002253,
+      "medianCpuSeconds": 37.6875,
+      "annotationRecords": 4104,
+      "headings": 4860
+    }
+  },
+  "note": "Static tooling only. Three new upstream L-S05 findings are retained. Full production config gate fails before SQF compilation; this CLI performance corpus retains four historical synthetic addon configs and refreshes all1833 selected files from unchanged current source. No native or multiplayer evidence."
+}
