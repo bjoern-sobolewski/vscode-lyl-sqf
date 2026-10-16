@@ -1,0 +1,33 @@
+{
+  "tools": {
+    "hls": {
+      "file": "hemtt-language-server.exe",
+      "sha256": "2d76e944501d26dad839d56f4d338cde73be4754cdcad576a82767f23de8f677"
+    },
+    "host": {
+      "file": "LYL.Sqf.EditorHost.exe",
+      "sha256": "b9a8a185cc6bce15ac0faa838847f84d05909c15d02d472f3eca54a83a55fc82"
+    }
+  },
+  "forkRepository": "https://github.com/bjoern-sobolewski/HEMTT",
+  "forkRevision": "963d01051e5ad72f8bfaaeb70630c2e59a61c06a",
+  "sharedSources": {
+    "z_cmd/Arma3.DevTools/Directory.Build.props": "3a0a348eee1e324ad2d8a931d38ea24cbf6d4d7a7f8d193bf22d7b34a10677c9",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/Arma3.DevTools.Core.csproj": "c82270a011d137a2c8f3b83ec1834151477b8a063f80be28839b2515bbb6877b",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfAnalysisWorkspace.cs": "6f3468c6ca247f06ce272e9f94d28c195a78c23332c8b2acdb85b6187cb27287",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfEditorAnalysis.cs": "2997fe6fa4aa6cf51c9c3d2a88fbe9dd83dde6c1fd12d9c912ae955c60382035",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfCommandReference.cs": "1dcc048cf3c218174d6cdadc66d8f1d64fb20d98fd2eb750545becd1190a9941",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfCommandContextCheck.cs": "0ab07990a485f4c51e8251b2632f20a1262bf666263bac3f8abe266e8322b449",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfExecutionContexts.cs": "8b50405b66099690df88b4bc9f122de177d01ab556dd5d2ea1ff0a99240be8be",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfStaticCheck.cs": "acb02a70f6f1ec624b2dc287284e46f6beb022d166f5cf372cacfdfb200e12e3",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfSyntaxCheck.cs": "a46d9202995d02eec7549bbe87cf78249a978df0a5889394daab384c049877d3",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfFileVerification.cs": "df55a15148977282044e679cdb5bc3051dab49bd6f38e5b5672e6697d468393c",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfChangedFiles.cs": "72fd1484e12a5c2cd3737595807e7abcc775daf5f531908b2a6d2a1004944326",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfTestCommand.cs": "1fd4171dd9b24be9ef39aff73cbc3db07ed160fe87120c79846ace50407ea000",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfTestSources.cs": "b816d883821bad760ce0dd63eb553b7558d281ee587eea499fc642eeb150103f",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfTestDependencies.cs": "40bad9b1afa93124319e5e5c4e67927a609c37ba341417971dbc69a9be25aa05",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/DependencyProvisioning.cs": "4656daec4794c27e2d3c975eeff510aae0688cb798bca268aac34cc8df231b01"
+  },
+  "correspondingSourceSha256": "f267d047e2d7c9ce6167d8f29755aa7d3d80b94bb537162a1494d1e3b7da9eac",
+  "schema": 1
+}

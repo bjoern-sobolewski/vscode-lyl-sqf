@@ -1,0 +1,253 @@
+{
+  "date": "2026-10-16",
+  "node": "v24.19.0",
+  "forkBefore": "4e21e9b9aaf9a9f5529f6fcdd91b831f004dda43",
+  "forkAfter": "aeea383b35c980ec396a6c303ce2f873bf362b39",
+  "findingsUnchanged": 4832,
+  "runs": {
+    "profiled-baseline": {
+      "prepare": 2133.57,
+      "connect": 112.8,
+      "initialize": 3.3,
+      "startupAnalysis": 11598.46,
+      "openFile": 598.7,
+      "commandHover20": 652.21,
+      "contextChecks20": 507.76,
+      "openSharedHeader": 3723.83,
+      "changeSharedHeader": 3691.9,
+      "editMedianMs": 256.002,
+      "notifications": 86071,
+      "diagnosticBytes": 74592060,
+      "hlsCpuSeconds": 92.531,
+      "hlsPeakMiB": 988.574,
+      "nodeRssMiB": 257.57,
+      "findings": 4832
+    },
+    "baseline-repeat": {
+      "prepare": 2801.86,
+      "connect": 76.99,
+      "initialize": 2.57,
+      "startupAnalysis": 12646.9,
+      "openFile": 595.53,
+      "commandHover20": 667.04,
+      "contextChecks20": 610.63,
+      "openSharedHeader": 3864.55,
+      "changeSharedHeader": 4009.41,
+      "editMedianMs": 269.769,
+      "notifications": 85741,
+      "diagnosticBytes": 74321450,
+      "hlsCpuSeconds": 95.781,
+      "hlsPeakMiB": 1000.996,
+      "nodeRssMiB": 182.254,
+      "findings": 4832,
+      "adapterCpuSeconds": 4.063
+    },
+    "final-1": {
+      "prepare": 2342.77,
+      "connect": 82.81,
+      "initialize": 2.65,
+      "startupAnalysis": 8964.19,
+      "openFile": 312.91,
+      "commandHover20": 7.43,
+      "contextChecks20": 15.36,
+      "openSharedHeader": 2937.05,
+      "changeSharedHeader": 3243.05,
+      "editMedianMs": 22.19,
+      "notifications": 878,
+      "diagnosticBytes": 1420450,
+      "hlsCpuSeconds": 80.531,
+      "hlsPeakMiB": 923.438,
+      "nodeRssMiB": 65.121,
+      "findings": 4832,
+      "adapterCpuSeconds": 0.64
+    },
+    "final-2": {
+      "prepare": 2607.62,
+      "connect": 86.03,
+      "initialize": 2.85,
+      "startupAnalysis": 9567.21,
+      "openFile": 310.86,
+      "commandHover20": 7.22,
+      "contextChecks20": 12.08,
+      "openSharedHeader": 2861.71,
+      "changeSharedHeader": 2708.13,
+      "editMedianMs": 21.768,
+      "notifications": 878,
+      "diagnosticBytes": 1420450,
+      "hlsCpuSeconds": 78.125,
+      "hlsPeakMiB": 966.031,
+      "nodeRssMiB": 65.047,
+      "findings": 4832,
+      "adapterCpuSeconds": 0.827
+    }
+  },
+  "medians": {
+    "prepare": {
+      "before": 2467.715,
+      "after": 2475.195,
+      "reductionPercent": -0.3
+    },
+    "connect": {
+      "before": 94.895,
+      "after": 84.42,
+      "reductionPercent": 11.04
+    },
+    "initialize": {
+      "before": 2.935,
+      "after": 2.75,
+      "reductionPercent": 6.3
+    },
+    "startupAnalysis": {
+      "before": 12122.68,
+      "after": 9265.7,
+      "reductionPercent": 23.57
+    },
+    "openFile": {
+      "before": 597.115,
+      "after": 311.885,
+      "reductionPercent": 47.77
+    },
+    "commandHover20": {
+      "before": 659.625,
+      "after": 7.325,
+      "reductionPercent": 98.89
+    },
+    "contextChecks20": {
+      "before": 559.195,
+      "after": 13.72,
+      "reductionPercent": 97.55
+    },
+    "openSharedHeader": {
+      "before": 3794.19,
+      "after": 2899.38,
+      "reductionPercent": 23.58
+    },
+    "changeSharedHeader": {
+      "before": 3850.655,
+      "after": 2975.59,
+      "reductionPercent": 22.73
+    },
+    "editMedianMs": {
+      "before": 262.885,
+      "after": 21.979,
+      "reductionPercent": 91.64
+    },
+    "notifications": {
+      "before": 85906.0,
+      "after": 878.0,
+      "reductionPercent": 98.98
+    },
+    "diagnosticBytes": {
+      "before": 74456755.0,
+      "after": 1420450.0,
+      "reductionPercent": 98.09
+    },
+    "hlsCpuSeconds": {
+      "before": 94.156,
+      "after": 79.328,
+      "reductionPercent": 15.75
+    },
+    "hlsPeakMiB": {
+      "before": 994.785,
+      "after": 944.734,
+      "reductionPercent": 5.03
+    },
+    "nodeRssMiB": {
+      "before": 219.912,
+      "after": 65.084,
+      "reductionPercent": 70.4
+    },
+    "findings": {
+      "before": 4832.0,
+      "after": 4832.0,
+      "reductionPercent": 0.0
+    }
+  },
+  "cli": {
+    "afterSha256": "ce7c7ee5afc562f8e682dbaca342605bedd4ebd417849602fc323d80e76d74ad",
+    "runs": [
+      {
+        "diagnostics": 4101,
+        "headings": 4857,
+        "peakWorkingSetBytes": 996085760,
+        "label": "before-1",
+        "elapsedMs": 20313.6481,
+        "cpuSeconds": 50.765625,
+        "exit": 1,
+        "compiledSqfFiles": 1833
+      },
+      {
+        "diagnostics": 4101,
+        "headings": 4857,
+        "peakWorkingSetBytes": 961204224,
+        "label": "after-1",
+        "elapsedMs": 21343.2555,
+        "cpuSeconds": 47.984375,
+        "exit": 1,
+        "compiledSqfFiles": 1833
+      },
+      {
+        "diagnostics": 4101,
+        "headings": 4857,
+        "peakWorkingSetBytes": 932913152,
+        "label": "before-2",
+        "elapsedMs": 22078.3109,
+        "cpuSeconds": 50.953125,
+        "exit": 1,
+        "compiledSqfFiles": 1833
+      },
+      {
+        "diagnostics": 4101,
+        "headings": 4857,
+        "peakWorkingSetBytes": 924340224,
+        "label": "after-2",
+        "elapsedMs": 18461.9294,
+        "cpuSeconds": 47.171875,
+        "exit": 1,
+        "compiledSqfFiles": 1833
+      },
+      {
+        "diagnostics": 4101,
+        "headings": 4857,
+        "peakWorkingSetBytes": 949858304,
+        "label": "before-3",
+        "elapsedMs": 22344.509,
+        "cpuSeconds": 53.53125,
+        "exit": 1,
+        "compiledSqfFiles": 1833
+      },
+      {
+        "diagnostics": 4101,
+        "headings": 4857,
+        "peakWorkingSetBytes": 971972608,
+        "label": "after-3",
+        "elapsedMs": 21075.498,
+        "cpuSeconds": 47.265625,
+        "exit": 1,
+        "compiledSqfFiles": 1833
+      }
+    ],
+    "sameDiagnosticInventory": true,
+    "schema": 1,
+    "threads": 8,
+    "workspace": "Existing disposable 1833-source SQF audit workspace, installed game headers, four generated addon configs",
+    "beforeSha256": "138c47b6d742dc6ab0274fc2adb69d0f86bbebed83a5c957f06d47237bccdd8b",
+    "medians": {
+      "elapsedMs": {
+        "before": 22078.311,
+        "after": 21075.498,
+        "reductionPercent": 4.54
+      },
+      "cpuSeconds": {
+        "before": 50.953,
+        "after": 47.266,
+        "reductionPercent": 7.24
+      },
+      "peakWorkingSetBytes": {
+        "before": 949858304,
+        "after": 961204224,
+        "reductionPercent": -1.19
+      }
+    }
+  }
+}

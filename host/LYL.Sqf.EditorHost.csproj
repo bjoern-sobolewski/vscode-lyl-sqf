@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(ArmaRepository)/z_cmd/Arma3.DevTools/Directory.Build.props" Condition="'$(ArmaRepository)' != ''" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>LYL.Sqf.EditorHost</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(ArmaRepository)/z_cmd/Arma3.DevTools/Arma3.DevTools.Core/Arma3.DevTools.Core.csproj" />
+  </ItemGroup>
+  <Target Name="RequireArmaRepository" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(ArmaRepository)' == ''" Text="Pass -p:ArmaRepository=PATH to the full LiveYourLife checkout." />
+  </Target>
+</Project>

@@ -1,0 +1,145 @@
+{
+  "name": "lyl-sqf",
+  "displayName": "LiveYourLife SQF",
+  "description": "Local mission-aware SQF/config analysis using the LYL HEMTT fork and shared command-context gate.",
+  "version": "0.1.1",
+  "publisher": "liveyourlife",
+  "license": "MIT AND GPL-2.0-only",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "workspaceContains:tests/sqf/syntax.json",
+    "onLanguage:sqf",
+    "onLanguage:arma-config"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    },
+    "virtualWorkspaces": false
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "sqf",
+        "aliases": [
+          "SQF",
+          "Arma SQF"
+        ],
+        "extensions": [
+          ".sqf"
+        ],
+        "configuration": "./languages/sqf.configuration.json"
+      },
+      {
+        "id": "arma-config",
+        "aliases": [
+          "Arma Config"
+        ],
+        "extensions": [
+          ".ext",
+          ".hpp",
+          ".inc",
+          ".sqm",
+          ".rvmat",
+          ".bikb",
+          ".bisurf"
+        ],
+        "filenames": [
+          "config.cpp"
+        ],
+        "configuration": "./languages/config.configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sqf",
+        "scopeName": "sqf",
+        "path": "./languages/sqf.json"
+      },
+      {
+        "language": "arma-config",
+        "scopeName": "config",
+        "path": "./languages/config.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "lylSqf.verifySelected",
+        "title": "LYL SQF: Verify Selected Files"
+      },
+      {
+        "command": "lylSqf.verifyChanged",
+        "title": "LYL SQF: Verify Changed Files"
+      },
+      {
+        "command": "lylSqf.runRelevantTests",
+        "title": "LYL SQF: Run Relevant Existing Tests"
+      },
+      {
+        "command": "lylSqf.rebuildWorkspace",
+        "title": "LYL SQF: Rebuild Analysis Workspace"
+      },
+      {
+        "command": "lylSqf.showProcessed",
+        "title": "LYL SQF: Show Preprocessed Buffer"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "lylSqf.verifySelected",
+          "when": "resourceExtname == .sqf",
+          "group": "lyl"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "LiveYourLife SQF",
+      "properties": {
+        "lylSqf.armaDirectory": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Optional installed Arma 3 directory. Otherwise use the existing launcher detection. Game headers are never bundled."
+        },
+        "lylSqf.debounceMs": {
+          "type": "number",
+          "default": 350,
+          "minimum": 100,
+          "description": "Delay between buffer edits and shared context checks."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "esbuild src/extension.js --bundle --platform=node --format=cjs --external:vscode --outfile=dist/extension.js",
+    "test": "node --test test/unit.test.js",
+    "test:integration": "node test/integration.js",
+    "profile": "node test/performance.js",
+    "package": "npm run build && vsce package --no-dependencies"
+  },
+  "dependencies": {
+    "vscode-languageclient": "9.0.1",
+    "vscode-jsonrpc": "8.2.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "@vscode/vsce": "3.6.0",
+    "@vscode/test-electron": "2.5.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bjoern-sobolewski/vscode-lyl-sqf.git"
+  },
+  "homepage": "https://github.com/bjoern-sobolewski/vscode-lyl-sqf",
+  "bugs": {
+    "url": "https://github.com/bjoern-sobolewski/vscode-lyl-sqf/issues"
+  }
+}

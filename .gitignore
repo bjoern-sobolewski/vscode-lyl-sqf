@@ -1,0 +1,11 @@
+/node_modules/
+/dist/
+/.vscode-test/
+/server/*
+!/server/tools.json
+/source/
+/test-results/
+*.vsix
+*.vsix.sha256
+**/bin/
+**/obj/
