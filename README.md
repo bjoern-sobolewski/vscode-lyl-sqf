@@ -43,6 +43,82 @@ fake headers are created. Arma content is not distributed in the package.
 
 ## Analysis and commands
 
+### Authoring and reference coverage (0.2.0)
+
+**Open BI Wiki Documentation** opens the canonical command or BIS function under
+the cursor, or a safely URL-encoded selected page name. It is available in the
+Command Palette, the SQF editor context menu and on **Ctrl+Shift+Q**. Page text
+cannot change the destination origin, query or fragment. Separate Palette actions
+open unit event handlers, UI event handlers and the scripting-command index.
+
+The packaged SQF snippets include if/else/exit, forEach/range/while, switch, params,
+typed params, call, spawn, execVM, waitUntil and object/mission event handlers.
+They use numbered tabstops and editor indentation. Scheduling caveats are in
+their descriptions; handlers do not invent event parameters or machine roles.
+
+Completion and hover distinguish **BIS functions** from engine commands and
+project functions. The offline catalog includes 1,667 documented Arma 3 BIS
+functions, preserving available descriptions, syntax, parameters, optional fields
+and returns. It is a historical documentation snapshot, not a claim that every
+function exists in an installed game. Missing fields remain unspecified. The
+import source/version/hash, BI Wiki attribution and original MIT notice are
+recorded in `data/bis-functions.json`, `NOTICE.md` and `licenses/SQFLint.txt`.
+An explicit maintainer import is `node scripts/import-bis.js PATH_TO_REVIEWED_SQFLINT_0.12.4`.
+Do not silently refresh this data during activation.
+
+Project function completion reads **`tests/sqf/functions.json` in the Arma
+checkout**, which declares exact mission/addon config roots and virtual prefixes.
+HEMTT's `hemtt/config/structure` preprocesses each requested root using the same
+includes, macros and unsaved source database as diagnostics, then exposes its
+ordered parsed structure. The client interprets registered tags/categories,
+same-scope inheritance and literal category/function file/extension overrides.
+Names come from CfgFunctions registrations, never `fn_*.sqf` directory scans.
+Existing mapped function files support Go to Definition. Duplicate names retain
+their separate config-root provenance; registration does not establish argument,
+return, role or scheduling contracts.
+
+Dirty config/header edits invalidate the cached function index, as do disk
+changes, discard and source/layout rebuilds. Missing roots, failed preprocessing
+or parsing, unresolved/external inheritance, dynamic tags, absent/nonliteral file
+locations and unavailable registered files are explicit **unresolved registration**
+findings on their config roots. Known registered names can still complete when
+their location is unresolved. Implicit default directories and runtime-generated
+registrations are not guessed. Fix the declaration/evidence or inspect the
+finding; empty/unavailable discovery is not a successful complete index.
+
+The structural endpoint can retain literal registrations when a config contains
+unsupported `__EXEC(...)` bodies, unresolved macro values (PE9), or parser-recovered analysis findings. It never
+executes those bodies or guesses their effects: all registrations from that root
+are marked provisional/unresolved, with compatibility findings on the root.
+Dynamic expression fields remain unknown. Normal diagnostics and the local gate
+retain their failures; completion is not evidence that a config is valid.
+If unrelated config syntax prevents a full parse, the adapter requests a generic
+top-level `CfgFunctions` projection. It still preprocesses the actual complete root
+and parses selected declarations with HEMTT's config parser. Balanced boundaries
+are required, and the original root failure remains explicit/provisional. No
+mission path or registration rule is built into HEMTT's generic projection.
+
+Engine-command parameter hints use the same shared host documentation and reviewed
+contracts as hover and the local gate, including corrected overload types. They
+trigger on spaces, `[`/`(`/`,` and manual **Trigger Parameter Hints**. Unary/binary
+SQF syntax and documented argument-array shapes determine candidates; alternatives
+remain when types cannot be established. The active parameter follows balanced
+arrays/parentheses and ignores comment/string delimiters. Nested expressions count
+as one outer argument. If the documentation shape cannot establish the active
+parameter, no parameter is guessed. This is a conservative lexical editor aid,
+not type inference or a second parser. Existing HLS macro signature help remains
+registered alongside it.
+
+The selected replacement coverage excludes an RPT viewer, custom theme,
+CBA/ACE integration and the old extensions' unrelated debugger features.
+
+For the **Arma3** VS Code profile, run the Arma installer with
+`-Profile Arma3 -ConfigureWorkspace`. Before removing old extensions, validate the
+packaged feature coverage and retain profile/settings inventories. Then remove
+only `blackfisch.sqf-language`, `eelislynne.sqf-wiki` and `skacekachna.sqflint` from
+that profile using VS Code's `--profile Arma3` CLI option. Other profiles and
+extensions stay intact. Reload the window after installation.
+
 The adapter reads `tests/sqf/syntax.json`, including ordered shared/component
 overlays and the mission root. It stages byte-preserving disposable copies;
 the language server analyzes those copies with its existing source database,

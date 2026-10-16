@@ -29,6 +29,7 @@ async function main() {
   await fs.writeFile(workspace, JSON.stringify({ folders: [{ path: root }], settings: {
     'files.autoSave': 'off', 'files.associations': { '*.sqf': 'sqf', '*.hpp': 'arma-config', '*.inc': 'arma-config', '*.ext': 'arma-config' },
     '[sqf]': { 'files.autoSave': 'off' },
+    '[arma-config]': { 'files.autoSave': 'off' },
     'security.workspace.trust.enabled': false, 'extensions.autoCheckUpdates': false, 'extensions.autoUpdate': false,
     'telemetry.telemetryLevel': 'off', 'update.mode': 'none', 'workbench.startupEditor': 'none'
   } }));

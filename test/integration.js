@@ -30,6 +30,9 @@ async function main() {
     await fs.writeFile(path.join(fixture, 'mission/context.sqf'), 'owner objNull; sleep 1;');
     await fs.writeFile(path.join(fixture, 'mission/description.ext'), '#include "config.hpp"\n');
     await fs.writeFile(path.join(fixture, 'shared/config.hpp'), '#define CFG_VALUE 1\nclass Test { value = CFG_VALUE; };\n');
+    const functionsConfig = '#define DOC_TAG "TEST"\nurls[]={"https://example.test/*", "a/*b*/c"};\nclass CfgFunctions { class Namespace { tag = DOC_TAG; class Group { file = "functions"; class registered; class override { file = "custom.sqf"; }; }; }; };\n/* actual comment */\n';
+    await fs.writeFile(path.join(fixture, 'shared/functions.hpp'), functionsConfig);
+    await fs.appendFile(path.join(fixture, 'mission/description.ext'), '#include "functions.hpp"\n');
     const compatibility = 'private _text = "a\u00a0b\u202fc\u200bd\u0001e";\nprivate _a=1, _b=2;\nif (isNil"_missing") then {};\nfor"_i"from 0 to 1 do {};\nobjNull setDammage 0;\nobjNull addWeapon ["arifle_MX_F",true];\ncontrolNull ctrlWebBrowserAction ["Deflate","data"];\n#if __has_include("test.hpp")\nprivate _available = true;\n#endif\n/* native preprocessing removes this';
     await fs.writeFile(path.join(fixture, 'mission/compat.sqf'), compatibility);
     await fs.writeFile(path.join(fixture, 'mission/disk-bom.sqf'), '\uFEFFprivate _text = "Grüße";\n');
@@ -117,7 +120,38 @@ async function main() {
       return (Array.isArray(candidates) ? candidates : candidates?.items || []).some(item => item.label.toLowerCase() === 'getpos');
     }, 'command prefix completion');
     console.log('PASS navigation and completion');
-    await open('mission/description.ext', '#include "config.hpp"\n');
+    const { registrations } = require('../src/authoring');
+    const rootConfig = { path: 'mission/description.ext', virtualPrefix: '/' };
+    await eventually(async () => {
+      const structure = await rpc.sendRequest('hemtt/config/structure', { url: uri(rootConfig.path), classes: ['CfgFunctions'] });
+      assert.deepEqual(structure.limitations, []);
+      return registrations(structure.properties, rootConfig).functions.some(f => f.name === 'TEST_fnc_registered' && f.virtualPath === '/functions/fn_registered.sqf');
+    }, 'exact-root CfgFunctions with included macros and forward registration');
+    await open('shared/functions.hpp', functionsConfig);
+    await change('shared/functions.hpp', functionsConfig.replace('"TEST"', '"DIRTY"').replace('"custom.sqf"', '"unsaved.sqf"'), 2);
+    await eventually(async () => {
+      const structure = await rpc.sendRequest('hemtt/config/structure', { url: uri(rootConfig.path), classes: ['CfgFunctions'] });
+      const functions = registrations(structure.properties, rootConfig).functions;
+      return functions.some(f => f.name === 'DIRTY_fnc_override' && f.virtualPath === '/unsaved.sqf') && !functions.some(f => f.name.startsWith('TEST_'));
+    }, 'unsaved included CfgFunctions tag and file override');
+    await rpc.sendNotification('textDocument/didClose', { textDocument: { uri: uri('shared/functions.hpp') } });
+    await eventually(async () => registrations((await rpc.sendRequest('hemtt/config/structure', { url: uri(rootConfig.path), classes: ['CfgFunctions'] })).properties, rootConfig).functions.some(f => f.name === 'TEST_fnc_registered'), 'discard restores registered functions');
+    await open('mission/description.ext', '#define BAD(a,b) a\n__EXEC(_value = call { str (1 + 2) }; _text = "a ) (";)\nunsupported = {not_a_config_literal};\nunknown = BAD(1);\n#include "functions.hpp"\n');
+    await eventually(async () => {
+      const structure = await rpc.sendRequest('hemtt/config/structure', { url: uri(rootConfig.path), classes: ['CfgFunctions'] });
+      return structure.provisional?.some(message => message.includes('PE25') && message.includes('not executed')) && structure.provisional.some(message => message.includes('PE9')) &&
+        registrations(structure.properties, rootConfig).functions.some(f => f.name === 'TEST_fnc_registered');
+    }, 'unsupported EXEC retains literal registrations with explicit provisional findings');
+    await eventually(() => [...diags.values()].flat().some(d => d.code === 'PE25'), 'ordinary diagnostics retain unsupported EXEC failure');
+    await change('mission/description.ext', 'class CfgFunctions {};\n', 2);
+    await eventually(async () => !registrations((await rpc.sendRequest('hemtt/config/structure', { url: uri(rootConfig.path), classes: ['CfgFunctions'] })).properties, rootConfig).functions.length, 'dirty root include removal clears registrations');
+    await change('mission/live.sqf', '#define TEST_MACRO(first,second) [first,second]\nTEST_MACRO(1,2)', 7);
+    await eventually(async () => {
+      const signature = await rpc.sendRequest('textDocument/signatureHelp', { textDocument: { uri: uri('mission/live.sqf') }, position: { line: 1, character: 13 } });
+      return signature?.signatures.some(s => s.label.includes('TEST_MACRO(first, second)'));
+    }, 'existing function-like macro signature help');
+    console.log('PASS exact config roots, dirty included registrations, overrides, discard, provisional EXEC, root include removal and preserved macro signatures');
+    await change('mission/description.ext', '#include "config.hpp"\n', 3);
     await open('shared/config.hpp', '#define CFG_VALUE 1\nclass Test { value = CFG_VALUE; };\n');
     await change('shared/config.hpp', '\uFEFF#define CFG_VALUE 1\nclass Test { value = CFG_VALUE; };\n', 2);
     await eventually(() => diagnostics('shared/config.hpp').some(d => d.code === 'BOM'), 'included config-header BOM policy');

@@ -1,0 +1,18 @@
+{
+  "If then": { "prefix": "ifthen", "body": ["if (${1:condition}) then {", "\t$0", "};"], "description": "Conditional block" },
+  "If else": { "prefix": "ifelse", "body": ["if (${1:condition}) then {", "\t${2}", "} else {", "\t$0", "};"], "description": "Conditional alternatives" },
+  "Early exit": { "prefix": "ifexit", "body": ["if (${1:condition}) exitWith {", "\t$0", "};"], "description": "Exit the current scope when condition holds" },
+  "For each": { "prefix": "foreach", "body": ["{", "\t$0", "} forEach ${1:array};"], "description": "Iterate elements using _x and _forEachIndex" },
+  "For range": { "prefix": "forrange", "body": ["for \"_${1:i}\" from ${2:0} to ${3:10} do {", "\t$0", "};"], "description": "Inclusive numeric range" },
+  "While": { "prefix": "while", "body": ["while {${1:condition}} do {", "\t$0", "};"], "description": "Condition-controlled loop; consider termination and scheduler cost" },
+  "Switch": { "prefix": "switch", "body": ["switch (${1:value}) do {", "\tcase ${2:caseValue}: {", "\t\t${3}", "\t};", "\tdefault {", "\t\t$0", "\t};", "};"], "description": "Switch alternatives" },
+  "Params": { "prefix": "params", "body": ["params [", "\t\"_${1:argument}\"", "];"] , "description": "Unpack arguments; add documented types/defaults only after verifying the function contract" },
+  "Typed params": { "prefix": "paramstyped", "body": ["params [", "\t[\"_${1:argument}\", ${2:0}, [${3:0}]]", "];"], "description": "Typed parameter with explicit default and expected type; replace both to match the actual contract" },
+  "Call function": { "prefix": "callfnc", "body": ["[${1:arguments}] call ${2:TAG_fnc_function};$0"], "description": "Call inherits the caller's execution context; verify actual arguments and restrictions" },
+  "Spawn code": { "prefix": "spawn", "body": ["[${1:arguments}] spawn {", "\tparams [\"_${2:argument}\"];", "\t$0", "};"], "description": "Starts scheduled code on the current machine; does not establish server, HC or client role" },
+  "Spawn function": { "prefix": "spawnfnc", "body": ["[${1:arguments}] spawn ${2:TAG_fnc_function};$0"], "description": "Starts scheduled code on this machine; verify function arguments and machine role" },
+  "Execute script": { "prefix": "execVM", "body": ["[${1:arguments}] execVM \"${2:path/to/script.sqf}\";$0"], "description": "Scheduled script on this machine; use a literal path and verify its arguments" },
+  "Wait until": { "prefix": "waitUntil", "body": ["waitUntil {", "\t${1:condition}", "};$0"], "description": "Requires suspension capability unless the first evaluation is true; verify caller scheduling" },
+  "Object event handler": { "prefix": "addeh", "body": ["${1:object} addEventHandler [\"${2:EventName}\", {", "\t// Verify this event's parameters, locality and execution context.", "\t$0", "}];"], "description": "Object event handler; select a documented event and verify its contract" },
+  "Mission event handler": { "prefix": "addmeh", "body": ["addMissionEventHandler [\"${1:EventName}\", {", "\t// Verify this event's parameters, locality and execution context.", "\t$0", "}];"], "description": "Mission event handler; does not infer a machine role or event parameters" }
+}

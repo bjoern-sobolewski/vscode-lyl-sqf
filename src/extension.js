@@ -7,17 +7,20 @@ const { spawn } = require('node:child_process');
 const { LanguageClient } = require('vscode-languageclient/node');
 const { provision, verifySharedSources, Host, hoverMarkdown } = require('./shared');
 const { startTransport } = require('./transport');
+const { EditorFeatures, registerReferences } = require('./editor-features');
 
 let active;
 async function activate(context) {
   const log = vscode.window.createOutputChannel('LYL SQF'); context.subscriptions.push(log);
+  const sessions = [];
+  const find = uri => sessions.find(s => uri && vscode.workspace.getWorkspaceFolder(uri)?.uri.toString() === s.folder.uri.toString()) || sessions[0];
+  registerReferences(context, find);
   if (!vscode.workspace.isTrusted) return;
   const folders = vscode.workspace.workspaceFolders || [];
   const roots = [];
   for (const folder of folders) if (await fs.stat(path.join(folder.uri.fsPath, 'tests/sqf/syntax.json')).catch(() => null)) roots.push(folder);
   if (!roots.length) { log.appendLine('Open a full LiveYourLife repository to enable project analysis.'); return; }
   const tools = await provision(context.extensionPath, context.globalStorageUri.fsPath);
-  const sessions = [];
   const output = text => log.appendLine(text);
   for (const folder of roots) {
     await verifySharedSources(folder.uri.fsPath, tools.manifest);
@@ -26,7 +29,6 @@ async function activate(context) {
   }
   active = { sessions, tools, async dispose() { for (const session of sessions) await session.stop(); } };
   context.subscriptions.push({ dispose() { active?.dispose(); } });
-  const find = uri => sessions.find(s => uri && vscode.workspace.getWorkspaceFolder(uri)?.uri.toString() === s.folder.uri.toString()) || sessions[0];
   function selected(uri, all) { return all?.length ? all : uri ? [uri] : vscode.window.activeTextEditor ? [vscode.window.activeTextEditor.document.uri] : []; }
   const command = (name, fn) => context.subscriptions.push(vscode.commands.registerCommand(name, async (...args) => {
     try { return await fn(...args); } catch (e) { output(e.stack || e.message); log.show(true); vscode.window.showErrorMessage(`LYL SQF: ${e.message}`); }
@@ -94,6 +96,8 @@ class Session {
       }
     });
     await this.client.start();
+    this.features = new EditorFeatures(this, snapshot);
+    await this.features.start();
     this.log.appendLine(`Ready: ${this.folder.name}; HEMTT fork ${this.tools.manifest.forkRevision}; ${snapshot.files.length} mapped sources/aliases. Static analysis only.`);
     const schedule = document => {
       if (!this.mapped(document)) {
@@ -131,7 +135,7 @@ class Session {
     const relevant = uri => {
       const relative = path.relative(this.root, uri.fsPath).replaceAll('\\', '/');
       if (/(^|\/)(node_modules|bin|obj|\.git)\//.test(relative) || /^z_cmd\/(\.generated|mission\.dev|mission\.uidev)\//.test(relative)) return false;
-      return /\.(sqf|hpp|h|inc|cpp|ext|sqm|rvmat|bikb|bisurf)$/i.test(relative) || /^(tests\/sqf\/(commands\/|syntax\.json)|z_cmd\/dependencies\/manifest\.json)/.test(relative);
+      return /\.(sqf|hpp|h|inc|cpp|ext|sqm|rvmat|bikb|bisurf)$/i.test(relative) || /^(tests\/sqf\/(commands\/|syntax\.json|functions\.json)|z_cmd\/dependencies\/manifest\.json)/.test(relative);
     };
     this.disposables.push(watcher.onDidCreate(uri => { if (relevant(uri)) rebuildSoon(); }), watcher.onDidDelete(uri => { if (relevant(uri)) rebuildSoon(); }),
       watcher.onDidChange(async uri => {
@@ -139,7 +143,7 @@ class Session {
         const aliases = this.transport.mapper.aliases(uri.toString());
         if (!aliases.length) { rebuildSoon(); return; }
         const open = vscode.workspace.textDocuments.find(d => d.uri.toString() === uri.toString());
-        if (open?.isDirty) return;
+        if (open?.isDirty) { this.features.invalidate(); return; }
         try {
           const text = await fs.readFile(uri.fsPath, 'utf8');
           await this.host.request('update', { path: path.relative(this.root, uri.fsPath), text });
@@ -147,6 +151,7 @@ class Session {
           // no text edit. Refresh an open HLS overlay as well as the disk snapshot.
           if (open) await this.client.sendNotification('textDocument/didChange', { textDocument: { uri: uri.toString(), version: open.version }, contentChanges: [{ text: open.getText() }] });
           for (const alias of aliases) await this.client.sendNotification('workspace/didChangeWatchedFiles', { changes: [{ uri: alias, type: 2 }] });
+          this.features.invalidate();
         } catch (e) { this.log.appendLine(`Header refresh failed: ${e.message}`); }
       }), vscode.workspace.onDidChangeConfiguration(e => { if (e.affectsConfiguration('lylSqf.armaDirectory')) rebuildSoon(); }));
     for (const document of vscode.workspace.textDocuments) schedule(document);
@@ -172,6 +177,7 @@ class Session {
   }
   async stop() {
     ++this.generation;
+    this.features?.dispose();
     for (const d of this.disposables.splice(0)) d.dispose();
     for (const timer of this.timers.values()) clearTimeout(timer); this.timers.clear();
     this.contextFindings.clear();

@@ -1,3 +1,50 @@
+# Authoring coverage - 0.2.0
+
+Local feature validation uses the actual Arma checkout and installed game headers.
+The fork source and bundled binaries are pinned in `server/tools.json`; complete
+corresponding source and original notices remain in the VSIX.
+
+- Fifteen JavaScript unit scenarios cover safe canonical Wiki URLs, the attributed
+  1,667-function BIS snapshot, nested/overloaded command hints, registration
+  inheritance/overrides/unknowns, snippets and existing tooling protections.
+- Fork Rust suites: 408 passed, one inherited ignored. These include quoted URL
+  and comment delimiters, strict BOM policy, dirty includes, incomplete macro
+  calls, and explicitly provisional structural projection with strict ordinary
+  PE25/PE9 verification retained.
+- Exact-root discovery finds 1,276 mission and 275 addon registrations. Mission
+  entries are provisional because of unsupported EXEC, unresolved macro values
+  and unrelated full-config parser limitations. This is not a clean-config claim.
+- Actual-HLS integration exercises included macros, dirty tag/file overrides,
+  discard, root include removal, unsupported constructs and preserved macro hints.
+- The packaged VS Code workload tests command/BIS completion and hover, reviewed
+  Boolean overload types, unary/binary/nested command hints, actual mission/addon
+  functions, dirty included config completion/navigation, unresolved missing files,
+  snippets, selected verification and the existing loot.matching SQF-VM suite.
+  It requires auto-save off and checks source hashes after discarding edits.
+  The final run passed against 1,551 registrations; both SQF and config buffers
+  require effective language-specific auto-save off before any fixture edits.
+  Selected verification returned exit 1 with existing findings retained, while
+  the relevant loot.matching SQF-VM suite passed.
+- Installer verification covers isolated Arma3 and Default profiles, valid/missing/
+  corrupt offline caches, corrupt VSIX rejection and unrelated settings retention.
+  The public download is checked against the committed checksum before profile
+  installation. Other profile extension inventories are retained for comparison.
+- The complete source archive for fork `5a407869a64ac1115d1e13533f4d80afd61537f6`
+  passed extracted `cargo metadata --locked --offline`; its archive digest and
+  all 15,105 wiki crate file hashes passed independent verification. The source
+  packaging hashes the same files with at most four workers.
+
+A separate native probe preserved the quoted wildcard URL but did not support
+reinterpreting an incorrect macro arity as a new accepted signature. That negative
+observation led to preserving PE9 and an unknown structural value, not relaxing
+normal validation. No production mission, client receive path or multiplayer
+behavior is newly validated by this authoring work.
+
+Reproduce with `npm test`, `npm run test:integration` and `node test/run-vscode.js`
+with `LYL_ARMA_REPOSITORY` set, then the Arma repository's `test-install.ps1`.
+Generated logs, profiles, function-index evidence and reports remain ignored under
+`test-results/` and Arma's `z_cmd/.generated/`. No Git CI or Marketplace publishing.
+
 # Repository separation — 0.1.1
 
 The extension client, protocol host, packaging, tests and releases now live in

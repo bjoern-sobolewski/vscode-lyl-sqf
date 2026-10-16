@@ -34,12 +34,37 @@ fn main() {
     [IO.File]::WriteAllText((Join-Path $wikiCrate 'build.rs'), $offlineBuild, [Text.UTF8Encoding]::new($false))
     $checksumPath = Join-Path $wikiCrate '.cargo-checksum.json'
     $checksums = Get-Content -LiteralPath $checksumPath -Raw | ConvertFrom-Json
-    foreach ($file in [IO.Directory]::EnumerateFiles($wikiCrate, '*', [IO.SearchOption]::AllDirectories)) {
-        if ($file -eq $checksumPath) { continue }
-        $relative = $file.Substring($wikiCrate.TrimEnd('\','/').Length + 1).Replace('\','/')
-        $checksums.files | Add-Member -NotePropertyName $relative -NotePropertyValue (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() -Force
+    # Avoid a PowerShell command/property mutation for each of the thousands of
+    # embedded documentation files. Hash the same bytes with bounded workers.
+    if (-not ('LYLSourceHashes' -as [type])) {
+        Add-Type -TypeDefinition @'
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+public static class LYLSourceHashes {
+    public static Dictionary<string,string> Scan(string root) {
+        var values = new ConcurrentDictionary<string,string>(StringComparer.Ordinal);
+        var prefix = Path.GetFullPath(root).TrimEnd('\\', '/') + Path.DirectorySeparatorChar;
+        var checksum = Path.Combine(prefix, ".cargo-checksum.json");
+        Parallel.ForEach(Directory.EnumerateFiles(prefix, "*", SearchOption.AllDirectories),
+            new ParallelOptions { MaxDegreeOfParallelism = 4 }, file => {
+                if (String.Equals(file, checksum, StringComparison.OrdinalIgnoreCase)) return;
+                using (var input = File.OpenRead(file))
+                using (var sha = SHA256.Create()) {
+                    values[file.Substring(prefix.Length).Replace('\\', '/')] =
+                        BitConverter.ToString(sha.ComputeHash(input)).Replace("-", "").ToLowerInvariant();
+                }
+            });
+        return new Dictionary<string,string>(values, StringComparer.Ordinal);
     }
-    [IO.File]::WriteAllText($checksumPath, ($checksums | ConvertTo-Json -Depth 5), [Text.UTF8Encoding]::new($false))
+}
+'@
+    }
+    $updatedChecksums = @{ package=$checksums.package; files=[LYLSourceHashes]::Scan($wikiCrate) }
+    [IO.File]::WriteAllText($checksumPath, ($updatedChecksums | ConvertTo-Json -Depth 5), [Text.UTF8Encoding]::new($false))
     $archive = Join-Path $extensionRoot 'source/HEMTT-source.zip'
     & git archive --format=zip -o $archive HEAD
     if ($LASTEXITCODE) { throw 'Could not archive exact HEMTT fork source.' }

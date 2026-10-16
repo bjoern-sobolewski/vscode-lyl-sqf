@@ -2,7 +2,7 @@
   "name": "lyl-sqf",
   "displayName": "LiveYourLife SQF",
   "description": "Local mission-aware SQF/config analysis using the LYL HEMTT fork and shared command-context gate.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "publisher": "liveyourlife",
   "license": "MIT AND GPL-2.0-only",
   "engines": {
@@ -89,6 +89,22 @@
       {
         "command": "lylSqf.showProcessed",
         "title": "LYL SQF: Show Preprocessed Buffer"
+      },
+      {
+        "command": "lylSqf.openWiki",
+        "title": "LYL SQF: Open BI Wiki Documentation"
+      },
+      {
+        "command": "lylSqf.unitEvents",
+        "title": "LYL SQF: BI Wiki Unit Event Handlers"
+      },
+      {
+        "command": "lylSqf.uiEvents",
+        "title": "LYL SQF: BI Wiki UI Event Handlers"
+      },
+      {
+        "command": "lylSqf.commandIndex",
+        "title": "LYL SQF: BI Wiki Scripting Command Index"
       }
     ],
     "menus": {
@@ -97,6 +113,13 @@
           "command": "lylSqf.verifySelected",
           "when": "resourceExtname == .sqf",
           "group": "lyl"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "lylSqf.openWiki",
+          "when": "editorLangId == sqf",
+          "group": "navigation"
         }
       ]
     },
@@ -116,11 +139,25 @@
           "description": "Delay between buffer edits and shared context checks."
         }
       }
-    }
+    },
+    "keybindings": [
+      {
+        "command": "lylSqf.openWiki",
+        "key": "ctrl+shift+q",
+        "mac": "cmd+shift+q",
+        "when": "editorTextFocus && editorLangId == sqf"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "sqf",
+        "path": "./snippets/sqf.json"
+      }
+    ]
   },
   "scripts": {
     "build": "esbuild src/extension.js --bundle --platform=node --format=cjs --external:vscode --outfile=dist/extension.js",
-    "test": "node --test test/unit.test.js",
+    "test": "node --test test/unit.test.js test/authoring.test.js",
     "test:integration": "node test/integration.js",
     "profile": "node test/performance.js",
     "package": "npm run build && vsce package --no-dependencies"

@@ -43,6 +43,11 @@ while (await Console.In.ReadLineAsync() is { } line)
                 result = targets; break;
             case "analyze": result = (analysis ??= new SqfEditorAnalysisSession(root)).Analyze(PathArg(), p.GetProperty("text").GetString()!); break;
             case "hover": result = (analysis ??= new SqfEditorAnalysisSession(root)).Documentation(p.GetProperty("command").GetString()!); break;
+            case "commands":
+                if (snapshot is null) throw new InvalidOperationException("Prepare the workspace first");
+                using (var reference = JsonDocument.Parse(File.ReadAllText(Path.Combine(stage, ".hemtt/command-reference.json"))))
+                    result = reference.RootElement.GetProperty("commands").EnumerateObject().Select(c => c.Name).ToArray();
+                break;
             case "tests": result = SqfEditorAnalysis.RelevantTests(root, Paths()); break;
             default: throw new ArgumentException("Unknown editor method");
         }

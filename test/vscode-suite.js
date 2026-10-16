@@ -53,6 +53,77 @@ async function run() {
       return completion.items.some(item => (typeof item.label === 'string' ? item.label : item.label.label).toLowerCase() === 'getpos');
     }, 'command completion after buffer synchronization');
     mark('fork command completion in VS Code');
+    await replace('BIS_fnc_relPo');
+    const bisCompletion = await vscode.commands.executeCommand('vscode.executeCompletionItemProvider', uri, document.positionAt(document.getText().length));
+    assert.ok(bisCompletion.items.some(i => i.label === 'BIS_fnc_relPos' && i.detail.includes('BIS function')));
+    await replace('BIS_fnc_relPos');
+    const bisHovers = await vscode.commands.executeCommand('vscode.executeHoverProvider', uri, new vscode.Position(0, 6));
+    const bisHover = bisHovers.flatMap(h => h.contents.map(c => c.value || String(c))).join('\n');
+    for (const value of ['BIS function', 'Provenance', 'Returns:', 'position']) assert.ok(bisHover.includes(value), value);
+    mark('packaged BIS function completion, documented arguments/returns and provenance');
+    async function signatureAt(text, marker = '|') {
+      const offset = text.indexOf(marker); await replace(text.replace(marker, ''));
+      return vscode.commands.executeCommand('vscode.executeSignatureHelpProvider', uri, document.positionAt(offset), ',');
+    }
+    let signature = await signatureAt('_unit setVariable ["key", [1, [2, 3|]], true]');
+    assert.ok(signature?.signatures.length);
+    assert.equal(signature.signatures[signature.activeSignature || 0].activeParameter ?? signature.activeParameter, 2);
+    signature = await signatureAt('_origin getPos [100, |45]');
+    assert.ok(signature.signatures.some(s => s.label.includes('heading')));
+    assert.equal(signature.signatures[signature.activeSignature || 0].activeParameter ?? signature.activeParameter, 2);
+    signature = await signatureAt('getPos |objNull');
+    assert.ok(signature.signatures.some(s => s.label.includes('location')));
+    assert.ok(signature.signatures.some(s => s.label.includes('object')));
+    signature = await signatureAt('_unit addWeapon ["arifle_MX_F", |true]');
+    assert.ok(signature.signatures.some(s => s.parameters.some(p => p.label.includes('Boolean'))), 'reviewed Boolean addWeapon correction');
+    await replace('#define LYL_HINT(first,second) [first,second]\nformat ["%1", LYL_HINT(1,2)]');
+    await eventually(async () => {
+      const result = await vscode.commands.executeCommand('vscode.executeSignatureHelpProvider', uri, new vscode.Position(1, 24), ',');
+      return result?.signatures.some(s => s.label.includes('LYL_HINT(first, second)'));
+    }, 'macro hints alongside command hints');
+    mark('packaged command hints: unary/binary overloads, nested arrays, reviewed corrections and preserved macro signatures');
+    await session.features.refresh();
+    await fs.writeFile(reportFile.replace('results.json', 'function-index.json'), JSON.stringify({ functions: session.features.functions, findings: session.features.findings }, null, 2));
+    assert.ok(session.features.functions.some(f => f.name === 'session_fnc_updateInv'), 'actual included mission CfgFunctions');
+    assert.ok(session.features.functions.some(f => f.root === '@life_server/config.cpp'), 'actual addon root registrations');
+    const initialFunctionCount = session.features.functions.length;
+    const configUri = vscode.Uri.file(path.join(root, 'mission/cfg_functions.hpp'));
+    const configDocument = await vscode.workspace.openTextDocument(configUri), configOriginal = configDocument.getText();
+    const configHash = crypto.createHash('sha256').update(await fs.readFile(configUri.fsPath)).digest('hex');
+    assert.equal(vscode.workspace.getConfiguration('files', configDocument).get('autoSave'), 'off', 'Config buffer tests require effective auto-save off before any edit');
+    const replaceConfig = async text => {
+      const edit = new vscode.WorkspaceEdit(); edit.replace(configUri, new vscode.Range(configDocument.positionAt(0), configDocument.positionAt(configDocument.getText().length)), text);
+      assert.ok(await vscode.workspace.applyEdit(edit));
+    };
+    try {
+      await replaceConfig('class CfgFunctions { class Integration { tag="LYLEDITOR"; class Group { file="core\\inv"; class majorLootReturnPlan; class unresolved {file="/missing/editor-test.sqf";}; }; }; };');
+      assert.ok(configDocument.isDirty, 'Config fixture must remain unsaved');
+      await replace('LYLEDITOR_fnc_');
+      await eventually(async () => {
+        const result = await vscode.commands.executeCommand('vscode.executeCompletionItemProvider', uri, document.positionAt(document.getText().length));
+        return result.items.some(i => i.label === 'LYLEDITOR_fnc_majorLootReturnPlan') && result.items.some(i => i.label === 'LYLEDITOR_fnc_unresolved' && i.detail.includes('unresolved'));
+      }, 'dirty included config registration completion');
+      assert.ok(session.features.findings.some(f => f.scope.endsWith('/unresolved') && f.message.includes('unavailable')));
+      await replace('LYLEDITOR_fnc_majorLootReturnPlan');
+      const definitions = await vscode.commands.executeCommand('vscode.executeDefinitionProvider', uri, new vscode.Position(0, 15));
+      assert.ok(JSON.stringify(definitions).toLowerCase().includes('fn_majorlootreturnplan.sqf'));
+      await replaceConfig(configOriginal);
+      await vscode.window.showTextDocument(configDocument); await vscode.commands.executeCommand('workbench.action.files.revert');
+      await session.features.refresh();
+      assert.ok(!session.features.functions.some(f => f.name.startsWith('LYLEDITOR_')));
+    } finally {
+      if (configDocument.isDirty) { await replaceConfig(configOriginal); await vscode.window.showTextDocument(configDocument); await vscode.commands.executeCommand('workbench.action.files.revert'); }
+      assert.equal(crypto.createHash('sha256').update(await fs.readFile(configUri.fsPath)).digest('hex'), configHash);
+      await vscode.window.showTextDocument(document);
+    }
+    mark(`CfgFunctions: ${initialFunctionCount} real registrations, unsaved included tag/path changes, unresolved missing file and navigation; config bytes preserved`);
+    await replace('');
+    const editor = await vscode.window.showTextDocument(document); editor.options = { ...editor.options, insertSpaces: true, tabSize: 4 };
+    const snippets = JSON.parse(await fs.readFile(path.join(extension.extensionPath, 'snippets/sqf.json'), 'utf8'));
+    await editor.insertSnippet(new vscode.SnippetString(snippets['If then'].body.join('\n')));
+    assert.match(document.getText(), /if \(condition\) then \{\r?\n {4}/);
+    await vscode.commands.executeCommand('leaveSnippet');
+    mark('packaged snippets insert placeholders with editor indentation');
     await replace(original);
     await vscode.commands.executeCommand('workbench.action.files.revert');
     assert.equal(document.isDirty, false);
@@ -68,7 +139,7 @@ async function run() {
     for (const diagnostics of session.transport.diagnostics.values()) for (const d of diagnostics) { codes[d.code] = (codes[d.code] || 0) + 1; }
     for (const [, diagnostics] of vscode.languages.getDiagnostics()) for (const d of diagnostics) { const label = d.message.match(/^\[([^\]]+)\]/)?.[1] || d.source || 'other'; categories[label] = (categories[label] || 0) + 1; }
     const commands = await vscode.commands.getCommands(true);
-    for (const command of ['lylSqf.verifySelected', 'lylSqf.verifyChanged', 'lylSqf.runRelevantTests', 'lylSqf.showProcessed']) assert.ok(commands.includes(command));
+    for (const command of ['lylSqf.verifySelected', 'lylSqf.verifyChanged', 'lylSqf.runRelevantTests', 'lylSqf.showProcessed', 'lylSqf.openWiki', 'lylSqf.unitEvents', 'lylSqf.uiEvents', 'lylSqf.commandIndex']) assert.ok(commands.includes(command));
     mark('local verification/test commands registered; full repository diagnostic backlog retained');
     await fs.writeFile(reportFile, JSON.stringify({ successful: true, tests: findings, forkRevision: session.tools.manifest.forkRevision, repositoryHashPreserved: originalHash, fullRepository: { diagnosticAliases: session.transport.diagnostics.size, categories, codes }, limits: 'Static editor integration and SQF-VM suite only; no new native or multiplayer validation.' }, null, 2));
   } finally {
