@@ -422,3 +422,46 @@ is a separate sequential step comparison, not a same-binary compiler A/B.
 See incremental-performance-results.json for scalar data. Raw diagnostics, hashes
 and rejected setup probes stay private in the consuming evidence directory.
 Commit hooks remain disabled. No native Arma or multiplayer evidence is claimed.
+
+
+### Final published launcher measurements
+
+These complete-command consumer measurements supersede the candidate host timings
+for the installed launcher. Both tool generations run sequentially against the
+same frozen source bytes and rules, each with a valid Git commit and verified warm
+dependency cache. Initial samples that overlapped independent native/static tests
+are excluded. The clean replacement baseline runs after the final generation;
+other baseline samples precede it. No external test/build overlaps were observed
+for the accepted samples. Normal running development-server processes remain.
+
+| Complete launcher command | Previous published launcher | Final pinned launcher |
+| --- | ---: | ---: |
+| Single SQF edits | 6.282 / 5.924 / 5.988 s | 4.051 / 4.132 / 4.193 s |
+| Broad shared-header edits | 19.369 / 20.566 / 20.241 s | 7.067 / 7.170 / 7.512 s |
+| Fresh full service | 20.409 s | 19.311 s |
+| Unchanged repeats | — | 2.448 / 2.331 / 2.325 s |
+
+
+Medians improve **5.988 to 4.132 seconds
+(31.0%)** for these single edits and
+**20.241 to 7.170 seconds
+(64.6%)** for the broad header.
+All three single-edit samples meet five seconds; broad-header changes and fresh
+full checks do not. A broad header still requires 921 analyzer units and 920 VM
+parser inputs. Equal preprocessed strings alone cannot safely bypass linting.
+Selection, macro/config/rule changes or service expiration can require full work.
+The samples are controlled comment edits; arbitrary semantic edits can cost more.
+
+Independent fresh checks of the same edited SQF/header take
+17.086 / 17.733 seconds.
+Complete diagnostic comparisons pass for all matched snapshots, both independent
+fresh checks and all unchanged repeats: 3,428 stage records and 2,188 CLI
+annotations, with every analyzer finding preserved. Existing findings remain
+failures/exit 1; there are zero infrastructure failures. Independent SQF analysis
+completes even though the CLI config preflight fails.
+
+
+Only scalar results are published. Raw inventories, overlap records, source
+snapshots and valid-Git provenance stay in the consuming repository's local
+evidence directory. This is a documentation follow-up to the immutable 0.2.5
+release; its VSIX and tested source revision are unchanged.

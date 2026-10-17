@@ -375,3 +375,16 @@ paths, ordering, timings and run IDs are normalized. No findings are suppressed.
 PERFORMANCE.md distinguishes the achieved single-edit target from the remaining
 broad-header and fresh-full latency. Static/editor/VM checks do not establish
 native Arma or real multiplayer behavior.
+
+
+Final public-pin 0.2.5 validation: all 14 packaged editor checks pass, including
+selected source verification and the existing loot.matching SQF-VM suite. A fresh
+dependency cache verifies the exact public CLI/analyzer/VM downloads and completes
+SQF/config analysis with existing failures and no infrastructure errors. All six
+installer checks pass; the fresh public VSIX upgrades the actual Arma3 profile.
+Before/after inventories retain settings, unrelated extensions and the other ten
+profiles. Installed binary/corresponding-source hashes and all 16 normalized shared
+source stamps match. Reload existing editor windows to activate the update.
+Final sequential launcher diagnostic comparisons preserve every finding; see the
+final consumer table in PERFORMANCE.md for timings and five-second limitations.
+No native Arma/multiplayer result is claimed. Commit hooks remain disabled.

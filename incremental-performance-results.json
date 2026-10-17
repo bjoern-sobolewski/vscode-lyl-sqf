@@ -46,5 +46,40 @@
     "sharedHeaderEdit": false,
     "freshFull": false
   },
-  "nativeArmaOrMultiplayerEvidence": false
+  "nativeArmaOrMultiplayerEvidence": false,
+  "publishedLauncher": {
+    "baselineSourceSeconds": [
+      6.281917700000122,
+      5.92379819999951,
+      5.988345300000219
+    ],
+    "sourceSeconds": [
+      4.051381399998718,
+      4.131861800000479,
+      4.192991199999597
+    ],
+    "baselineHeaderSeconds": [
+      19.369462399999975,
+      20.565769899998486,
+      20.240697200000795
+    ],
+    "headerSeconds": [
+      7.06695800000125,
+      7.169921599999725,
+      7.511872900000526
+    ],
+    "unchangedSeconds": [
+      2.448165199999494,
+      2.3306093999999575,
+      2.32478059999994
+    ],
+    "baselineFreshSeconds": 20.40901219999978,
+    "freshSeconds": 19.311243399999512,
+    "sourceFreshSeconds": 17.08615160000045,
+    "headerFreshSeconds": 17.733013899998696,
+    "completeInventoriesIdentical": true,
+    "singleEditFiveSecondTarget": true,
+    "headerFiveSecondTarget": false,
+    "initialOverlappingTimingsExcluded": true
+  }
 }
