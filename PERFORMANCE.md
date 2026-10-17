@@ -269,3 +269,37 @@ normalization; HEMTT's 2,188 annotation records and heading inventories match
 after sorting only its inherited CCHU expected-token alternatives. Raw differences
 and reports stay in the private Arma checkout. HEMTT still fails during config
 preflight, so this does not establish full SQF compilation or native execution.
+
+## Release 0.2.3: bounded concurrent verification
+
+The independent HEMTT/context and parse-only stages now run concurrently with
+serialized caller logging and deterministic report ordering. Context analysis
+overlaps dependency/snapshot preparation and is joined before HEMTT starts.
+Up to four VM workers own disjoint batches and their diagnostic subdivision;
+source overlays preserve their order, with bounded copies within each overlay.
+The workspace uses its existing physical-to-virtual index rather than rescanning
+all aliases for each selected input. All workers are joined before report output,
+including provisioning failure/cancellation paths. No result cache was introduced.
+
+Other development changed production inputs during this work. The controlled
+comparison therefore freezes 1,721 selected SQF files and the same metadata/game
+headers in a disposable checkout. The 0.2.2 build takes 23.36s on that snapshot;
+three 0.2.3 explicit full-selection runs take 8.29, 8.86 and 7.86s (median 8.29s).
+Two complete changed-file invocations, including Git selection and broad header
+expansion, take 8.28 and 8.32s on the same fixed production inputs. These are warm
+verified dependency caches; downloaded binaries are still hash-checked, and every
+selected source is checked again. Host load and first-use setup can increase time.
+
+All 3,443 unique keys/outcomes and normalized context/parser details match across
+the explicit comparison: 3,095 pass, 348 fail, zero infrastructure errors.
+All 2,188 HEMTT annotations/headings and 3,794 staged source files match, normalizing
+only generated paths and inherited CCHU expected-token ordering. The changed scope
+from 0.2.2's earlier 1,713-file record includes independent development; its one
+fewer context failure is already present in both frozen versions, not an effect
+of this optimization. Original input hashes remain unchanged throughout the runs.
+
+These timings describe the existing verification pipeline: all selected SQF is
+parsed by the VM, while HEMTT still fails during config analysis. They do not
+measure complete HEMTT SQF compilation or native gameplay. Early fixture probes
+without a valid Git commit/ignore rules were discarded; accepted comparisons
+require nonempty matching HEMTT heading and annotation inventories.

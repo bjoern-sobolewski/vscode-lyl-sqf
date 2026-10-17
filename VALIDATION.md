@@ -288,3 +288,23 @@ errors or outcome changes. These are stage records, not unique bugs. No producti
 SQF/config or execution-context declaration was changed to obtain a pass.
 This is tooling/static/editor evidence; no new native Arma or multiplayer
 execution is claimed.
+
+## Release 0.2.3: concurrent verifier (2026-10-17)
+
+The shared host refresh adds bounded VM workers, ordered parallel overlay copies,
+overlapping verification stages and indexed alias selection. Existing diagnostics,
+macro/include isolation, parse-only behavior and source-stamp checks remain intact.
+The focused C# run passes 120 tests, including a new 200-input mixed-failure test
+across workers and combined-stage retention when static provisioning fails.
+The parser's existing missing-file, cancellation, macro-isolation and diagnostic
+regressions remain enabled. Static/syntax metrics expose setup and worker costs.
+
+The fixed-source comparison in PERFORMANCE.md retains every unique result/detail,
+all HEMTT annotations and all staged source hashes. Existing config/context/parser
+failures remain failures. Independent production edits were frozen before the
+comparison; no source or execution contract was altered to meet the time target.
+The same HEMTT binary/source/archive and licenses as 0.2.2 are retained. The matching
+launcher is rebuilt from the shared implementation. Editor validation continues
+to use JavaScript units, real HLS integration and the packaged isolated VS Code
+suite; it includes source preservation and the existing loot.matching VM suite.
+There is no new native Arma or multiplayer claim.
