@@ -28,8 +28,42 @@ async function run() {
     const edit = new vscode.WorkspaceEdit(); edit.replace(uri, new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length)), text);
     assert.ok(await vscode.workspace.applyEdit(edit));
   }
+  async function colors(document) {
+    const legend = await vscode.commands.executeCommand('vscode.provideDocumentSemanticTokensLegend', document.uri);
+    const result = await vscode.commands.executeCommand('vscode.provideDocumentSemanticTokens', document.uri);
+    assert.ok(legend?.tokenTypes && result?.data, 'registered semantic token provider');
+    const tokens = []; let line = 0, character = 0;
+    for (let i = 0; i < result.data.length; i += 5) {
+      const [deltaLine, deltaCharacter, length, type, modifiers] = result.data.slice(i, i + 5);
+      line += deltaLine; character = deltaLine ? deltaCharacter : character + deltaCharacter;
+      const text = document.getText(new vscode.Range(line, character, line, character + length));
+      tokens.push({ text, type: legend.tokenTypes[type], modifiers: legend.tokenModifiers.filter((_, bit) => modifiers & (1 << bit)) });
+    }
+    return tokens;
+  }
   try {
     assert.equal(document.languageId, 'sqf');
+    await session.features.refresh();
+    await replace('// 😀 UTF-16 ranges\n#define LYL_COLOR_LIMIT 25\nparams ["_unit", ["_target", objNull]];\n_unit distance _target;\n[_unit] call session_fnc_updateInv;\nBIS_fnc_relPos; ctrlWebBrowserAction; LYL_COLOR_LIMIT;');
+    let highlighted = await colors(document);
+    for (const name of ['_unit', '_target']) assert.ok(highlighted.some(t => t.text === name && t.type === 'parameter' && t.modifiers.includes('declaration')));
+    assert.ok(highlighted.some(t => t.text === '_unit' && t.type === 'parameter' && !t.modifiers.length));
+    for (const name of ['session_fnc_updateInv', 'BIS_fnc_relPos', 'ctrlWebBrowserAction']) assert.ok(highlighted.some(t => t.text === name && t.type === 'function'), name);
+    assert.equal(highlighted.filter(t => t.text === 'LYL_COLOR_LIMIT' && t.type === 'macro').length, 2);
+    await replace('params ["_changed"]; _unit; _changed;');
+    highlighted = await colors(document);
+    assert.ok(!highlighted.some(t => t.text === '_unit'));
+    assert.equal(highlighted.filter(t => t.text === '_changed' && t.type === 'parameter').length, 2);
+    mark('semantic function/command, macro and parameter colors follow dirty UTF-16 buffers and repair');
+    const indentEditor = await vscode.window.showTextDocument(document);
+    indentEditor.options = { insertSpaces: true, tabSize: 4 };
+    for (const source of ['if (true) then {}', 'params []']) {
+      await replace(source);
+      indentEditor.selection = new vscode.Selection(document.positionAt(source.length - 1), document.positionAt(source.length - 1));
+      await vscode.commands.executeCommand('type', { text: '\n' });
+      assert.match(document.getText(), /[\[{]\r?\n[ \t]+\r?\n[\]}]/, 'Enter indents paired SQF blocks/arrays');
+    }
+    mark('packaged SQF Enter indentation for code blocks and parameter arrays');
     await replace('private _x = ;\nowner objNull;\nsleep 1;');
     await assert.rejects(session.run(['--verify-file', file]), /saved repository bytes/);
     await eventually(() => vscode.languages.getDiagnostics(uri).some(d => String(typeof d.code === 'object' ? d.code.value : d.code).startsWith('SPE')), 'dirty parser syntax error');
@@ -96,6 +130,15 @@ async function run() {
       assert.ok(await vscode.workspace.applyEdit(edit));
     };
     try {
+      await replaceConfig('#define LYL_CONFIG_VALUE 5\nclass Example { value = LYL_CONFIG_VALUE; };');
+      assert.equal((await colors(configDocument)).filter(t => t.text === 'LYL_CONFIG_VALUE' && t.type === 'macro').length, 2);
+      const configEditor = await vscode.window.showTextDocument(configDocument);
+      configEditor.options = { insertSpaces: true, tabSize: 4 };
+      await replaceConfig('class Example {}');
+      configEditor.selection = new vscode.Selection(0, 15, 0, 15);
+      await vscode.commands.executeCommand('type', { text: '\n' });
+      assert.match(configDocument.getText(), /\{\r?\n[ \t]+\r?\n\}/);
+      mark('packaged config macro colors and class Enter indentation');
       await replaceConfig('class CfgFunctions { class Integration { tag="LYLEDITOR"; class Group { file="core\\inv"; class majorLootReturnPlan; class unresolved {file="/missing/editor-test.sqf";}; }; }; };');
       assert.ok(configDocument.isDirty, 'Config fixture must remain unsaved');
       await replace('LYLEDITOR_fnc_');
@@ -107,10 +150,12 @@ async function run() {
       await replace('LYLEDITOR_fnc_majorLootReturnPlan');
       const definitions = await vscode.commands.executeCommand('vscode.executeDefinitionProvider', uri, new vscode.Position(0, 15));
       assert.ok(JSON.stringify(definitions).toLowerCase().includes('fn_majorlootreturnplan.sqf'));
+      assert.ok((await colors(document)).some(t => t.text === 'LYLEDITOR_fnc_majorLootReturnPlan' && t.type === 'function'), 'dirty config index supplies semantic function names');
       await replaceConfig(configOriginal);
       await vscode.window.showTextDocument(configDocument); await vscode.commands.executeCommand('workbench.action.files.revert');
       await session.features.refresh();
       assert.ok(!session.features.functions.some(f => f.name.startsWith('LYLEDITOR_')));
+      assert.ok(!(await colors(document)).some(t => t.text === 'LYLEDITOR_fnc_majorLootReturnPlan'), 'discard removes stale semantic registration');
     } finally {
       if (configDocument.isDirty) { await replaceConfig(configOriginal); await vscode.window.showTextDocument(configDocument); await vscode.commands.executeCommand('workbench.action.files.revert'); }
       assert.equal(crypto.createHash('sha256').update(await fs.readFile(configUri.fsPath)).digest('hex'), configHash);

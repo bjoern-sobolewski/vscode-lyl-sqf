@@ -3,6 +3,8 @@
   "fileTypes": [
     "ext",
     "cpp",
+    "hpp",
+    "inc",
     "sqm",
     "rvmat",
     "fsm",
@@ -12,17 +14,20 @@
   "name": "arma-config",
   "patterns": [
     {
+      "include": "#preprocessor"
+    },
+    {
+      "include": "#comments"
+    },
+    {
       "include": "#strings"
     },
     {
       "include": "#numbers"
     },
     {
-      "include": "#comments"
-    },
-    {
       "name": "meta.class.declaration.arma_config",
-      "match": "\\b(class)\\s+([a-zA-Z_][a-zA-Z0-9_]*)(?:\\s*\\:\\s*([a-zA-Z_][a-zA-Z0-9_]*))?",
+      "match": "(?i)\\b(class)\\s+([A-Za-z_][A-Za-z_0-9]*)(?:\\s*:\\s*([A-Za-z_][A-Za-z_0-9]*))?",
       "captures": {
         "1": {
           "name": "storage.type.arma_config"
@@ -36,241 +41,151 @@
       }
     },
     {
-      "name": "support.function.macro.arma_config",
-      "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*\\()"
+      "match": "(?i)\\b(?:delete|enum)\\b",
+      "name": "keyword.control.arma_config"
     },
     {
-      "name": "variable.other.arma_config",
-      "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b(?=\\s*(?:\\[\\])?\\s*=)"
+      "match": "\\b[A-Za-z_][A-Za-z_0-9]*\\b(?=\\s*(?:\\[\\])?\\s*=)",
+      "name": "variable.other.property.arma_config"
     },
     {
-      "begin": "^\\s*((#)\\s*(include(?:_next)?|import))\\b\\s*",
-      "beginCaptures": {
-        "1": {
-          "name": "keyword.control.directive.$3.arma_config"
-        },
-        "2": {
-          "name": "punctuation.definition.directive.arma_config"
-        }
-      },
-      "end": "(?=(?://|/\\*))|(?<!\\\\)(?=\\n)",
-      "name": "meta.preprocessor.include.arma_config",
-      "patterns": [
-        {
-          "include": "#line_continuation_character"
-        },
-        {
-          "begin": "\"",
-          "beginCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.begin.arma_config"
-            }
-          },
-          "end": "\"",
-          "endCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.end.arma_config"
-            }
-          },
-          "name": "string.quoted.double.include.arma_config"
-        },
-        {
-          "begin": "<",
-          "beginCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.begin.arma_config"
-            }
-          },
-          "end": ">",
-          "endCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.end.arma_config"
-            }
-          },
-          "name": "string.quoted.other.lt-gt.include.arma_config"
-        }
-      ]
-    },
-    {
-      "begin": "(?x)\n^\\s* ((\\#)\\s*define) \\s+    # define\n((?<id>[a-zA-Z_$][\\w$]*))      # macro name\n(?:\n  (\\()\n    (\n      \\s* \\g<id> \\s*         # first argument\n      ((,) \\s* \\g<id> \\s*)*  # additional arguments\n      (?:\\.\\.\\.)?            # varargs ellipsis?\n    )\n  (\\))\n)?",
-      "beginCaptures": {
-        "1": {
-          "name": "keyword.control.directive.define.c"
-        },
-        "2": {
-          "name": "punctuation.definition.directive.c"
-        },
-        "3": {
-          "name": "entity.name.function.preprocessor.c"
-        },
-        "5": {
-          "name": "punctuation.definition.parameters.begin.c"
-        },
-        "6": {
-          "name": "variable.parameter.preprocessor.c"
-        },
-        "8": {
-          "name": "punctuation.separator.parameters.c"
-        },
-        "9": {
-          "name": "punctuation.definition.parameters.end.c"
-        }
-      },
-      "end": "(?=(?://|/\\*))|(?<!\\\\)(?=\\n)",
-      "name": "meta.preprocessor.macro.arma_config"
+      "match": "\\b[A-Za-z_][A-Za-z_0-9]*\\b(?=\\s*\\()",
+      "name": "entity.name.function.preprocessor.arma_config"
     }
   ],
   "repository": {
-    "line_continuation_character": {
+    "preprocessor": {
       "patterns": [
         {
-          "match": "(\\\\)\\n",
-          "captures": {
+          "begin": "^[ \\t]*(#\\s*include)\\b",
+          "beginCaptures": {
             "1": {
-              "name": "constant.character.escape.line-continuation.c"
+              "name": "keyword.control.directive.include.arma_config"
             }
-          }
-        }
-      ]
-    },
-    "numbers": {
-      "patterns": [
+          },
+          "end": "(?<![\\\\\\r])(?=\\r?\\n)",
+          "name": "meta.preprocessor.include.arma_config",
+          "patterns": [
+            {
+              "begin": "<",
+              "end": ">",
+              "name": "string.quoted.other.include.arma_config"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#comments"
+            }
+          ]
+        },
         {
-          "match": "\\b((0(x|X)[0-9a-fA-F]([0-9a-fA-F']*[0-9a-fA-F])?)|(0(b|B)[01]([01']*[01])?)|(([0-9]([0-9']*[0-9])?\\.?[0-9]*([0-9']*[0-9])?)|(\\.[0-9]([0-9']*[0-9])?))((e|E)(\\+|-)?[0-9]([0-9']*[0-9])?)?)(L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b",
-          "name": "constant.numeric.arma_config"
+          "begin": "^[ \\t]*(#\\s*define)\\b[ \\t]+([A-Za-z_][A-Za-z_0-9]*)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.directive.define.arma_config"
+            },
+            "2": {
+              "name": "variable.other.constant.macro.arma_config"
+            }
+          },
+          "end": "(?<![\\\\\\r])(?=\\r?\\n)",
+          "name": "meta.preprocessor.define.arma_config",
+          "patterns": [
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "match": "\\b[A-Za-z_][A-Za-z_0-9]*\\b",
+              "name": "variable.parameter.preprocessor.arma_config"
+            }
+          ]
+        },
+        {
+          "begin": "^[ \\t]*(#\\s*(?:if|ifdef|ifndef|elif|else|endif|undef|pragma|line))\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.directive.arma_config"
+            }
+          },
+          "end": "(?<![\\\\\\r])(?=\\r?\\n)",
+          "name": "meta.preprocessor.arma_config",
+          "patterns": [
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "match": "\\b[A-Za-z_][A-Za-z_0-9]*\\b",
+              "name": "variable.other.constant.macro.arma_config"
+            }
+          ]
         }
       ]
     },
     "comments": {
       "patterns": [
         {
-          "captures": {
-            "1": {
-              "name": "meta.toc-list.banner.block.c"
-            }
-          },
-          "match": "^/\\* =(\\s*.*?)\\s*= \\*/$\\n?",
-          "name": "comment.block.c"
-        },
-        {
           "begin": "/\\*",
-          "beginCaptures": {
-            "0": {
-              "name": "punctuation.definition.comment.begin.c"
-            }
-          },
           "end": "\\*/",
-          "endCaptures": {
-            "0": {
-              "name": "punctuation.definition.comment.end.c"
-            }
-          },
-          "name": "comment.block.c"
+          "name": "comment.block.arma_config"
         },
         {
-          "match": "\\*/.*\\n",
-          "name": "invalid.illegal.stray-comment-end.c"
-        },
-        {
-          "captures": {
-            "1": {
-              "name": "meta.toc-list.banner.line.c"
-            }
-          },
-          "match": "^// =(\\s*.*?)\\s*=\\s*$\\n?",
-          "name": "comment.line.banner.cpp"
-        },
-        {
-          "begin": "(^[ \\t]+)?(?=//)",
-          "beginCaptures": {
-            "1": {
-              "name": "punctuation.whitespace.comment.leading.cpp"
-            }
-          },
-          "end": "(?!\\G)",
-          "patterns": [
-            {
-              "begin": "//",
-              "beginCaptures": {
-                "0": {
-                  "name": "punctuation.definition.comment.cpp"
-                }
-              },
-              "end": "(?=\\n)",
-              "name": "comment.line.double-slash.cpp",
-              "patterns": [
-                {
-                  "include": "#line_continuation_character"
-                }
-              ]
-            }
-          ]
+          "match": "//.*$",
+          "name": "comment.line.arma_config"
         }
       ]
     },
     "strings": {
       "patterns": [
         {
-          "begin": "(u|u8|U|L)?\"",
-          "beginCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.begin.arma_config"
-            },
-            "1": {
-              "name": "meta.encoding.arma_config"
-            }
-          },
+          "begin": "\"",
           "end": "\"",
-          "endCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.end.arma_config"
-            }
-          },
           "name": "string.quoted.double.arma_config",
           "patterns": [
             {
-              "match": "\\\\u\\h{4}|\\\\U\\h{8}",
-              "name": "constant.character.escape.arma_config"
+              "match": "\"\"",
+              "name": "constant.character.escape.quote.arma_config"
             },
             {
-              "match": "\\\\['\"?\\\\abfnrtv]",
-              "name": "constant.character.escape.arma_config"
-            },
-            {
-              "match": "\\\\[0-7]{1,3}",
-              "name": "constant.character.escape.arma_config"
-            },
-            {
-              "match": "\\\\x\\h+",
-              "name": "constant.character.escape.arma_config"
+              "match": "%[0-9]+",
+              "name": "constant.other.placeholder.arma_config"
             }
-          ]
+          ],
+          "applyEndPatternLast": true
         },
         {
-          "begin": "(u|u8|U|L)?R\"(?:([^ ()\\\\\\t]{0,16})|([^ ()\\\\\\t]*))\\(",
-          "beginCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.begin.arma_config"
+          "begin": "'",
+          "end": "'",
+          "name": "string.quoted.single.arma_config",
+          "patterns": [
+            {
+              "match": "''",
+              "name": "constant.character.escape.quote.arma_config"
             },
-            "1": {
-              "name": "meta.encoding.arma_config"
-            },
-            "3": {
-              "name": "invalid.illegal.delimiter-too-long.arma_config"
+            {
+              "match": "%[0-9]+",
+              "name": "constant.other.placeholder.arma_config"
             }
-          },
-          "end": "\\)\\2(\\3)\"",
-          "endCaptures": {
-            "0": {
-              "name": "punctuation.definition.string.end.arma_config"
-            },
-            "1": {
-              "name": "invalid.illegal.delimiter-too-long.arma_config"
-            }
-          },
-          "name": "string.quoted.double.raw.arma_config"
+          ],
+          "applyEndPatternLast": true
         }
       ]
+    },
+    "numbers": {
+      "match": "(?<![\\w.])(?:0[xX][0-9a-fA-F]+|\\$[0-9a-fA-F]+|(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?)(?![\\w.])",
+      "name": "constant.numeric.arma_config"
     }
   }
 }

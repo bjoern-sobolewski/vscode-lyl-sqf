@@ -9,42 +9,246 @@
     }
   ],
   "repository": {
+    "expression": {
+      "patterns": [
+        {
+          "include": "#preprocessor"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#numbers"
+        },
+        {
+          "include": "#array-literal"
+        },
+        {
+          "include": "#paren-expression"
+        },
+        {
+          "include": "#block"
+        },
+        {
+          "include": "#operators"
+        },
+        {
+          "include": "#identifiers"
+        }
+      ]
+    },
+    "preprocessor": {
+      "patterns": [
+        {
+          "begin": "^[ \\t]*(#\\s*include)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.directive.include.sqf"
+            }
+          },
+          "end": "(?<![\\\\\\r])(?=\\r?\\n)",
+          "name": "meta.preprocessor.include.sqf",
+          "patterns": [
+            {
+              "begin": "<",
+              "end": ">",
+              "name": "string.quoted.other.include.sqf"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#comments"
+            }
+          ]
+        },
+        {
+          "begin": "^[ \\t]*(#\\s*define)\\b[ \\t]+([A-Za-z_][A-Za-z_0-9]*)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.directive.define.sqf"
+            },
+            "2": {
+              "name": "variable.other.constant.macro.sqf"
+            }
+          },
+          "end": "(?<![\\\\\\r])(?=\\r?\\n)",
+          "name": "meta.preprocessor.define.sqf",
+          "patterns": [
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "match": "\\b[A-Za-z_][A-Za-z_0-9]*\\b",
+              "name": "variable.parameter.preprocessor.sqf"
+            }
+          ]
+        },
+        {
+          "begin": "^[ \\t]*(#\\s*(?:if|ifdef|ifndef|elif|else|endif|undef|pragma|line))\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.directive.sqf"
+            }
+          },
+          "end": "(?<![\\\\\\r])(?=\\r?\\n)",
+          "name": "meta.preprocessor.sqf",
+          "patterns": [
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "match": "\\b[A-Za-z_][A-Za-z_0-9]*\\b",
+              "name": "variable.other.constant.macro.sqf"
+            }
+          ]
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "begin": "/\\*",
+          "end": "\\*/",
+          "name": "comment.block.sqf"
+        },
+        {
+          "match": "//.*$",
+          "name": "comment.line.sqf"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "begin": "\"",
+          "end": "\"",
+          "name": "string.quoted.double.sqf",
+          "patterns": [
+            {
+              "match": "\"\"",
+              "name": "constant.character.escape.quote.sqf"
+            },
+            {
+              "match": "%[0-9]+",
+              "name": "constant.other.placeholder.sqf"
+            }
+          ],
+          "applyEndPatternLast": true
+        },
+        {
+          "begin": "'",
+          "end": "'",
+          "name": "string.quoted.single.sqf",
+          "patterns": [
+            {
+              "match": "''",
+              "name": "constant.character.escape.quote.sqf"
+            },
+            {
+              "match": "%[0-9]+",
+              "name": "constant.other.placeholder.sqf"
+            }
+          ],
+          "applyEndPatternLast": true
+        }
+      ]
+    },
+    "numbers": {
+      "match": "(?<![\\w.])(?:0[xX][0-9a-fA-F]+|\\$[0-9a-fA-F]+|(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?)(?![\\w.])",
+      "name": "constant.numeric.sqf"
+    },
+    "boolean-literal": {
+      "match": "(?i)\\b(?:false|true)\\b",
+      "name": "constant.language.boolean.sqf"
+    },
+    "null-literal": {
+      "match": "(?i)\\b(null|nil|controlNull|displayNull|grpNull|locationNull|netObjNull|objNull|scriptNull|taskNull|teamMemberNull|configNull)\\b",
+      "name": "constant.language.null.sqf"
+    },
+    "reserved-literal": {
+      "match": "(?i)\\b(this|_this|_x|_y|_forEachIndex|_exception|_thisScript|_thisFSM|thisList|thisTrigger|west|east|resistance|civilian|independent|blufor|opfor)\\b",
+      "name": "variable.language.reserved.sqf"
+    },
     "access-modifier": {
-      "match": "\\s*(?i)(private)\\b",
+      "match": "(?i)\\bprivate\\b",
       "name": "storage.modifier.sqf"
+    },
+    "control-statement": {
+      "match": "(?i)\\b(goto|forEachReversed|to|breakTo|uiSleep|then|execVM|from|breakWith|scriptDone|scopeName|fileExists|assert|with|sleep|throw|continue|forEachMemberAgent|while|continueWith|halt|else|catch|forEachMemberTeam|switch|step|exit|do|execFSM|breakOut|canSuspend|exec|loadFile|waitUntil|try|break|case|call|:|spawn|terminate|scriptName|forEachMember|exitWith|for|default|forEach|isUIContext|if)\\b",
+      "name": "keyword.control.sqf"
+    },
+    "code-managers": {
+      "match": "(?i)\\b(?:compileFinal|compile|callExtension)\\b",
+      "name": "support.function.sqf"
+    },
+    "operators": {
+      "match": "==|!=|>=|<=|&&|\\|\\||[=!<>:+*/%^#-]",
+      "name": "keyword.operator.sqf"
     },
     "array-literal": {
       "begin": "\\[",
+      "end": "\\]",
       "beginCaptures": {
         "0": {
           "name": "meta.brace.square.sqf"
         }
       },
-      "end": "\\]",
       "endCaptures": {
         "0": {
           "name": "meta.brace.square.sqf"
         }
       },
-      "name": "meta.array.literal.sqf",
+      "name": "meta.array-literal.sqf",
       "patterns": [
         {
           "include": "#expression"
         }
       ]
     },
-    "assignment-operator": {
-      "match": "=",
-      "name": "keyword.operator.assignment.sqf"
+    "paren-expression": {
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "meta.brace.paren.sqf"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "meta.brace.paren.sqf"
+        }
+      },
+      "name": "meta.paren-expression.sqf",
+      "patterns": [
+        {
+          "include": "#expression"
+        }
+      ]
     },
     "block": {
       "begin": "\\{",
+      "end": "\\}",
       "beginCaptures": {
         "0": {
           "name": "meta.brace.curly.sqf"
         }
       },
-      "end": "\\}",
       "endCaptures": {
         "0": {
           "name": "meta.brace.curly.sqf"
@@ -54,408 +258,79 @@
       "patterns": [
         {
           "include": "#expression"
-        },
-        {
-          "include": "#object-member"
-        }
-      ]
-    },
-    "boolean-literal": {
-      "match": "(\\s*)(false|true)\\b",
-      "name": "constant.language.boolean.sqf"
-    },
-    "comment": {
-      "name": "comment.sqf",
-      "patterns": [
-        {
-          "include": "#comment-block"
-        },
-        {
-          "include": "#comment-line"
-        }
-      ]
-    },
-    "comment-block": {
-      "begin": "/\\*",
-      "end": "\\*/",
-      "name": "comment.block.sqf"
-    },
-    "comment-line": {
-      "match": "(//).*$\\n?",
-      "name": "comment.line.sqf"
-    },
-    "comparison-operator": {
-      "match": "==|!=|>|<|greater|greater=|less|less=|not",
-      "name": "keyword.operator.comparison.sqf"
-    },
-    "condition-operator": {
-      "match": "!|&&|\\|\\||:|([^A-Za-z0-9]|\\b)and([^A-Za-z0-9]|\\b)|([^A-Za-z0-9])or([^A-Za-z0-9])",
-      "name": "keyword.operator.condition.sqf"
-    },
-    "control-statement": {
-      "match": "\\s*(?i)(goto|forEachReversed|to|breakTo|uiSleep|then|execVM|from|breakWith|scriptDone|scopeName|fileExists|assert|with|sleep|throw|continue|forEachMemberAgent|while|continueWith|halt|else|catch|forEachMemberTeam|switch|step|exit|do|execFSM|breakOut|canSuspend|exec|loadFile|waitUntil|try|break|case|call|:|spawn|terminate|scriptName|forEachMember|exitWith|for|default|forEach|isUIContext|if)\\b",
-      "name": "keyword.control.sqf"
-    },
-    "decl-block": {
-      "begin": "\\{",
-      "beginCaptures": {
-        "0": {
-          "name": "meta.brace.curly.sqf"
-        }
-      },
-      "end": "\\}",
-      "endCaptures": {
-        "0": {
-          "name": "meta.brace.curly.sqf"
-        }
-      },
-      "name": "meta.decl.block.sqf",
-      "patterns": [
-        {
-          "include": "#expression"
         }
       ]
     },
     "vObject-statements": {
-      "match": "\\s*(?i)(player|cursorTarget)\\b",
+      "match": "(?i)\\b(?:player|cursorTarget)\\b",
       "name": "variable.language.vobject.sqf"
     },
-    "commands-1": {
-      "match": "\\s*(?i)(!|!=|#|&&|\\$&|-|/|<|<=|=|==|>|>=|>>|AGLToASL|AISFinishHeal|ASLToAGL|ASLToATL|ATLToASL|HUDMovementLevels|UAVControl|WFSideText|\\$&|abs|accTime|acos|action|actionIDs|actionKeys|actionKeysEx|actionKeysImages|actionKeysNames|actionKeysNamesArray|actionName|actionNow|actionParams|activateAddons|activateKey|activatedAddons|activeTitleEffectParams|add3DENConnection|add3DENEventHandler|add3DENLayer|addAction|addBackpack|addBackpackCargo|addBackpackCargoGlobal|addBackpackGlobal|addBinocularItem|addCamShake|addCuratorAddons|addCuratorCameraArea|addCuratorEditableObjects|addCuratorEditingArea|addCuratorPoints|addCuratorSelected|addEditorObject|addEventHandler|addForce|addForceGeneratorRTD|addGoggles|addGroupIcon|addHandgunItem|addHeadgear|addItem|addItemCargo|addItemCargoGlobal|addItemPool|addItemToBackpack|addItemToUniform|addItemToVest|addLiveStats|addMPEventHandler|addMagazine|addMagazineAmmoCargo|addMagazineCargo|addMagazineCargoGlobal|addMagazineGlobal|addMagazinePool|addMagazineTurret|addMagazines|addMagazinesTurret|addMenu|addMenuItem|addMissionEventHandler|addMusicEventHandler|addOwnedMine|addPlayerScores|addPrimaryWeaponItem|addPublicVariableEventHandler|addRating|addResources|addScore|addScoreSide|addSecondaryWeaponItem|addSwitchableUnit|addTeamMember|addToRemainsCollector|addTorque|addUniform|addUserActionEventHandler|addVehicle|addVest|addWaypoint|addWeapon|addWeaponCargo|addWeaponCargoGlobal|addWeaponGlobal|addWeaponItem|addWeaponPool|addWeaponTurret|addWeaponWithAttachmentsCargo|addWeaponWithAttachmentsCargoGlobal|addonFiles|admin|agent|agents|aimPos|aimedAtTarget|airDensityCurveRTD|airDensityRTD|airplaneThrottle|airportSide|alive|all3DENEntities|allActiveTitleEffects|allAddonsInfo|allAirports|allCameras|allControls|allCurators|allCutLayers|allDead|allDeadMen|allDiaryRecords|allDiarySubjects|allDisplays|allEnv3DSoundSources|allExtensions|allGroups|allLODs|allMapMarkers|allMines|allMissionObjects|allObjects|allPlayers|allSimpleObjects|allSites|allTurrets|allUnits|allUnitsUAV|allUsers|allVariables|allow3DMode|allowCrewInImmobile|allowCuratorLogicIgnoreAreas|allowDamage|allowDammage|allowFileOperations|allowFleeing|allowGetIn|allowService|allowSprint|allowedService|ambientTemperature|ammo|ammoOnPylon|and|angularVelocity|angularVelocityModelSpace|animate|animateBay|animateDoor|animatePylon|animateSource|animationNames|animationPhase|animationSourcePhase|animationState|apertureParams|append|apply|armoryPoints|arrayIntersect|asin|assignAsCargo|assignAsCargoIndex|assignAsCommander|assignAsDriver|assignAsGunner|assignAsTurret|assignCurator|assignItem|assignTeam|assignToAirport|assignedCargo|assignedCommander|assignedDriver|assignedGroup|assignedGunner|assignedItems|assignedTarget|assignedTeam|assignedVehicle|assignedVehicleRole|assignedVehicles|atan|atan2|atg|attachChild|attachObject|attachTo|attachedObject|attachedObjects|attachedTo|attackEnabled|awake|backpack|backpackCargo|backpackContainer|backpackItems|backpackMagazines|backpackSpaceFor|backpacks|batteryChargeRTD|behaviour|benchmark|bezierInterpolation|binocular|binocularItems|binocularMagazine|blufor|boundingBox|boundingBoxReal|boundingCenter|brakesDisabled|briefingName|buildingExit|buildingPos|buttonAction|buttonSetAction|cadetMode|calculatePath|calculatePlayerVisibilityByFriendly|camCommand|camCommit|camCommitPrepared|camCommitted|camConstuctionSetParams|camCreate|camDestroy|camPreload|camPreloaded|camPrepareBank|camPrepareDir|camPrepareDive|camPrepareFocus|camPrepareFov|camPrepareFovRange|camPreparePos|camPrepareRelPos|camPrepareTarget|camSetBank|camSetDir|camSetDive|camSetFocus|camSetFov|camSetFovRange|camSetPos|camSetRelPos|camSetTarget|camTarget|camUseNVG|cameraEffect|cameraEffectEnableHUD|cameraInterest|cameraOn|cameraView|campaignConfigFile|canAdd|canAddItemToBackpack|canAddItemToUniform|canAddItemToVest|canDeployWeapon|canFire|canMove|canSlingLoad|canStand|canTriggerDynamicSimulation|canUnloadInCombat|canVehicleCargo|cancelSimpleTaskDestination|captive|captiveNum|cbChecked|cbSetChecked|ceil|channelEnabled|cheatsEnabled|checkAIFeature|checkVisibility|childAttached|civilian|className|clear3DENAttribute|clear3DENInventory|clearAllItemsFromBackpack|clearBackpackCargo|clearBackpackCargoGlobal|clearForcesRTD|clearGroupIcons|clearItemCargo|clearItemCargoGlobal|clearItemPool|clearKillConfirmations|clearMagazineCargo|clearMagazineCargoGlobal|clearMagazinePool|clearOverlay|clearRadio|clearVehicleInit|clearWeaponCargo|clearWeaponCargoGlobal|clearWeaponPool|clientOwner|closeDialog|closeDisplay|closeOverlay|collapseObjectTree|collect3DENHistory|collectiveRTD|collisionDisabledWith|combatBehaviour|combatMode|combatPace|commandArtilleryFire|commandChat|commandFSM|commandFire|commandFollow|commandGetOut|commandMove|commandRadio|commandStop|commandSuppressiveFire|commandTarget|commandWatch|commander|commandingMenu|comment|commitOverlay|compatibleItems|compatibleMagazines|compatibleWeapons|compileScript|completedFSM|composeText|configClasses|configFile|configHierarchy|configName|configNull|configOf|configProperties|configSourceAddonList|configSourceMod|configSourceModList|confirmSensorTarget|connectTerminalToUAV|connectToServer|controlNull|controlsGroupCtrl|conversationDisabled|copyFromClipboard|copyToClipboard|copyWaypoints|cos|count|countEnemy|countFriendly|countSide|countType|countUnknown|create3DENComposition|create3DENEntity|createAgent|createCenter|createDialog|createDiaryLink|createDiaryRecord|createDiarySubject|createDisplay|createGearDialog|createGroup|createGuardedPoint|createHashMap|createHashMapFromArray|createHashMapObject|createLocation|createMPCampaignDisplay|createMarker|createMarkerLocal|createMenu|createMine|createMissionDisplay|createSimpleObject|createSimpleTask|createSite|createSoundSource|createSoundSourceLocal|createTarget|createTask|createTeam|createTrigger|createUnit|createVehicle|createVehicleCrew|createVehicleLocal|crew|ctAddHeader|ctAddRow|ctClear|ctCurSel|ctData|ctFindHeaderRows|ctFindRowHeader|ctHeaderControls|ctHeaderCount|ctRemoveHeaders|ctRemoveRows|ctRowControls|ctRowCount|ctSetCurSel|ctSetData|ctSetHeaderTemplate|ctSetRowTemplate|ctSetValue|ctValue|ctrlActivate|ctrlAddEventHandler|ctrlAngle|ctrlAnimateModel|ctrlAnimationPhaseModel|ctrlAt|ctrlAutoScrollDelay|ctrlAutoScrollRewind|ctrlAutoScrollSpeed|ctrlBackgroundColor|ctrlChecked|ctrlClassName|ctrlCommit|ctrlCommitted|ctrlCreate|ctrlDelete|ctrlEnable|ctrlEnabled|ctrlFade|ctrlFontHeight|ctrlForegroundColor|ctrlGetProperty|ctrlHTMLLoaded|ctrlIDC|ctrlIDD|ctrlMapAnimAdd|ctrlMapAnimClear|ctrlMapAnimCommit|ctrlMapAnimDone|ctrlMapCursor|ctrlMapDir|ctrlMapMouseOver|ctrlMapPosition|ctrlMapScale|ctrlMapScreenToWorld|ctrlMapSetPosition|ctrlMapWorldToScreen|ctrlModel|ctrlModelDirAndUp|ctrlModelScale|ctrlModelVectorSide|ctrlMousePosition|ctrlParent|ctrlParentControlsGroup|ctrlPosition|ctrlRemoveAllEventHandlers|ctrlRemoveEventHandler|ctrlScale|ctrlScrollValues|ctrlSetActiveColor|ctrlSetAngle|ctrlSetAutoScrollDelay|ctrlSetAutoScrollRewind|ctrlSetAutoScrollSpeed|ctrlSetBackgroundColor|ctrlSetChecked|ctrlSetDisabledColor|ctrlSetEventHandler|ctrlSetFade|ctrlSetFocus|ctrlSetFont|ctrlSetFontH1|ctrlSetFontH1B|ctrlSetFontH2|ctrlSetFontH2B|ctrlSetFontH3|ctrlSetFontH3B|ctrlSetFontH4|ctrlSetFontH4B|ctrlSetFontH5|ctrlSetFontH5B|ctrlSetFontH6|ctrlSetFontH6B|ctrlSetFontHeight|ctrlSetFontHeightH1|ctrlSetFontHeightH2|ctrlSetFontHeightH3|ctrlSetFontHeightH4|ctrlSetFontHeightH5|ctrlSetFontHeightH6|ctrlSetFontHeightSecondary|ctrlSetFontP|ctrlSetFontPB|ctrlSetFontSecondary|ctrlSetForegroundColor|ctrlSetModel|ctrlSetModelDirAndUp|ctrlSetModelScale|ctrlSetMousePosition|ctrlSetPixelPrecision|ctrlSetPosition|ctrlSetPositionH|ctrlSetPositionW|ctrlSetPositionX|ctrlSetPositionY|ctrlSetScale|ctrlSetScrollValues|ctrlSetShadow|ctrlSetStructuredText|ctrlSetText|ctrlSetTextColor|ctrlSetTextColorSecondary|ctrlSetTextSecondary|ctrlSetTextSelection|ctrlSetTooltip|ctrlSetTooltipColorBox|ctrlSetTooltipColorShade|ctrlSetTooltipColorText|ctrlSetTooltipMaxWidth|ctrlSetURL|ctrlSetURLOverlayMode|ctrlShadow|ctrlShow|ctrlShown|ctrlStyle|ctrlText|ctrlTextColor|ctrlTextHeight|ctrlTextSecondary|ctrlTextSelection|ctrlTextWidth|ctrlTooltip|ctrlType|ctrlURL|ctrlURLOverlayMode|ctrlVisible|curatorAddons|curatorCamera|curatorCameraArea|curatorCameraAreaCeiling|curatorCoef|curatorEditableObjects|curatorEditingArea|curatorEditingAreaType|curatorMouseOver|curatorPoints|curatorRegisteredObjects|curatorSelected|curatorSelectionPreset|curatorWaypointCost|current3DENOperation|currentChannel|currentCommand|currentMagazine|currentMagazineDetail|currentMagazineDetailTurret|currentMagazineTurret|currentMuzzle|currentNamespace|currentPilot|currentTask|currentTasks|currentThrowable|currentVisionMode|currentWaypoint|currentWeapon|currentWeaponMode|currentWeaponTurret|currentZeroing|cursorObject|cursorTarget|customChat|customRadio|customWaypointPosition|cutFadeOut|cutObj|cutRsc|cutText|damage|date|dateToNumber|dayTime|deActivateKey|debriefingText|debugFSM|debugLog|decayGraphValues|deg|delete3DENEntities|deleteAt|deleteCenter|deleteCollection|deleteEditorObject|deleteGroup|deleteGroupWhenEmpty|deleteIdentity|deleteLocation|deleteMarker|deleteMarkerLocal|deleteRange|deleteResources|deleteSite|deleteStatus|deleteTarget|deleteTeam|deleteVehicle|deleteVehicleCrew|deleteWaypoint|detach|detachChild|detectedMines|dialog|diaryRecordNull|diarySubjectExists|didJIP|didJIPOwner|difficulty|difficultyEnabled|difficultyEnabledRTD)\\b",
-      "name": "entity.name.function.sqf"
-    },
-    "commands-2": {
-      "match": "\\s*(?i)(difficultyOption|directSay|direction|directionStabilizationEnabled|disableAI|disableBrakes|disableCollisionWith|disableConversation|disableDebriefingStats|disableMapIndicators|disableNVGEquipment|disableRemoteSensors|disableSerialization|disableTIEquipment|disableUAVConnectability|disableUserInput|displayAddEventHandler|displayChild|displayCtrl|displayNull|displayParent|displayRemoveAllEventHandlers|displayRemoveEventHandler|displaySetEventHandler|displayUniqueName|displayUpdate|dissolveTeam|distance|distance2D|distanceSqr|distributionRegion|do3DENAction|doArtilleryFire|doFSM|doFire|doFollow|doGetOut|doMove|doStop|doSuppressiveFire|doTarget|doWatch|doorPhase|drawArrow|drawEllipse|drawIcon|drawIcon3D|drawLaser|drawLine|drawLine3D|drawLink|drawLocation|drawPolygon|drawRectangle|drawTriangle|drawXPolygon|driver|drop|dynamicSimulationDistance|dynamicSimulationDistanceCoef|dynamicSimulationEnabled|dynamicSimulationSystemEnabled|east|echo|edit3DENMissionAttributes|editObject|editorSetEventHandler|effectiveCommander|elevatePeriscope|emptyPositions|enableAI|enableAIFeature|enableAimPrecision|enableAttack|enableAudioFeature|enableAutoStartUpRTD|enableAutoTrimRTD|enableCamShake|enableCaustics|enableChannel|enableCollisionWith|enableCopilot|enableDebriefingStats|enableDiagLegend|enableDirectionStabilization|enableDynamicSimulation|enableDynamicSimulationSystem|enableEndDialog|enableEngineArtillery|enableEnvironment|enableFatigue|enableFreeLook|enableGunLights|enableGunStabilization|enableIRLasers|enableInfoPanelComponent|enableMimics|enablePersonTurret|enableRadio|enableReload|enableRopeAttach|enableSatNormalOnDetail|enableSaving|enableSentences|enableSimulation|enableSimulationGlobal|enableStamina|enableStressDamage|enableTeamSwitch|enableTraffic|enableUAVConnectability|enableUAVWaypoints|enableVehicleCargo|enableVehicleSensor|enableWeaponDisassembly|endLoadingScreen|endMission|endl|enemy|engineOn|enginesIsOnRTD|enginesPowerRTD|enginesRpmRTD|enginesTorqueRTD|entities|environmentEnabled|environmentVolume|equipmentDisabled|estimatedEndServerTime|estimatedTimeLeft|evalObjectArgument|everyBackpack|everyContainer|execEditorScript|exp|expectedDestination|exportJIPMessages|exportLandscapeXYZ|eyeDirection|eyePos|face|faction|fadeEnvironment|fadeMusic|fadeRadio|fadeSound|fadeSpeech|failMission|fillWeaponsFromPool|find|findAny|findCover|findDisplay|findEditorObject|findEmptyPosition|findEmptyPositionReady|findIf|findNearestEnemy|finishMissionInit|finite|fire|fireAtTarget|firstBackpack|flag|flagAnimationPhase|flagOwner|flagSide|flagTexture|flatten|fleeing|floor|flyInHeight|flyInHeightASL|focusOn|focusedCtrl|fog|fogForecast|fogParams|forceAddUniform|forceAtPositionRTD|forceCadetDifficulty|forceEnd|forceFlagTexture|forceFollowRoad|forceGeneratorRTD|forceHitPointsDamageSync|forceMap|forceRespawn|forceSpeed|forceUnicode|forceWalk|forceWeaponFire|forceWeatherChange|forcedMap|forgetTarget|formLeader|format|formatText|formation|formationDirection|formationLeader|formationMembers|formationPosition|formationTask|freeExtension|freeLook|friendly|fromEditor|fromJSON|fuel|fullCrew|gameValueToJson|gearIDCAmmoCount|gearSlotAmmoCount|gearSlotData|gestureState|get|get3DENActionState|get3DENAttribute|get3DENAttributes|get3DENCamera|get3DENConnections|get3DENEntity|get3DENEntityID|get3DENGrid|get3DENIconsVisible|get3DENLayer|get3DENLayerEntities|get3DENLinesVisible|get3DENMissionAttribute|get3DENMissionAttributes|get3DENMouseOver|get3DENParent|get3DENSelected|getAimDirectionAndUp|getAimingCoef|getAllEnv3DSoundControllers|getAllEnvSoundControllers|getAllHitPointsDamage|getAllOwnedMines|getAllPylonsInfo|getAllSoundControllers|getAllUnitTraits|getAmmoCargo|getAnimAimPrecision|getAnimSpeedCoef|getAnimationsQueue|getArray|getArtilleryAmmo|getArtilleryComputerSettings|getArtilleryETA|getAssetDLCInfo|getAssignedCuratorLogic|getAssignedCuratorUnit|getAttackTarget|getAudioOptionVolumes|getBackpackCargo|getBleedingRemaining|getBoneNames|getBurningValue|getCalculatePlayerVisibilityByFriendly|getCameraViewDirection|getCargoIndex|getCenterOfMass|getClientState|getClientStateNumber|getCompatiblePylonMagazines|getConnectedUAV|getConnectedUAVUnit|getContainerMaxLoad|getCorpse|getCorpseWeaponholders|getCruiseControl|getCurrentPlayerLevel|getCursorObjectParams|getCustomAimCoef|getCustomSoundController|getCustomSoundControllerCount|getDLCAssetsUsage|getDLCAssetsUsageByName|getDLCUsageTime|getDLCs|getDammage|getDebriefingText|getDescription|getDir|getDirVisual|getDiverState|getEditorCamera|getEditorMode|getEditorObjectScope|getElevationOffset|getEngineTargetRPMRTD|getEntityInfo|getEnv3DSoundController|getEnvSoundController|getEventHandlerInfo|getFSMVariable|getFatigue|getFieldManualStartPage|getForcedFlagTexture|getForcedSpeed|getFriend|getFuelCargo|getFuelConsumptionCoef|getGraphValues|getGroupIcon|getGroupIconParams|getGroupIcons|getHideFrom|getHit|getHitIndex|getHitPointDamage|getItemCargo|getLeaning|getLightInfo|getLighting|getLightingAt|getLoadedModsInfo|getLoginStatus|getMagazineCargo|getMarkerColor|getMarkerPos|getMarkerSize|getMarkerType|getMass|getMissionConfig|getMissionConfigValue|getMissionDLCs|getMissionLayerEntities|getMissionLayers|getMissionOptions|getMissionPath|getModelInfo|getMousePosition|getMusicPlayedTime|getNextId|getNumber|getObjectArgument|getObjectChildren|getObjectDLC|getObjectFOV|getObjectID|getObjectMaterials|getObjectProxy|getObjectScale|getObjectTextures|getObjectType|getObjectViewDistance|getOpticsMode|getOrDefault|getOrDefaultCall|getOxygenRemaining|getPersonUsedDLCs|getPhysicsCollisionFlag|getPiPViewDistance|getPilotCameraDirection|getPilotCameraOpticsMode|getPilotCameraPosition|getPilotCameraRotation|getPilotCameraTarget|getPlateNumber|getPlayerChannel|getPlayerCloudId|getPlayerID|getPlayerLevel|getPlayerScores|getPlayerUID|getPlayerUIDOld|getPlayerVoNVolume|getPos|getPosASL|getPosASLVisual|getPosASLW|getPosATL|getPosATLVisual|getPosVisual|getPosWorld|getPosWorldVisual|getPylonMagazines|getRelDir|getRelPos|getRemoteSensorsDisabled|getRepairCargo|getResolution|getRespawnVehicleInfo|getRoadInfo|getRotorBrakeRTD|getSelectionBones|getSensorTargets|getSensorThreats|getServerInfo|getShadowDistance|getShotInfo|getShotParents|getSlingLoad|getSlotItemName|getSoundController|getSoundControllerResult|getSpeed|getStamina|getStatValue|getSteamFriendsServers|getSubtitleOptions|getSuppression|getTIParameters|getTerrainGrid|getTerrainHeight|getTerrainHeightASL|getTerrainInfo|getText|getTextRaw|getTextWidth|getTextureInfo|getTotalDLCUsageTime|getTowParent|getTrimOffsetRTD|getTurretLimits|getTurretOpticsMode|getUnitFreefallInfo|getUnitLoadout|getUnitMovesInfo|getUnitState|getUnitTrait|getUnloadInCombat|getUserInfo|getUserMFDText|getUserMFDValue|getVariable|getVehicleCargo|getVehicleTIPars|getVideoOptions|getWPPos|getWaterFillPercentage|getWaterLeakiness|getWeaponCargo|getWeaponSway|getWingsOrientationRTD|getWingsPositionRTD|getWorld|glanceAt|globalChat|globalRadio|goggles|group|groupChat|groupFromNetId|groupIconSelectable|groupIconsVisible|groupId|groupOwner|groupRadio|groupSelectUnit|groupSelectedUnits|groups|grpNull|gunner|gusts|handgunItems|handgunMagazine|handgunWeapon|handsHit|hasCustomFace|hasInterface|hasPilotCamera|hasWeapon|hashValue|hcAllGroups|hcGroupParams|hcLeader|hcRemoveAllGroups|hcRemoveGroup|hcSelectGroup|hcSelected|hcSetGroup|hcShowBar|hcShownBar|headgear|hiddenActions|hideActions|hideBehindScripted|hideBody|hideObject|hideObjectGlobal|hideSelection|hierarchyObjectsCount|hint|hintC|hintCadet|hintSilent|hmd|hostMission|htmlLoad|humidity|ignore3DENHistory|ignoreTarget|image|import|importAllGroups|importance|in|inArea|inAreaArray|inAreaArrayIndexes|inGameUISetEventHandler|inPolygon|inRangeOfArtillery|incapacitatedState|independent|inflame|inflamed|infoPanel|infoPanelComponentEnabled|infoPanelComponents|infoPanels|inheritsFrom|initAmbientLife|inputAction|inputController|inputMouse|insert|insertEditorObject|insideBuilding|intersect|is3DEN|is3DENMultiplayer|is3DENPreview|isAISteeringComponentEnabled|isAbleToBreathe|isActionMenuVisible|isAgent|isAimPrecisionEnabled|isAllowedCrewInImmobile|isAppSubscribed|isArray|isAutoHoverOn|isAutoStartUpEnabledRTD|isAutoTrimOnRTD|isAutonomous|isAutotest|isAwake|isBleeding|isBurning|isClass|isCollisionLightOn|isCopilotEnabled|isDLCAvailable|isDamageAllowed|isDedicated|isEngineOn|isEqualRef|isEqualTo|isEqualType|isEqualTypeAll|isEqualTypeAny|isEqualTypeArray|isEqualTypeParams|isFilePatchingEnabled|isFinal|isFlashlightOn|isFlatEmpty|isForcedWalk|isFormationLeader|isGameFocused|isGamePaused|isGroupDeletedWhenEmpty|isHidden|isHideBehindScripted|isIRLaserOn|isInRemainsCollector|isInstructorFigureEnabled|isKeyActive|isKindOf|isLaserOn|isLightOn|isLocalized|isManualFire|isMarkedForCollection|isMissionProfileNamespaceLoaded|isMultiplayer|isMultiplayerSolo|isNil|isNotEqualRef|isNotEqualTo|isNull|isNumber|isObjectHidden|isObjectRTD|isOnRoad|isPiPEnabled|isPlayer|isPlayerSupporter|isRealTime|isRemoteControlling|isRemoteExecuted|isRemoteExecutedJIP|isSaving|isSensorTargetConfirmed|isServer|isShowing3DIcons|isSimpleObject|isSprintAllowed|isStaminaEnabled|isSteamMission|isSteamOverlayEnabled|isStreamFriendlyUIEnabled|isStressDamageEnabled|isSwitchingWeapon|isText|isThrowable|isTouchingGround|isTurnedOut|isTutHintsEnabled|isUAVConnectable|isUAVConnected|isUniformAllowed|isUsingAISteeringComponent|isVehicleCargo|isVehicleRadarOn|isVehicleSensorEnabled|isWalking|isWeaponDeployed|isWeaponRested|itemCargo|items|itemsWithMagazines|join|joinAs|joinAsSilent|joinSilent|joinString|jsonToGameValue|kbAddDatabase|kbAddDatabaseTargets|kbAddTopic|kbHasTopic|kbReact|kbRemoveTopic|kbTell|kbWasSaid|keyImage|keyName|keys|kickPlayer|knowsAbout|land|landAt)\\b",
-      "name": "entity.name.function.sqf"
-    },
-    "commands-3": {
-      "match": "\\s*(?i)(landResult|language|laserTarget|lbAdd|lbClear|lbColor|lbColorRight|lbCurSel|lbData|lbDelete|lbIsSelected|lbPicture|lbPictureRight|lbSelection|lbSetColor|lbSetColorRight|lbSetCurSel|lbSetData|lbSetPicture|lbSetPictureColor|lbSetPictureColorDisabled|lbSetPictureColorSelected|lbSetPictureRight|lbSetPictureRightColor|lbSetPictureRightColorDisabled|lbSetPictureRightColorSelected|lbSetSelectColor|lbSetSelectColorRight|lbSetSelected|lbSetText|lbSetTextRight|lbSetTooltip|lbSetValue|lbSize|lbSort|lbSortBy|lbSortByValue|lbText|lbTextRight|lbTooltip|lbValue|leader|leaderboardDeInit|leaderboardGetRows|leaderboardInit|leaderboardRequestRowsFriends|leaderboardRequestRowsGlobal|leaderboardRequestRowsGlobalAroundUser|leaderboardState|leaderboardsRequestUploadScore|leaderboardsRequestUploadScoreKeepBest|leaveVehicle|libraryCredits|libraryDisclaimers|lifeState|lightAttachObject|lightDetachObject|lightIsOn|lightnings|limitSpeed|lineBreak|lineIntersects|lineIntersectsObjs|lineIntersectsSurfaces|lineIntersectsWith|linearConversion|linkItem|list|listObjects|listRemoteTargets|listVehicleSensors|ln|lnbAddArray|lnbAddColumn|lnbAddRow|lnbClear|lnbColor|lnbColorRight|lnbCurSelRow|lnbData|lnbDeleteColumn|lnbDeleteRow|lnbGetColumnsPosition|lnbPicture|lnbPictureRight|lnbSetColor|lnbSetColorRight|lnbSetColumnsPos|lnbSetCurSelRow|lnbSetData|lnbSetPicture|lnbSetPictureColor|lnbSetPictureColorRight|lnbSetPictureColorSelected|lnbSetPictureColorSelectedRight|lnbSetPictureRight|lnbSetText|lnbSetTextRight|lnbSetTooltip|lnbSetValue|lnbSize|lnbSort|lnbSortBy|lnbSortByValue|lnbText|lnbTextRight|lnbValue|load|load3DENScenario|loadAbs|loadBackpack|loadConfig|loadCuratorSelectionPreset|loadGame|loadIdentity|loadMagazine|loadOverlay|loadStatus|loadUniform|loadVest|local|localNamespace|localize|locationNull|locationPosition|lock|lockCameraTo|lockCargo|lockDriver|lockIdentity|lockInventory|lockTurret|lockWP|locked|lockedCameraTo|lockedCargo|lockedDriver|lockedInventory|lockedTurret|log|logEntities|logNetwork|logNetworkTerminate|lookAt|lookAtPos|magazineCargo|magazineTurretAmmo|magazines|magazinesAllTurrets|magazinesAmmo|magazinesAmmoCargo|magazinesAmmoFull|magazinesDetail|magazinesDetailBackpack|magazinesDetailUniform|magazinesDetailVest|magazinesTurret|mapAnimAdd|mapAnimClear|mapAnimCommit|mapAnimDone|mapCenterOnCamera|mapGridPosition|markAsFinishedOnSteam|markerAlpha|markerBrush|markerChannel|markerColor|markerDir|markerDrawPriority|markerPolyline|markerPos|markerShadow|markerShape|markerSize|markerText|markerType|matrixMultiply|matrixTranspose|max|maxLoad|members|menuAction|menuAdd|menuChecked|menuClear|menuCollapse|menuData|menuDelete|menuEnable|menuEnabled|menuExpand|menuHover|menuPicture|menuSetAction|menuSetCheck|menuSetData|menuSetPicture|menuSetShortcut|menuSetText|menuSetURL|menuSetValue|menuShortcut|menuShortcutText|menuSize|menuSort|menuText|menuURL|menuValue|merge|min|mineActive|mineDetectedBy|missileState|missileTarget|missileTargetPos|missionConfigFile|missionDifficulty|missionEnd|missionName|missionNameSource|missionNamespace|missionProfileNamespace|missionStart|missionVersion|mod|modParams|modelToWorld|modelToWorldVisual|modelToWorldVisualWorld|modelToWorldWorld|moonIntensity|moonPhase|morale|move|move3DENCamera|moveInAny|moveInCargo|moveInCommander|moveInDriver|moveInGunner|moveInTurret|moveObjectToEnd|moveOut|moveTarget|moveTime|moveTo|moveToCompleted|moveToFailed|musicVolume|nMenuItems|name|nameSound|namedProperties|nearEntities|nearObjects|nearObjectsReady|nearRoads|nearSupplies|nearTargets|nearestBuilding|nearestLocation|nearestLocationWithDubbing|nearestLocations|nearestMines|nearestObject|nearestObjects|nearestTerrainObjects|needReload|needService|netId|netObjNull|newOverlay|nextMenuItemIndex|nextWeatherChange|nil|not|numberOfEnginesRTD|numberToDate|objNull|objStatus|object|objectCurators|objectFromNetId|objectParent|onBriefingGear|onBriefingGroup|onBriefingNotes|onBriefingPlan|onBriefingTeamSwitch|onCommandModeChanged|onDoubleClick|onEachFrame|onGroupIconClick|onGroupIconOverEnter|onGroupIconOverLeave|onHCGroupSelectionChanged|onMapSingleClick|onOfficialServer|onPlayerConnected|onPlayerDisconnected|onPreloadFinished|onPreloadStarted|onShowNewObject|onTeamSwitch|openCuratorInterface|openDLCPage|openDSInterface|openGPS|openMap|openSteamApp|openYoutubeVideo|opfor|or|orderGetIn|overcast|overcastForecast|owner|param|params|parentAttached|parseNumber|parseSimpleArray|parseText|parsingNamespace|particlesQuality|periscopeElevation|pi|pickWeaponPool|pitch|pixelGrid|pixelGridBase|pixelGridNoUIScale|pixelH|pixelW|playAction|playActionNow|playGesture|playMission|playMove|playMoveNow|playMusic|playScriptedMission|playSound|playSound3D|playSoundUI|playableSlotsNumber|playableUnits|player|playerRespawnTime|playerSide|playerTargetLock|playersNumber|posScreenToWorld|posWorldToScreen|pose|position|positionCameraToWorld|ppEffectAdjust|ppEffectCommit|ppEffectCommitted|ppEffectCreate|ppEffectDestroy|ppEffectEnable|ppEffectEnabled|ppEffectForceInNVG|precision|preloadCamera|preloadObject|preloadSound|preloadTitleObj|preloadTitleRsc|preprocessFile|preprocessFileLineNumbers|primaryWeapon|primaryWeaponItems|primaryWeaponMagazine|priority|privateAll|processDiaryLink|processInitCommands|productVersion|profileName|profileNameSteam|profileNamespace|progressLoadingScreen|progressPosition|progressSetPosition|publicVariable|publicVariableClient|publicVariableServer|pushBack|pushBackUnique|putWeaponPool|queryItemsPool|queryMagazinePool|queryWeaponPool|rad|radioChannelAdd|radioChannelCreate|radioChannelInfo|radioChannelRemove|radioChannelSetCallSign|radioChannelSetLabel|radioEnabled|radioVolume|rain|rainParams|rainbow|random|rank|rankId|rating|rectangular|regexFind|regexMatch|regexReplace|registerTask|registeredTasks|reload|reloadEnabled|remoteControl|remoteControlled|remoteExec|remoteExecCall|remoteExecutedJIPID|remoteExecutedOwner|remove3DENConnection|remove3DENEventHandler|remove3DENLayer|removeAction|removeAll3DENEventHandlers|removeAllActions|removeAllAssignedItems|removeAllBinocularItems|removeAllContainers|removeAllCuratorAddons|removeAllCuratorCameraAreas|removeAllCuratorEditingAreas|removeAllEventHandlers|removeAllHandgunItems|removeAllItems|removeAllItemsWithMagazines|removeAllMPEventHandlers|removeAllMagazines|removeAllMagazinesTurret|removeAllMissionEventHandlers|removeAllMusicEventHandlers|removeAllOwnedMines|removeAllPrimaryWeaponItems|removeAllSecondaryWeaponItems|removeAllUserActionEventHandlers|removeAllWeapons|removeBackpack|removeBackpackGlobal|removeBinocularItem|removeClothing|removeCuratorAddons|removeCuratorCameraArea|removeCuratorEditableObjects|removeCuratorEditingArea|removeDiaryRecord|removeDiarySubject|removeDrawIcon|removeDrawLinks|removeEventHandler|removeFromRemainsCollector|removeGoggles|removeGroupIcon|removeHandgunItem|removeHeadgear|removeItem|removeItemFromBackpack|removeItemFromUniform|removeItemFromVest|removeItems|removeMPEventHandler|removeMagazine|removeMagazineGlobal|removeMagazineTurret|removeMagazines|removeMagazinesTurret|removeMenuItem|removeMissionEventHandler|removeMusicEventHandler|removeOwnedMine|removePrimaryWeaponItem|removeSecondaryWeaponItem|removeSimpleTask|removeSwitchableUnit|removeTeamMember|removeUniform|removeUserActionEventHandler|removeVest|removeWeapon|removeWeaponAttachmentCargo|removeWeaponCargo|removeWeaponGlobal|removeWeaponItem|removeWeaponTurret|reportRemoteTarget|requiredVersion|resetCamShake|resetSubgroupDirection|resistance|resize|resources|respawnVehicle|restartEditorCamera|reveal|revealMine|reverse|reversedMouseY|roadAt|roadsConnectedTo|roleDescription|ropeAttachEnabled|ropeAttachTo|ropeAttachedObjects|ropeAttachedTo|ropeCreate|ropeCut|ropeDestroy|ropeDetach|ropeEndPosition|ropeLength|ropeSegments|ropeSetCargoMass|ropeUnwind|ropeUnwound|ropes|ropesAttachedTo|rotorsForcesRTD|rotorsRpmRTD|round|runInitScript|safeZoneH|safeZoneW|safeZoneWAbs|safeZoneX|safeZoneXAbs|safeZoneY|save3DENInventory|save3DENPreferences|saveGame|saveIdentity|saveJoysticks|saveMissionProfileNamespace|saveOverlay|saveProfileNamespace|saveStatus|saveVar|savingEnabled|say|say2D|say3D|score|scoreSide|screenToWorld|screenToWorldDirection|screenshot|scriptNull|scudState|secondaryWeapon|secondaryWeaponItems|secondaryWeaponMagazine|select|selectBestPlaces|selectDiarySubject|selectEditorObject|selectLeader|selectMax|selectMin|selectNoPlayer|selectPlayer|selectRandom|selectRandomWeighted|selectThrowable|selectWeapon|selectWeaponTurret|selectedEditorObjects|selectionNames|selectionPosition|selectionVectorDirAndUp|sendAUMessage|sendAnalyticEvent|sendCloudRequest|sendCloudRequestClient|sendCloudRequestServer|sendSimpleCommand|sendTask|sendTaskResult|sendUDPMessage|sentencesEnabled|serverCommand|serverCommandAvailable|serverCommandExecutable|serverConfigTopLevelEntry|serverName|serverNamespace|serverStartMission|serverTime|set|set3DENAttachedCursorEntity|set3DENAttribute|set3DENAttributes|set3DENGrid|set3DENIconsVisible|set3DENLayer|set3DENLinesVisible|set3DENLogicType|set3DENMissionAttribute|set3DENMissionAttributes|set3DENModelsVisible|set3DENObjectType|set3DENSelected|setAPURTD|setAccTime|setActualCollectiveRTD|setAirplaneThrottle|setAirportSide|setAmmo|setAmmoCargo|setAmmoOnPylon|setAngularVelocity|setAngularVelocityModelSpace|setAnimSpeedCoef|setAperture|setApertureNew|setArmoryPoints|setAttributes|setAutonomous|setBatteryChargeRTD|setBatteryRTD|setBehaviour|setBehaviourStrong|setBleedingRemaining|setBrakesRTD|setCamShakeDefParams|setCamShakeParams|setCamUseTI|setCameraEffect|setCameraInterest|setCaptive|setCenterOfMass|setCollisionLight|setCombatBehaviour)\\b",
-      "name": "entity.name.function.sqf"
-    },
-    "commands-4": {
-      "match": "\\s*(?i)(setCombatMode|setCompassDeclination|setCompassOscillation|setConvoySeparation|setCruiseControl|setCuratorCameraAreaCeiling|setCuratorCoef|setCuratorEditingAreaType|setCuratorSelected|setCuratorSelectionPreset|setCuratorWaypointCost|setCurrentChannel|setCurrentTask|setCurrentWaypoint|setCustomAimCoef|setCustomMissionData|setCustomSoundController|setCustomWeightRTD|setDamage|setDammage|setDate|setDebriefingText|setDefaultCamera|setDestination|setDetailMapBlendPars|setDiaryRecordText|setDiarySubjectPicture|setDir|setDirection|setDrawIcon|setDriveOnPath|setDropInterval|setDynamicSimulationDistance|setDynamicSimulationDistanceCoef|setEditorMode|setEditorObjectScope|setEffectCondition|setEffectiveCommander|setEngineRpmRTD|setFSMVariable|setFace|setFaceAnimation|setFatigue|setFeatureType|setFlagAnimationPhase|setFlagOwner|setFlagSide|setFlagTexture|setFog|setForceGeneratorRTD|setFormDir|setFormation|setFormationTask|setFriend|setFromEditor|setFuel|setFuelCargo|setFuelConsumptionCoef|setGroupIcon|setGroupIconParams|setGroupIconsSelectable|setGroupIconsVisible|setGroupId|setGroupIdGlobal|setGroupOwner|setGusts|setHUDMovementLevels|setHideBehind|setHit|setHitIndex|setHitPointDamage|setHorizonParallaxCoef|setHumidity|setIdentity|setImportance|setInfoPanel|setJointDriveLinearVelocity|setJointDriveOrientation|setJointDrivePosition|setLeader|setLightAmbient|setLightAttenuation|setLightBrightness|setLightColor|setLightConePars|setLightDayLight|setLightFlareMaxDistance|setLightFlareSize|setLightIR|setLightIntensity|setLightUseFlare|setLightVolumeShape|setLightnings|setLocalWindParams|setMagazineTurretAmmo|setMarkerAlpha|setMarkerAlphaLocal|setMarkerBrush|setMarkerBrushLocal|setMarkerColor|setMarkerColorLocal|setMarkerDir|setMarkerDirLocal|setMarkerDrawPriority|setMarkerPolyline|setMarkerPolylineLocal|setMarkerPos|setMarkerPosLocal|setMarkerShadow|setMarkerShadowLocal|setMarkerShape|setMarkerShapeLocal|setMarkerSize|setMarkerSizeLocal|setMarkerText|setMarkerTextLocal|setMarkerType|setMarkerTypeLocal|setMass|setMaxLoad|setMimic|setMissileTarget|setMissileTargetPos|setMissionOptions|setMousePosition|setMusicEffect|setMusicEventHandler|setName|setNameSound|setObjectArguments|setObjectMaterial|setObjectMaterialGlobal|setObjectProxy|setObjectScale|setObjectTexture|setObjectTextureGlobal|setObjectViewDistance|setOpticsMode|setOvercast|setOwner|setOxygenRemaining|setParticleCircle|setParticleClass|setParticleFire|setParticleParams|setParticleRandom|setPhysicsCollisionFlag|setPiPEffect|setPiPViewDistance|setPilotCameraDirection|setPilotCameraOpticsMode|setPilotCameraRotation|setPilotCameraTarget|setPilotLight|setPitch|setPlateNumber|setPlayable|setPlayerRespawnTime|setPlayerVoNVolume|setPos|setPosASL|setPosASL2|setPosASLW|setPosATL|setPosWorld|setPosition|setPylonLoadout|setPylonsPriority|setRadioMsg|setRain|setRainbow|setRandomLip|setRank|setRectangular|setRepairCargo|setRotorBrakeRTD|setShadowDistance|setShotParents|setSide|setSimpleTaskAlwaysVisible|setSimpleTaskCustomData|setSimpleTaskDescription|setSimpleTaskDestination|setSimpleTaskTarget|setSimpleTaskType|setSimulWeatherLayers|setSize|setSkill|setSlingLoad|setSoundEffect|setSpeaker|setSpeech|setSpeedMode|setStamina|setStaminaScheme|setStarterRTD|setStatValue|setSuppression|setSystemOfUnits|setTIParameter|setTargetAge|setTargetSize|setTaskMarkerOffset|setTaskResult|setTaskState|setTerrainGrid|setTerrainHeight|setText|setThrottleRTD|setTimeMultiplier|setTitleEffect|setToneMapping|setToneMappingParams|setTowParent|setTrafficDensity|setTrafficDistance|setTrafficGap|setTrafficSpeed|setTriggerActivation|setTriggerArea|setTriggerInterval|setTriggerStatements|setTriggerText|setTriggerTimeout|setTriggerType|setTurretLimits|setTurretOpticsMode|setType|setUnconscious|setUnitAbility|setUnitCombatMode|setUnitFreefallHeight|setUnitLoadout|setUnitPos|setUnitPosWeak|setUnitRank|setUnitRecoilCoefficient|setUnitTrait|setUnloadInCombat|setUserActionText|setUserMFDText|setUserMFDValue|setVariable|setVectorDir|setVectorDirAndUp|setVectorUp|setVehicleAmmo|setVehicleAmmoDef|setVehicleArmor|setVehicleCargo|setVehicleId|setVehicleInit|setVehicleLock|setVehiclePosition|setVehicleRadar|setVehicleReceiveRemoteTargets|setVehicleReportOwnPosition|setVehicleReportRemoteTargets|setVehicleTIPars|setVehicleVarName|setVelocity|setVelocityModelSpace|setVelocityTransformation|setViewDistance|setVisibleIfTreeCollapsed|setWPPos|setWantedRPMRTD|setWaterFillPercentage|setWaterLeakiness|setWaves|setWaypointBehaviour|setWaypointCombatMode|setWaypointCompletionRadius|setWaypointDescription|setWaypointForceBehaviour|setWaypointFormation|setWaypointHousePosition|setWaypointLoiterAltitude|setWaypointLoiterRadius|setWaypointLoiterType|setWaypointName|setWaypointPosition|setWaypointScript|setWaypointSpeed|setWaypointStatements|setWaypointTimeout|setWaypointType|setWaypointVisible|setWeaponReloadingTime|setWeaponZeroing|setWind|setWindDir|setWindForce|setWindStr|setWingForceScaleRTD|show3DIcons|showChat|showCinemaBorder|showCommandingMenu|showCompass|showCuratorCompass|showGPS|showHUD|showLegend|showMap|showNewEditorObject|showPad|showRadio|showScoretable|showSubtitles|showUAVFeed|showWarrant|showWatch|showWaypoint|showWaypoints|shownAction|shownArtilleryComputer|shownChat|shownCompass|shownCuratorCompass|shownGPS|shownHUD|shownMap|shownPad|shownRadio|shownScoretable|shownSubtitles|shownUAVFeed|shownWarrant|shownWatch|side|sideAmbientLife|sideChat|sideEmpty|sideEnemy|sideFriendly|sideLogic|sideRadio|sideUnknown|simpleTasks|simulCloudDensity|simulCloudOcclusion|simulInClouds|simulSetHumidity|simulWeatherSync|simulationEnabled|sin|size|sizeOf|skill|skillFinal|skipTime|sliderPosition|sliderRange|sliderSetPosition|sliderSetRange|sliderSetSpeed|sliderSpeed|slingLoadAssistantShown|soldierMagazines|someAmmo|sort|soundParams|soundVolume|speaker|speechVolume|speed|speedMode|splitString|sqrt|squadParams|stance|startLoadingScreen|steamGameRecordingEvent|stop|stopEngineRTD|stopSound|stopped|str|sunOrMoon|supportInfo|suppressFor|surfaceIsWater|surfaceNormal|surfaceTexture|surfaceType|swimInDepth|switchAction|switchCamera|switchGesture|switchLight|switchMove|switchableUnits|synchronizeObjectsAdd|synchronizeObjectsRemove|synchronizeTrigger|synchronizeWaypoint|synchronizedObjects|synchronizedTriggers|synchronizedWaypoints|systemChat|systemOfUnits|systemTime|systemTimeUTC|tan|targetKnowledge|targets|targetsAggregate|targetsQuery|taskAlwaysVisible|taskChildren|taskCompleted|taskCustomData|taskDescription|taskDestination|taskHint|taskMarkerOffset|taskName|taskNull|taskParent|taskResult|taskState|taskType|teamMember|teamMemberNull|teamName|teamSwitch|teamSwitchEnabled|teamType|teams|terrainIntersect|terrainIntersectASL|terrainIntersectAtASL|text|textLog|textLogFormat|tg|throttleRTD|throwables|time|timeMultiplier|titleCut|titleFadeOut|titleObj|titleRsc|titleText|toArray|toFixed|toJSON|toLower|toLowerANSI|toString|toUpper|toUpperANSI|triggerActivated|triggerActivation|triggerAmmo|triggerArea|triggerAttachObject|triggerAttachVehicle|triggerAttachedVehicle|triggerDynamicSimulation|triggerInterval|triggerStatements|triggerText|triggerTimeout|triggerTimeoutCurrent|triggerType|trim|turretLocal|turretOwner|turretUnit|tvAdd|tvClear|tvCollapse|tvCollapseAll|tvCount|tvCurSel|tvData|tvDelete|tvExpand|tvExpandAll|tvIsSelected|tvPicture|tvPictureRight|tvSelection|tvSetColor|tvSetCurSel|tvSetData|tvSetPicture|tvSetPictureColor|tvSetPictureColorDisabled|tvSetPictureColorSelected|tvSetPictureRight|tvSetPictureRightColor|tvSetPictureRightColorDisabled|tvSetPictureRightColorSelected|tvSetSelectColor|tvSetSelected|tvSetText|tvSetTooltip|tvSetValue|tvSort|tvSortAll|tvSortByValue|tvSortByValueAll|tvText|tvTooltip|tvValue|type|typeName|typeOf|uiNamespace|uiTime|unassignCurator|unassignItem|unassignTeam|unassignVehicle|underwater|uniform|uniformContainer|uniformItems|uniformMagazines|uniqueUnitItems|unitAddons|unitAimPosition|unitAimPositionVisual|unitBackpack|unitCombatMode|unitIsUAV|unitPos|unitReady|unitRecoilCoefficient|unitTurret|units|unitsBelowHeight|unlinkItem|unlockAchievement|unregisterTask|updateDrawIcon|updateMenuItem|updateObjectTree|useAIOperMapObstructionTest|useAISteeringComponent|useAudioTimeForMoves|userInputDisabled|values|vectorAdd|vectorCos|vectorCrossProduct|vectorDiff|vectorDir|vectorDirVisual|vectorDistance|vectorDistanceSqr|vectorDotProduct|vectorFromTo|vectorLinearConversion|vectorMagnitude|vectorMagnitudeSqr|vectorModelToWorld|vectorModelToWorldVisual|vectorMultiply|vectorNormalized|vectorSide|vectorSideVisual|vectorUp|vectorUpVisual|vectorWorldToModel|vectorWorldToModelVisual|vehicle|vehicleCargoEnabled|vehicleChat|vehicleMoveInfo|vehicleRadio|vehicleReceiveRemoteTargets|vehicleReportOwnPosition|vehicleReportRemoteTargets|vehicleVarName|vehicles|velocity|velocityModelSpace|verifySignature|vest|vestContainer|vestItems|vestMagazines|viewDistance|visibleCompass|visibleGPS|visibleMap|visiblePosition|visiblePositionASL|visibleScoretable|visibleWatch|waterDamaged|waves|waypointAttachObject|waypointAttachVehicle|waypointAttachedObject|waypointAttachedVehicle|waypointBehaviour|waypointCombatMode|waypointCompletionRadius|waypointDescription|waypointForceBehaviour|waypointFormation|waypointHousePosition|waypointLoiterAltitude|waypointLoiterRadius|waypointLoiterType|waypointName|waypointPosition|waypointScript|waypointShow|waypointSpeed|waypointStatements|waypointTimeout|waypointTimeoutCurrent|waypointType|waypointVisible|waypoints|waypointsEnabledUAV|weaponAccessories|weaponAccessoriesCargo|weaponCargo|weaponDirection|weaponDisassemblyEnabled|weaponInertia|weaponLowered|weaponReloadingTime|weaponState|weapons|weaponsInfo|weaponsItems|weaponsItemsCargo|weaponsTurret|weightRTD|west|wind|windDir|windRTD|windStr|wingsForcesRTD|worldName|worldSize|worldToModel)\\b",
-      "name": "entity.name.function.sqf"
-    },
-    "other": {
-      "name": "meta.expression.sqf",
+    "identifiers": {
+      "comment": "Anchor classification at the next identifier so large command alternatives never search the rest of a line. A zero-width identifier context avoids capture retokenization copying long prefixes.",
+      "begin": "\\b(?=[A-Za-z_])",
+      "end": "(?![A-Za-z_0-9])",
       "patterns": [
         {
-          "include": "#access-modifier"
-        },
-        {
-          "include": "#property-accessor"
+          "match": "\\G(?:(?i:\\b(call|spawn)\\b)[ \\t]+([A-Za-z_][A-Za-z_0-9]*)\\b|\\b([A-Za-z_][A-Za-z_0-9]*)\\b(?=\\s*=\\s*(?:\\{|(?i:compile(?:Final)?)\\b))|((?i:\\b(?:false|true)\\b))|((?i:\\b(?:null|nil|controlNull|displayNull|grpNull|locationNull|netObjNull|objNull|scriptNull|taskNull|teamMemberNull|configNull)\\b))|((?i:\\b(?:this|_this|_x|_y|_forEachIndex|_exception|_thisScript|_thisFSM|thisList|thisTrigger|west|east|resistance|civilian|independent|blufor|opfor)\\b))|((?i:\\b(?:player|cursorTarget)\\b))|((?i:\\bprivate\\b))|((?i:\\b(?:goto|forEachReversed|to|breakTo|uiSleep|then|execVM|from|breakWith|scriptDone|scopeName|fileExists|assert|with|sleep|throw|continue|forEachMemberAgent|while|continueWith|halt|else|catch|forEachMemberTeam|switch|step|exit|do|execFSM|breakOut|canSuspend|exec|loadFile|waitUntil|try|break|case|call|:|spawn|terminate|scriptName|forEachMember|exitWith|for|default|forEach|isUIContext|if)\\b))|((?i:\\b(?:compileFinal|compile|callExtension)\\b))|((?i:\\b(?:and|or|not)\\b))|((?i:\\b(?:addWeaponWithAttachmentsCargoGlobal|calculatePlayerVisibilityByFriendly|addPublicVariableEventHandler|addWeaponWithAttachmentsCargo|allowCuratorLogicIgnoreAreas|canTriggerDynamicSimulation|cancelSimpleTaskDestination|currentMagazineDetailTurret|ctrlRemoveAllEventHandlers|ctrlSetFontHeightSecondary|addCuratorEditableObjects|addUserActionEventHandler|angularVelocityModelSpace|clearAllItemsFromBackpack|ctrlSetTextColorSecondary|clearBackpackCargoGlobal|clearMagazineCargoGlobal|ctrlSetTooltipColorShade|curatorCameraAreaCeiling|curatorRegisteredObjects|activeTitleEffectParams|camConstuctionSetParams|createMPCampaignDisplay|ctrlAnimationPhaseModel|ctrlParentControlsGroup|ctrlSetAutoScrollRewind|ctrlSetTooltipColorText|addBackpackCargoGlobal|addMagazineCargoGlobal|addMissionEventHandler|addSecondaryWeaponItem|clearKillConfirmations|clearWeaponCargoGlobal|commandSuppressiveFire|createHashMapFromArray|createSoundSourceLocal|ctrlRemoveEventHandler|ctrlSetAutoScrollDelay|ctrlSetAutoScrollSpeed|ctrlSetBackgroundColor|ctrlSetForegroundColor|ctrlSetTooltipColorBox|ctrlSetTooltipMaxWidth|curatorEditableObjects|curatorEditingAreaType|curatorSelectionPreset|customWaypointPosition|addCuratorEditingArea|addToRemainsCollector|allActiveTitleEffects|cameraEffectEnableHUD|collisionDisabledWith|configSourceAddonList|create3DENComposition|ctrlSetPixelPrecision|ctrlSetStructuredText|ctrlSetURLOverlayMode|currentMagazineDetail|currentMagazineTurret|actionKeysNamesArray|addCuratorCameraArea|addForceGeneratorRTD|addMagazineAmmoCargo|addMusicEventHandler|addPrimaryWeaponItem|addWeaponCargoGlobal|allEnv3DSoundSources|animationSourcePhase|canAddItemToBackpack|clearItemCargoGlobal|commandArtilleryFire|connectTerminalToUAV|conversationDisabled|createMissionDisplay|ctrlAutoScrollRewind|ctrlMapScreenToWorld|ctrlMapWorldToScreen|ctrlSetDisabledColor|ctrlSetFontSecondary|ctrlSetModelDirAndUp|ctrlSetMousePosition|ctrlSetTextSecondary|ctrlSetTextSelection|current3DENOperation|deleteGroupWhenEmpty|difficultyEnabledRTD|add3DENEventHandler|allowCrewInImmobile|allowFileOperations|assignedVehicleRole|bezierInterpolation|canAddItemToUniform|compatibleMagazines|configSourceModList|confirmSensorTarget|createHashMapObject|ctSetHeaderTemplate|ctrlAddEventHandler|ctrlAutoScrollDelay|ctrlAutoScrollSpeed|ctrlBackgroundColor|ctrlForegroundColor|ctrlModelVectorSide|ctrlSetEventHandler|ctrlSetFontHeightH1|ctrlSetFontHeightH2|ctrlSetFontHeightH3|ctrlSetFontHeightH4|ctrlSetFontHeightH5|ctrlSetFontHeightH6|ctrlSetScrollValues|curatorWaypointCost|currentWeaponTurret|addCuratorSelected|addItemCargoGlobal|addMagazinesTurret|airDensityCurveRTD|ambientTemperature|assignAsCargoIndex|camPrepareFovRange|campaignConfigFile|clear3DENAttribute|clear3DENInventory|clearBackpackCargo|clearMagazineCargo|collapseObjectTree|collect3DENHistory|createDiarySubject|createGuardedPoint|createSimpleObject|createVehicleLocal|ctrlMapSetPosition|ctrlSetActiveColor|ctrlURLOverlayMode|curatorEditingArea|delete3DENEntities|deleteEditorObject|diarySubjectExists|HUDMovementLevels|add3DENConnection|addBackpackGlobal|addItemToBackpack|addMPEventHandler|addMagazineGlobal|addMagazineTurret|addSwitchableUnit|allMissionObjects|assignAsCommander|assignedCommander|backpackContainer|backpackMagazines|binocularMagazine|camCommitPrepared|canUnloadInCombat|clearMagazinePool|compatibleWeapons|controlsGroupCtrl|copyFromClipboard|createDiaryRecord|createMarkerLocal|createSoundSource|createVehicleCrew|ctrlMapAnimCommit|ctrlModelDirAndUp|ctrlMousePosition|ctrlSetFontHeight|ctrlSetModelScale|ctrlTextSecondary|ctrlTextSelection|curatorCameraArea|currentVisionMode|currentWeaponMode|deleteMarkerLocal|deleteVehicleCrew|difficultyEnabled|actionKeysImages|addBackpackCargo|addBinocularItem|addCuratorAddons|addCuratorPoints|addItemToUniform|addMagazineCargo|airplaneThrottle|allDiarySubjects|allSimpleObjects|assignedVehicles|backpackSpaceFor|batteryChargeRTD|camPrepareRelPos|camPrepareTarget|canAddItemToVest|clearVehicleInit|clearWeaponCargo|configProperties|create3DENEntity|createGearDialog|createSimpleTask|ctFindHeaderRows|ctHeaderControls|ctSetRowTemplate|ctrlAnimateModel|ctrlMapAnimClear|ctrlMapMouseOver|ctrlScrollValues|ctrlSetPositionH|ctrlSetPositionW|ctrlSetPositionX|ctrlSetPositionY|ctrlSetTextColor|curatorMouseOver|currentNamespace|currentThrowable|decayGraphValues|deleteCollection|actionKeysNames|activatedAddons|addEditorObject|addEventHandler|addMagazinePool|addPlayerScores|addWeaponGlobal|addWeaponTurret|all3DENEntities|allDiaryRecords|angularVelocity|assignToAirport|assignedVehicle|attachedObjects|boundingBoxReal|buttonSetAction|camPrepareFocus|canDeployWeapon|canVehicleCargo|checkVisibility|clearGroupIcons|clearWeaponPool|combatBehaviour|compatibleItems|configHierarchy|configSourceMod|connectToServer|copyToClipboard|createDiaryLink|ctFindRowHeader|ctRemoveHeaders|ctrlGetProperty|ctrlMapAnimDone|ctrlMapPosition|ctrlSetPosition|curatorSelected|currentMagazine|currentWaypoint|deleteResources|diaryRecordNull|activateAddons|addHandgunItem|addWeaponCargo|allowedService|animationNames|animationPhase|animationState|apertureParams|arrayIntersect|assignAsDriver|assignAsGunner|assignAsTurret|assignedDriver|assignedGunner|assignedTarget|attachedObject|binocularItems|boundingCenter|brakesDisabled|camPrepareBank|camPrepareDive|camSetFovRange|cameraInterest|channelEnabled|checkAIFeature|clearForcesRTD|clearItemCargo|commandingMenu|createLocation|ctrlFontHeight|ctrlHTMLLoaded|ctrlMapAnimAdd|ctrlModelScale|ctrlSetChecked|ctrlSetFontH1B|ctrlSetFontH2B|ctrlSetFontH3B|ctrlSetFontH4B|ctrlSetFontH5B|ctrlSetFontH6B|ctrlSetTooltip|ctrlTextHeight|currentChannel|currentCommand|currentZeroing|debriefingText|deleteIdentity|deleteLocation|deleteWaypoint|AISFinishHeal|addItemToVest|addTeamMember|addWeaponItem|addWeaponPool|aimedAtTarget|airDensityRTD|allAddonsInfo|allExtensions|allMapMarkers|animateSource|assignAsCargo|assignCurator|assignedCargo|assignedGroup|assignedItems|attackEnabled|backpackCargo|backpackItems|calculatePath|camPrepareDir|camPrepareFov|camPreparePos|cheatsEnabled|childAttached|clearItemPool|collectiveRTD|commandFollow|commandGetOut|commandTarget|commitOverlay|compileScript|configClasses|copyWaypoints|countFriendly|createDisplay|createHashMap|createTrigger|createVehicle|ctHeaderCount|ctRowControls|ctrlClassName|ctrlCommitted|ctrlMapCursor|ctrlSetFontH1|ctrlSetFontH2|ctrlSetFontH3|ctrlSetFontH4|ctrlSetFontH5|ctrlSetFontH6|ctrlSetFontPB|ctrlSetShadow|ctrlTextColor|ctrlTextWidth|curatorAddons|curatorCamera|curatorPoints|currentMuzzle|currentWeapon|deActivateKey|deleteVehicle|detectedMines|actionKeysEx|actionParams|add3DENLayer|addGroupIcon|addItemCargo|addLiveStats|addMagazines|addOwnedMine|addResources|addScoreSide|allCutLayers|allVariables|allowDammage|allowFleeing|allowService|animatePylon|armoryPoints|assignedTeam|attachObject|briefingName|buildingExit|buttonAction|camCommitted|camPreloaded|camSetRelPos|camSetTarget|cameraEffect|canSlingLoad|cbSetChecked|clearOverlay|closeDisplay|closeOverlay|commandRadio|commandWatch|completedFSM|countUnknown|createCenter|createDialog|createMarker|createTarget|ctRemoveRows|ctrlActivate|ctrlMapScale|ctrlPosition|ctrlSetAngle|ctrlSetFocus|ctrlSetFontP|ctrlSetModel|ctrlSetScale|currentPilot|currentTasks|cursorObject|cursorTarget|dateToNumber|deleteCenter|deleteMarker|deleteStatus|deleteTarget|activateKey|addBackpack|addCamShake|addHeadgear|addItemPool|addMagazine|addMenuItem|addWaypoint|airportSide|allAirports|allControls|allCurators|allDisplays|allUnitsUAV|allow3DMode|allowDamage|allowSprint|ammoOnPylon|animateDoor|attachChild|boundingBox|buildingPos|camSetFocus|clientOwner|closeDialog|commandChat|commandFire|commandMove|commandStop|composeText|controlNull|createAgent|createGroup|ctAddHeader|ctSetCurSel|ctrlChecked|ctrlEnabled|ctrlSetFade|ctrlSetFont|ctrlSetText|ctrlTooltip|ctrlVisible|curatorCoef|currentTask|customRadio|deleteGroup|deleteRange|detachChild|didJIPOwner|UAVControl|WFSideText|actionKeys|actionName|addGoggles|addUniform|addVehicle|addonFiles|allCameras|allDeadMen|allObjects|allPlayers|allTurrets|allowGetIn|animateBay|assignItem|assignTeam|attachedTo|camCommand|camDestroy|camPreload|camSetBank|camSetDive|cameraView|captiveNum|clearRadio|combatMode|combatPace|commandFSM|configFile|configName|configNull|countEnemy|createMenu|createMine|createSite|createTask|createTeam|createUnit|ctRowCount|ctSetValue|ctrlCommit|ctrlCreate|ctrlDelete|ctrlEnable|ctrlMapDir|ctrlParent|ctrlSetURL|ctrlShadow|customChat|cutFadeOut|deleteSite|deleteTeam|difficulty|actionIDs|actionNow|addAction|addRating|addTorque|addWeapon|allGroups|backpacks|behaviour|benchmark|binocular|cadetMode|camCommit|camCreate|camSetDir|camSetFov|camSetPos|camTarget|camUseNVG|cbChecked|className|commander|countSide|countType|ctSetData|ctrlAngle|ctrlModel|ctrlScale|ctrlShown|ctrlStyle|AGLToASL|ASLToAGL|ASLToATL|ATLToASL|addForce|addScore|allMines|allSites|allUnits|allUsers|attachTo|backpack|cameraOn|canStand|civilian|configOf|ctAddRow|ctCurSel|ctrlFade|ctrlShow|ctrlText|ctrlType|debugFSM|debugLog|deleteAt|accTime|addItem|addMenu|addVest|allDead|allLODs|animate|canFire|canMove|captive|comment|ctClear|ctValue|ctrlIDC|ctrlIDD|ctrlURL|cutText|dayTime|action|agents|aimPos|append|blufor|canAdd|ctData|ctrlAt|cutObj|cutRsc|damage|detach|dialog|didJIP|admin|agent|alive|apply|atan2|awake|count|acos|ammo|asin|atan|ceil|crew|date|abs|and|atg|cos|deg)\\b))|((?i:\\b(?:getCalculatePlayerVisibilityByFriendly|isMissionProfileNamespaceLoaded|dynamicSimulationSystemEnabled|directionStabilizationEnabled|displayRemoveAllEventHandlers|dynamicSimulationDistanceCoef|enableDynamicSimulationSystem|getCustomSoundControllerCount|enableDirectionStabilization|getArtilleryComputerSettings|isAISteeringComponentEnabled|getAllEnv3DSoundControllers|getCompatiblePylonMagazines|isUsingAISteeringComponent|displayRemoveEventHandler|dynamicSimulationDistance|edit3DENMissionAttributes|getAllEnvSoundControllers|infoPanelComponentEnabled|isInstructorFigureEnabled|isStreamFriendlyUIEnabled|disableUAVConnectability|dynamicSimulationEnabled|enableInfoPanelComponent|forceHitPointsDamageSync|get3DENMissionAttributes|getCustomSoundController|getPilotCameraOpticsMode|getRemoteSensorsDisabled|getSoundControllerResult|enableDynamicSimulation|enableSatNormalOnDetail|enableUAVConnectability|enableWeaponDisassembly|get3DENMissionAttribute|getAssignedCuratorLogic|getDLCAssetsUsageByName|getEnv3DSoundController|getFieldManualStartPage|getMissionLayerEntities|getPhysicsCollisionFlag|getPilotCameraDirection|inGameUISetEventHandler|isAllowedCrewInImmobile|isAutoStartUpEnabledRTD|isGroupDeletedWhenEmpty|isSensorTargetConfirmed|disableDebriefingStats|displayAddEventHandler|displaySetEventHandler|enableGunStabilization|enableSimulationGlobal|estimatedEndServerTime|findEmptyPositionReady|getAllSoundControllers|getAssignedCuratorUnit|getCameraViewDirection|getCorpseWeaponholders|getFuelConsumptionCoef|getPilotCameraPosition|getPilotCameraRotation|getSteamFriendsServers|getWaterFillPercentage|getWingsOrientationRTD|isVehicleSensorEnabled|editorSetEventHandler|enableDebriefingStats|enableEngineArtillery|getAllHitPointsDamage|getAudioOptionVolumes|getCurrentPlayerLevel|getCursorObjectParams|getEngineTargetRPMRTD|getEnvSoundController|getMissionConfigValue|getObjectViewDistance|getRespawnVehicleInfo|hierarchyObjectsCount|isAimPrecisionEnabled|isFilePatchingEnabled|isMarkedForCollection|isSteamOverlayEnabled|isStressDamageEnabled|disableCollisionWith|disableMapIndicators|disableRemoteSensors|disableSerialization|enableAutoStartUpRTD|forceCadetDifficulty|get3DENLayerEntities|getAimDirectionAndUp|getBleedingRemaining|getClientStateNumber|getEditorObjectScope|getForcedFlagTexture|getPilotCameraTarget|getTotalDLCUsageTime|isHideBehindScripted|isInRemainsCollector|kbAddDatabaseTargets|disableConversation|disableNVGEquipment|enableCollisionWith|enableVehicleSensor|expectedDestination|fillWeaponsFromPool|get3DENIconsVisible|get3DENLinesVisible|getAnimAimPrecision|getConnectedUAVUnit|getContainerMaxLoad|getEventHandlerInfo|getTerrainHeightASL|getTurretOpticsMode|getUnitFreefallInfo|getWingsPositionRTD|groupIconSelectable|infoPanelComponents|isActionMenuVisible|isRemoteControlling|isRemoteExecutedJIP|disableTIEquipment|distributionRegion|effectiveCommander|enableAimPrecision|enableAudioFeature|enablePersonTurret|enableStressDamage|enableUAVWaypoints|enableVehicleCargo|environmentEnabled|evalObjectArgument|exportLandscapeXYZ|flagAnimationPhase|forceAtPositionRTD|forceWeatherChange|formationDirection|get3DENActionState|get3DENConnections|getAnimationsQueue|getElevationOffset|getGroupIconParams|getMusicPlayedTime|getObjectMaterials|getOxygenRemaining|getPiPViewDistance|getPlayerVoNVolume|getSoundController|getSubtitleOptions|groupSelectedUnits|hideBehindScripted|inAreaArrayIndexes|inRangeOfArtillery|incapacitatedState|insertEditorObject|isCollisionLightOn|itemsWithMagazines|displayUniqueName|doSuppressiveFire|enableAutoTrimRTD|enableEnvironment|environmentVolume|equipmentDisabled|estimatedTimeLeft|exportJIPMessages|findEmptyPosition|finishMissionInit|forceGeneratorRTD|formationPosition|gearSlotAmmoCount|get3DENAttributes|getDLCAssetsUsage|getDebriefingText|getHitPointDamage|getLoadedModsInfo|getMissionOptions|getObjectArgument|getObjectChildren|getObjectTextures|getPersonUsedDLCs|getPosWorldVisual|getPylonMagazines|getSelectionBones|getShadowDistance|getUnloadInCombat|getWaterLeakiness|groupIconsVisible|hcRemoveAllGroups|ignore3DENHistory|is3DENMultiplayer|isEqualTypeParams|isFormationLeader|isMultiplayerSolo|isPlayerSupporter|isSwitchingWeapon|isTutHintsEnabled|difficultyOption|disableUserInput|elevatePeriscope|enableDiagLegend|enableRopeAttach|enableSimulation|enableTeamSwitch|endLoadingScreen|enginesTorqueRTD|execEditorScript|findEditorObject|findNearestEnemy|forceFlagTexture|formationMembers|gearIDCAmmoCount|get3DENAttribute|get3DENMouseOver|getAllOwnedMines|getAllPylonsInfo|getAllUnitTraits|getAnimSpeedCoef|getArtilleryAmmo|getBackpackCargo|getCruiseControl|getCustomAimCoef|getMagazineCargo|getMissionConfig|getMissionLayers|getMousePosition|getOrDefaultCall|getPlayerChannel|getPlayerCloudId|getRotorBrakeRTD|getSensorTargets|getSensorThreats|getTerrainHeight|getTrimOffsetRTD|getUnitMovesInfo|getVehicleTIPars|hideObjectGlobal|isCopilotEnabled|isEqualTypeArray|isRemoteExecuted|isShowing3DIcons|isStaminaEnabled|isTouchingGround|isUAVConnectable|isUniformAllowed|isVehicleRadarOn|isWeaponDeployed|doArtilleryFire|enableAIFeature|enableEndDialog|enableGunLights|enableSentences|enginesPowerRTD|fadeEnvironment|forceAddUniform|forceFollowRoad|forceWeaponFire|formationLeader|gameValueToJson|get3DENEntityID|get3DENSelected|getArtilleryETA|getAssetDLCInfo|getAttackTarget|getBurningValue|getCenterOfMass|getConnectedUAV|getDLCUsageTime|getEditorCamera|getPlayerScores|getPlayerUIDOld|getPosASLVisual|getPosATLVisual|getSlotItemName|getTIParameters|getTurretLimits|getUserMFDValue|getVehicleCargo|getVideoOptions|groupSelectUnit|handgunMagazine|importAllGroups|initAmbientLife|inputController|isAbleToBreathe|isAppSubscribed|isAutoTrimOnRTD|isDamageAllowed|isSprintAllowed|jsonToGameValue|emptyPositions|enableCamShake|enableCaustics|enableFreeLook|enableIRLasers|enginesIsOnRTD|everyContainer|flyInHeightASL|getClientState|getDescription|getFSMVariable|getForcedSpeed|getGraphValues|getLoginStatus|getMarkerColor|getMissionDLCs|getMissionPath|getObjectProxy|getObjectScale|getPlateNumber|getPlayerLevel|getRepairCargo|getShotParents|getSuppression|getTerrainGrid|getTerrainInfo|getTextureInfo|getUnitLoadout|getUserMFDText|getWeaponCargo|groupFromNetId|hasPilotCamera|insideBuilding|isDLCAvailable|isEqualTypeAll|isEqualTypeAny|isFlashlightOn|isObjectHidden|isSimpleObject|isSteamMission|isUAVConnected|isVehicleCargo|isWeaponRested|disableBrakes|displayParent|displayUpdate|drawRectangle|enableChannel|enableCopilot|enableFatigue|enableStamina|enableTraffic|enginesRpmRTD|everyBackpack|firstBackpack|formationTask|freeExtension|get3DENCamera|get3DENEntity|get3DENParent|getAimingCoef|getCargoIndex|getDiverState|getEditorMode|getEntityInfo|getGroupIcons|getLightingAt|getMarkerSize|getMarkerType|getObjectType|getOpticsMode|getResolution|getServerInfo|getWeaponSway|handgunWeapon|hasCustomFace|hcGroupParams|hcRemoveGroup|hcSelectGroup|hiddenActions|hideSelection|is3DENPreview|isAutoHoverOn|isGameFocused|isMultiplayer|isNotEqualRef|kbAddDatabase|kbRemoveTopic|displayChild|dissolveTeam|do3DENAction|drawLocation|drawTriangle|drawXPolygon|enableAttack|enableMimics|enableReload|enableSaving|eyeDirection|fireAtTarget|forceRespawn|forceUnicode|forgetTarget|gearSlotData|gestureState|get3DENLayer|getAmmoCargo|getBoneNames|getDirVisual|getFuelCargo|getGroupIcon|getItemCargo|getLightInfo|getMarkerPos|getModelInfo|getObjectDLC|getObjectFOV|getOrDefault|getPlayerUID|getPosVisual|getSlingLoad|getStatValue|getTextWidth|getTowParent|getUnitState|getUnitTrait|handgunItems|hasInterface|ignoreTarget|inheritsFrom|isAutonomous|isForcedWalk|isGamePaused|isManualFire|isNotEqualTo|isPiPEnabled|joinAsSilent|displayCtrl|displayNull|distanceSqr|drawEllipse|drawPolygon|enableRadio|failMission|findDisplay|flagTexture|flyInHeight|focusedCtrl|fogForecast|get3DENGrid|getHideFrom|getHitIndex|getLighting|getObjectID|getPlayerID|getPosWorld|getRoadInfo|getShotInfo|getUserInfo|getVariable|globalRadio|hcAllGroups|hideActions|hostMission|inAreaArray|independent|inputAction|isDedicated|isEqualType|isFlatEmpty|isIRLaserOn|isKeyActive|isLocalized|isObjectRTD|isThrowable|isTurnedOut|distance2D|drawIcon3D|drawLine3D|editObject|endMission|fadeSpeech|forceSpeed|formLeader|formatText|fromEditor|getDammage|getFatigue|getLeaning|getPosASLW|getStamina|getTextRaw|globalChat|groupOwner|groupRadio|hcSelected|hcSetGroup|hcShownBar|hideObject|hintSilent|importance|infoPanels|inputMouse|isAutotest|isBleeding|isEngineOn|isEqualRef|isRealTime|joinSilent|joinString|kbAddTopic|kbHasTopic|kickPlayer|knowsAbout|directSay|direction|disableAI|doorPhase|drawArrow|drawLaser|fadeMusic|fadeRadio|fadeSound|findCover|flagOwner|fogParams|forceWalk|forcedMap|formation|getCorpse|getFriend|getNextId|getNumber|getPosASL|getPosATL|getRelDir|getRelPos|groupChat|hasWeapon|hashValue|hcShowBar|hintCadet|inPolygon|infoPanel|intersect|isBurning|isEqualTo|isLaserOn|isLightOn|isWalking|itemCargo|kbWasSaid|distance|doFollow|doGetOut|doTarget|drawIcon|drawLine|drawLink|enableAI|engineOn|entities|flagSide|forceEnd|forceMap|freeLook|friendly|fromJSON|fullCrew|getArray|getSpeed|getWPPos|getWorld|glanceAt|handsHit|hcLeader|headgear|hideBody|htmlLoad|humidity|inflamed|isHidden|isKindOf|isNumber|isOnRoad|isPlayer|isSaving|isServer|keyImage|doWatch|faction|findAny|flatten|fleeing|focusOn|getDLCs|getMass|getText|goggles|groupId|grpNull|inflame|isAgent|isArray|isAwake|isClass|isFinal|kbReact|keyName|doFire|doMove|doStop|driver|eyePos|findIf|finite|format|getDir|getHit|getPos|groups|gunner|import|inArea|insert|is3DEN|isNull|isText|joinAs|kbTell|landAt|doFSM|enemy|floor|group|gusts|hintC|image|isNil|items|drop|east|echo|endl|face|find|fire|flag|fuel|hint|join|keys|land|exp|fog|get|hmd|in)\\b))|((?i:\\b(?:leaderboardRequestRowsGlobalAroundUser|leaderboardsRequestUploadScoreKeepBest|removeAllUserActionEventHandlers|lnbSetPictureColorSelectedRight|lbSetPictureRightColorDisabled|lbSetPictureRightColorSelected|leaderboardsRequestUploadScore|leaderboardRequestRowsFriends|removeAllMissionEventHandlers|removeAllSecondaryWeaponItems|leaderboardRequestRowsGlobal|removeAllCuratorEditingAreas|removeCuratorEditableObjects|removeUserActionEventHandler|setAngularVelocityModelSpace|removeAllCuratorCameraAreas|removeAllItemsWithMagazines|removeAllMusicEventHandlers|removeAllPrimaryWeaponItems|removeWeaponAttachmentCargo|saveMissionProfileNamespace|set3DENAttachedCursorEntity|lnbSetPictureColorSelected|loadCuratorSelectionPreset|nearestLocationWithDubbing|removeAll3DENEventHandlers|removeFromRemainsCollector|lbSetPictureColorDisabled|lbSetPictureColorSelected|onHCGroupSelectionChanged|preprocessFileLineNumbers|removeMissionEventHandler|removeSecondaryWeaponItem|serverConfigTopLevelEntry|removeAllMPEventHandlers|removeAllMagazinesTurret|removeCuratorEditingArea|set3DENMissionAttributes|lnbSetPictureColorRight|magazinesDetailBackpack|missionProfileNamespace|modelToWorldVisualWorld|radioChannelSetCallSign|removeAllBinocularItems|removeCuratorCameraArea|removeMusicEventHandler|removePrimaryWeaponItem|secondaryWeaponMagazine|selectionVectorDirAndUp|serverCommandExecutable|set3DENMissionAttribute|lbSetPictureRightColor|lineIntersectsSurfaces|magazinesDetailUniform|remove3DENEventHandler|removeAllAssignedItems|removeAllCuratorAddons|removeAllEventHandlers|removeItemFromBackpack|resetSubgroupDirection|screenToWorldDirection|sendCloudRequestClient|sendCloudRequestServer|serverCommandAvailable|setActualCollectiveRTD|lbSetSelectColorRight|lnbGetColumnsPosition|markAsFinishedOnSteam|nearestTerrainObjects|positionCameraToWorld|primaryWeaponMagazine|progressLoadingScreen|removeAllHandgunItems|removeItemFromUniform|removeMagazinesTurret|selectedEditorObjects|onBriefingTeamSwitch|onCommandModeChanged|onGroupIconOverEnter|onGroupIconOverLeave|onPlayerDisconnected|openCuratorInterface|publicVariableClient|publicVariableServer|radioChannelSetLabel|remove3DENConnection|removeBackpackGlobal|removeMPEventHandler|removeMagazineGlobal|removeMagazineTurret|removeSwitchableUnit|saveProfileNamespace|secondaryWeaponItems|selectRandomWeighted|set3DENModelsVisible|setBleedingRemaining|setCamShakeDefParams|logNetworkTerminate|magazinesAllTurrets|magazinesDetailVest|playScriptedMission|playableSlotsNumber|processInitCommands|progressSetPosition|remoteExecutedJIPID|remoteExecutedOwner|removeAllContainers|removeAllOwnedMines|removeBinocularItem|removeCuratorAddons|restartEditorCamera|ropeAttachedObjects|save3DENPreferences|set3DENIconsVisible|set3DENLinesVisible|setAirplaneThrottle|setBatteryChargeRTD|leaderboardGetRows|libraryDisclaimers|lineIntersectsObjs|lineIntersectsWith|listVehicleSensors|lnbSetPictureColor|lnbSetPictureRight|magazineTurretAmmo|magazinesAmmoCargo|markerDrawPriority|modelToWorldVisual|numberOfEnginesRTD|periscopeElevation|pixelGridNoUIScale|ppEffectForceInNVG|primaryWeaponItems|radioChannelCreate|radioChannelRemove|removeAllMagazines|removeDiarySubject|removeEventHandler|removeItemFromVest|removeWeaponGlobal|removeWeaponTurret|reportRemoteTarget|selectDiarySubject|selectEditorObject|selectWeaponTurret|serverStartMission|setAngularVelocity|setBehaviourStrong|setCombatBehaviour|lbSetPictureColor|lbSetPictureRight|leaderboardDeInit|lightAttachObject|lightDetachObject|listRemoteTargets|magazinesAmmoFull|mapCenterOnCamera|missionConfigFile|missionDifficulty|missionNameSource|modelToWorldWorld|nextMenuItemIndex|nextWeatherChange|onPlayerConnected|onPreloadFinished|playerRespawnTime|ppEffectCommitted|queryMagazinePool|removeDiaryRecord|removeHandgunItem|removeWeaponCargo|ropeAttachEnabled|save3DENInventory|selectionPosition|sendAnalyticEvent|sendSimpleCommand|set3DENAttributes|set3DENObjectType|setCamShakeParams|setCameraInterest|setCollisionLight|lbSetSelectColor|leaderboardState|linearConversion|lnbSetColorRight|lnbSetColumnsPos|load3DENScenario|locationPosition|menuShortcutText|missileTargetPos|missionNamespace|nearObjectsReady|nearestLocations|onGroupIconClick|onMapSingleClick|onOfficialServer|onPreloadStarted|openYoutubeVideo|overcastForecast|parseSimpleArray|parsingNamespace|particlesQuality|playerTargetLock|posScreenToWorld|posWorldToScreen|processDiaryLink|profileNameSteam|profileNamespace|progressPosition|radioChannelInfo|remoteControlled|removeAllActions|removeAllWeapons|removeSimpleTask|removeTeamMember|removeWeaponItem|roadsConnectedTo|ropeSetCargoMass|selectBestPlaces|sendCloudRequest|sentencesEnabled|set3DENAttribute|set3DENLogicType|setAnimSpeedCoef|lbSetColorRight|leaderboardInit|lnbDeleteColumn|lnbPictureRight|lnbSetCurSelRow|lnbSetTextRight|lockedInventory|magazinesDetail|magazinesTurret|mapGridPosition|matrixTranspose|menuSetShortcut|moveInCommander|moveObjectToEnd|moveToCompleted|namedProperties|nearestBuilding|nearestLocation|objectFromNetId|onBriefingGroup|onBriefingNotes|onShowNewObject|openDSInterface|ppEffectDestroy|ppEffectEnabled|preloadTitleObj|preloadTitleRsc|queryWeaponPool|radioChannelAdd|registeredTasks|remove3DENLayer|removeDrawLinks|removeGroupIcon|removeMagazines|removeOwnedMine|requiredVersion|roleDescription|ropeEndPosition|ropesAttachedTo|rotorsForcesRTD|secondaryWeapon|selectThrowable|serverNamespace|set3DENSelected|setArmoryPoints|setCameraEffect|setCenterOfMass|lbPictureRight|lbSetTextRight|libraryCredits|lineIntersects|lnbSortByValue|localNamespace|lockedCameraTo|markerPolyline|matrixMultiply|menuSetPicture|mineDetectedBy|missionVersion|move3DENCamera|nearestObjects|objectCurators|onBriefingGear|onBriefingPlan|parentAttached|pickWeaponPool|ppEffectAdjust|ppEffectCommit|ppEffectCreate|ppEffectEnable|preprocessFile|productVersion|publicVariable|pushBackUnique|queryItemsPool|remoteExecCall|removeAllItems|removeBackpack|removeClothing|removeDrawIcon|removeHeadgear|removeMagazine|removeMenuItem|respawnVehicle|reversedMouseY|ropeAttachedTo|selectNoPlayer|selectionNames|sendTaskResult|sendUDPMessage|setAirportSide|setAmmoOnPylon|setApertureNew|lbSetSelected|lbSortByValue|lnbColorRight|lnbSetPicture|lnbSetTooltip|lockInventory|magazineCargo|magazinesAmmo|mapAnimCommit|markerChannel|menuSetAction|missileTarget|moonIntensity|nearestObject|onDoubleClick|pixelGridBase|playActionNow|playableUnits|playersNumber|preloadCamera|preloadObject|primaryWeapon|putWeaponPool|reloadEnabled|remoteControl|removeGoggles|removeUniform|resetCamShake|runInitScript|saveJoysticks|savingEnabled|screenToWorld|sendAUMessage|serverCommand|setAttributes|setAutonomous|setBatteryRTD|lbColorRight|lbIsSelected|lbSetPicture|lbSetTooltip|leaveVehicle|lnbAddColumn|lnbCurSelRow|lnbDeleteRow|lnbTextRight|loadBackpack|loadIdentity|loadMagazine|locationNull|lockCameraTo|lockIdentity|lockedDriver|lockedTurret|mapAnimClear|markerShadow|menuCollapse|menuSetCheck|menuSetValue|menuShortcut|missileState|missionStart|modelToWorld|moveInDriver|moveInGunner|moveInTurret|moveToFailed|nearEntities|nearSupplies|nearestMines|numberToDate|objectParent|onTeamSwitch|openSteamApp|preloadSound|radioEnabled|regexReplace|registerTask|removeAction|removeWeapon|ropeAttachTo|ropeSegments|rotorsRpmRTD|safeZoneWAbs|safeZoneXAbs|saveIdentity|selectLeader|selectPlayer|selectRandom|selectWeapon|set3DENLayer|setAmmoCargo|setBehaviour|setBrakesRTD|laserTarget|lbSelection|lbSetCurSel|lbTextRight|listObjects|lnbAddArray|lnbSetColor|lnbSetValue|loadOverlay|loadUniform|lockedCargo|logEntities|mapAnimDone|markerAlpha|markerBrush|markerColor|markerShape|menuChecked|menuEnabled|menuPicture|menuSetData|menuSetText|missionName|moveInCargo|musicVolume|nearObjects|nearTargets|needService|onEachFrame|openDLCPage|parseNumber|playGesture|playMission|playMoveNow|playSound3D|playSoundUI|profileName|radioVolume|rectangular|removeItems|ropeDestroy|ropeUnwound|saveOverlay|set3DENGrid|setAperture|setCamUseTI|landResult|lbSetColor|lbSetValue|lightnings|limitSpeed|lnbPicture|lnbSetData|lnbSetText|loadConfig|loadStatus|lockDriver|lockTurret|logNetwork|mapAnimAdd|markerSize|markerText|markerType|menuAction|menuDelete|menuEnable|menuExpand|menuSetURL|mineActive|missionEnd|moveTarget|nMenuItems|needReload|netObjNull|newOverlay|orderGetIn|playAction|playerSide|privateAll|rainParams|regexMatch|remoteExec|removeItem|removeVest|resistance|revealMine|ropeCreate|ropeDetach|ropeLength|ropeUnwind|saveStatus|screenshot|scriptNull|serverName|serverTime|setAccTime|setCaptive|lbPicture|lbSetData|lbSetText|lbTooltip|lifeState|lightIsOn|lineBreak|lnbAddRow|lnbSortBy|lockCargo|lookAtPos|magazines|markerDir|markerPos|menuClear|menuHover|menuValue|modParams|moonPhase|moveInAny|nameSound|nearRoads|objStatus|parseText|pixelGrid|playMusic|playSound|precision|regexFind|resources|safeZoneH|safeZoneW|safeZoneX|safeZoneY|scoreSide|scudState|selectMax|selectMin|setAPURTD|language|lbCurSel|lbDelete|lbSortBy|linkItem|lnbClear|lnbColor|lnbValue|loadGame|loadVest|localize|menuData|menuSize|menuSort|menuText|moveTime|overcast|playMove|position|priority|pushBack|saveGame|sendTask|lbClear|lbColor|lbValue|lnbData|lnbSize|lnbSort|lnbText|loadAbs|maxLoad|members|menuAdd|menuURL|moveOut|objNull|openGPS|openMap|rainbow|reverse|ropeCut|saveVar|setAmmo|lbData|lbSize|lbSort|lbText|leader|lockWP|locked|lookAt|morale|moveTo|object|params|pixelH|pixelW|player|random|rankId|rating|reload|resize|reveal|roadAt|select|lbAdd|local|merge|netId|opfor|owner|param|pitch|ropes|round|say2D|say3D|score|list|load|lock|move|name|pose|rain|rank|log|max|min|mod|nil|not|rad|say|set|ln|or|pi)\\b))|((?i:\\b(?:setDynamicSimulationDistanceCoef|setVehicleReceiveRemoteTargets|tvSetPictureRightColorDisabled|tvSetPictureRightColorSelected|setVehicleReportRemoteTargets|setDynamicSimulationDistance|setCuratorCameraAreaCeiling|setJointDriveLinearVelocity|setVehicleReportOwnPosition|setWaypointCompletionRadius|useAIOperMapObstructionTest|vehicleReceiveRemoteTargets|setSimpleTaskAlwaysVisible|vehicleReportRemoteTargets|setCuratorEditingAreaType|setCuratorSelectionPreset|setVelocityTransformation|setVisibleIfTreeCollapsed|setWaypointForceBehaviour|setWaypointLoiterAltitude|tvSetPictureColorDisabled|tvSetPictureColorSelected|setCustomSoundController|setJointDriveOrientation|setLightFlareMaxDistance|setPilotCameraOpticsMode|setSimpleTaskDescription|setSimpleTaskDestination|setUnitRecoilCoefficient|setWaypointHousePosition|synchronizeObjectsRemove|triggerDynamicSimulation|vectorModelToWorldVisual|vectorWorldToModelVisual|vehicleReportOwnPosition|waypointCompletionRadius|weaponDisassemblyEnabled|setGroupIconsSelectable|setObjectMaterialGlobal|setPhysicsCollisionFlag|setPilotCameraDirection|setSimpleTaskCustomData|setWaypointLoiterRadius|slingLoadAssistantShown|steamGameRecordingEvent|waypointAttachedVehicle|setCuratorWaypointCost|setDiarySubjectPicture|setFuelConsumptionCoef|setHorizonParallaxCoef|setMarkerPolylineLocal|setObjectTextureGlobal|setPilotCameraRotation|setWaterFillPercentage|setWaypointDescription|setWeaponReloadingTime|shownArtilleryComputer|triggerAttachedVehicle|tvSetPictureRightColor|useAISteeringComponent|vectorLinearConversion|waypointAttachedObject|waypointForceBehaviour|waypointLoiterAltitude|waypointTimeoutCurrent|weaponAccessoriesCargo|setCompassDeclination|setCompassOscillation|setDetailMapBlendPars|setEffectiveCommander|setFlagAnimationPhase|setJointDrivePosition|setMagazineTurretAmmo|setMarkerDrawPriority|setObjectViewDistance|setSimulWeatherLayers|setUnitFreefallHeight|setVelocityModelSpace|setWaypointCombatMode|setWaypointLoiterType|setWaypointStatements|synchronizeObjectsAdd|synchronizedWaypoints|terrainIntersectAtASL|triggerTimeoutCurrent|unitAimPositionVisual|unitRecoilCoefficient|waypointAttachVehicle|waypointHousePosition|setCustomMissionData|setEditorObjectScope|setForceGeneratorRTD|setGroupIconsVisible|setHUDMovementLevels|setMarkerShadowLocal|setMusicEventHandler|setPilotCameraTarget|setPlayerRespawnTime|setToneMappingParams|setTriggerActivation|setTriggerStatements|setWaypointBehaviour|setWaypointFormation|setWingForceScaleRTD|synchronizedTriggers|triggerAttachVehicle|useAudioTimeForMoves|waypointAttachObject|waypointLoiterRadius|setConvoySeparation|setLightAttenuation|setLightVolumeShape|setMarkerAlphaLocal|setMarkerBrushLocal|setMarkerColorLocal|setMarkerShapeLocal|setMissileTargetPos|setSimpleTaskTarget|setTaskMarkerOffset|setTurretOpticsMode|setWaypointPosition|showNewEditorObject|shownCuratorCompass|simulCloudOcclusion|synchronizeWaypoint|synchronizedObjects|terrainIntersectASL|triggerAttachObject|vehicleCargoEnabled|waypointDescription|waypointsEnabledUAV|weaponReloadingTime|setCuratorSelected|setCurrentWaypoint|setCustomWeightRTD|setDiaryRecordText|setEffectCondition|setGroupIconParams|setLightBrightness|setLocalWindParams|setMarkerSizeLocal|setMarkerTextLocal|setMarkerTypeLocal|setObjectArguments|setOxygenRemaining|setPiPViewDistance|setPlayerVoNVolume|setTrafficDistance|setTriggerInterval|setVehiclePosition|setWaypointTimeout|setWaypointVisible|showCommandingMenu|showCuratorCompass|startLoadingScreen|synchronizeTrigger|vectorCrossProduct|vectorMagnitudeSqr|vectorModelToWorld|vectorWorldToModel|velocityModelSpace|visiblePositionASL|waypointCombatMode|waypointLoiterType|waypointStatements|setCurrentChannel|setDebriefingText|setHitPointDamage|setLightFlareSize|setLightIntensity|setMarkerDirLocal|setMarkerPolyline|setMarkerPosLocal|setMissionOptions|setObjectMaterial|setParticleCircle|setParticleParams|setParticleRandom|setPylonsPriority|setShadowDistance|setSimpleTaskType|setTimeMultiplier|setTrafficDensity|setTriggerTimeout|setUnitCombatMode|setUnloadInCombat|setUserActionText|setVectorDirAndUp|setVehicleAmmoDef|setVehicleVarName|setWaterLeakiness|setWaypointScript|simulCloudDensity|simulationEnabled|sliderSetPosition|taskAlwaysVisible|teamSwitchEnabled|triggerActivation|triggerStatements|tvSetPictureColor|tvSetPictureRight|unlockAchievement|userInputDisabled|vectorDistanceSqr|visibleScoretable|waypointBehaviour|waypointFormation|weaponAccessories|weaponsItemsCargo|setCruiseControl|setCustomAimCoef|setDefaultCamera|setFaceAnimation|setFormationTask|setGroupIdGlobal|setLightConePars|setLightDayLight|setLightUseFlare|setMissileTarget|setMousePosition|setObjectTexture|setParticleClass|setRotorBrakeRTD|setStaminaScheme|setSystemOfUnits|setTerrainHeight|setVehicleTIPars|setWaypointSpeed|setWeaponZeroing|showCinemaBorder|simulSetHumidity|simulWeatherSync|soldierMagazines|targetsAggregate|taskMarkerOffset|terrainIntersect|triggerActivated|tvSetSelectColor|tvSortByValueAll|uniformContainer|uniformMagazines|unitsBelowHeight|updateObjectTree|vectorDotProduct|vectorNormalized|vectorSideVisual|waypointPosition|setDropInterval|setEngineRpmRTD|setLightAmbient|setMarkerShadow|setParticleFire|setPylonLoadout|setTrafficSpeed|setTurretLimits|setUserMFDValue|setVehicleArmor|setVehicleCargo|setVehicleRadar|setViewDistance|setWantedRPMRTD|setWaypointName|setWaypointType|shownScoretable|sideAmbientLife|switchableUnits|targetKnowledge|taskDescription|taskDestination|triggerInterval|unassignCurator|unassignVehicle|uniqueUnitItems|unitAimPosition|vectorDirVisual|vectorMagnitude|vehicleMoveInfo|verifySignature|visiblePosition|waypointTimeout|waypointVisible|weaponDirection|setCuratorCoef|setCurrentTask|setDestination|setDriveOnPath|setFSMVariable|setFeatureType|setFlagTexture|setMarkerAlpha|setMarkerBrush|setMarkerColor|setMarkerShape|setMusicEffect|setObjectProxy|setObjectScale|setPlateNumber|setRectangular|setRepairCargo|setShotParents|setSoundEffect|setSuppression|setTIParameter|setTerrainGrid|setThrottleRTD|setTitleEffect|setToneMapping|setTriggerArea|setTriggerText|setTriggerType|setUnconscious|setUnitAbility|setUnitLoadout|setUnitPosWeak|setUserMFDText|setVehicleAmmo|setVehicleInit|setVehicleLock|showScoretable|shownSubtitles|sliderPosition|sliderSetRange|sliderSetSpeed|surfaceIsWater|surfaceTexture|taskCustomData|teamMemberNull|timeMultiplier|triggerTimeout|tvPictureRight|unitCombatMode|unregisterTask|updateDrawIcon|updateMenuItem|vectorDistance|vectorMultiply|vectorUpVisual|vehicleVarName|visibleCompass|waypointScript|wingsForcesRTD|setCombatMode|setEditorMode|setFromEditor|setGroupOwner|setHideBehind|setImportance|setLightColor|setLightnings|setMarkerSize|setMarkerText|setMarkerType|setOpticsMode|setPilotLight|setStarterRTD|setTargetSize|setTaskResult|setTrafficGap|showSubtitles|showWaypoints|simulInClouds|stopEngineRTD|surfaceNormal|switchGesture|systemOfUnits|systemTimeUTC|taskCompleted|textLogFormat|tvCollapseAll|tvSetSelected|tvSortByValue|vestContainer|vestMagazines|waypointSpeed|weaponInertia|weaponLowered|weaponsTurret|setDirection|setFlagOwner|setFormation|setFuelCargo|setGroupIcon|setInfoPanel|setMarkerDir|setMarkerPos|setNameSound|setPiPEffect|setRandomLip|setSlingLoad|setSpeedMode|setStatValue|setTargetAge|setTaskState|setTowParent|setUnitTrait|setVectorDir|setVehicleId|setWindForce|showWaypoint|shownCompass|shownUAVFeed|shownWarrant|sideFriendly|speechVolume|switchAction|switchCamera|targetsQuery|taskChildren|titleFadeOut|tvIsSelected|tvSetPicture|tvSetTooltip|unassignItem|unassignTeam|uniformItems|unitBackpack|vectorFromTo|vehicleRadio|viewDistance|visibleWatch|waterDamaged|waypointName|waypointShow|waypointType|weaponsItems|worldToModel|setDrawIcon|setFlagSide|setHitIndex|setHumidity|setIdentity|setOvercast|setPlayable|setPosWorld|setPosition|setRadioMsg|setUnitRank|setVariable|setVectorUp|setVelocity|show3DIcons|showCompass|showUAVFeed|showWarrant|shownAction|sideUnknown|simpleTasks|sliderRange|sliderSpeed|soundParams|soundVolume|splitString|squadParams|supportInfo|suppressFor|surfaceType|swimInDepth|switchLight|throttleRTD|toLowerANSI|toUpperANSI|triggerAmmo|triggerArea|triggerText|triggerType|turretLocal|turretOwner|tvExpandAll|tvSelection|tvSetCurSel|uiNamespace|vehicleChat|weaponCargo|weaponState|weaponsInfo|setDammage|setFatigue|setFormDir|setGroupId|setLightIR|setMaxLoad|setPosASL2|setPosASLW|setRainbow|setSpeaker|setStamina|setUnitPos|setWindDir|setWindStr|showLegend|shownRadio|shownWatch|skillFinal|switchMove|systemChat|systemTime|taskParent|taskResult|teamMember|teamSwitch|throwables|turretUnit|tvCollapse|tvSetColor|tvSetValue|underwater|unitAddons|unitTurret|unlinkItem|vectorDiff|vectorSide|visibleGPS|visibleMap|setDamage|setFriend|setLeader|setPosASL|setPosATL|setSpeech|showRadio|showWatch|shownChat|sideEmpty|sideEnemy|sideLogic|sideRadio|speedMode|stopSound|sunOrMoon|taskState|titleText|tvPicture|tvSetData|tvSetText|tvSortAll|tvTooltip|unitIsUAV|unitReady|vectorAdd|vectorCos|vectorDir|vestItems|waypoints|weightRTD|worldName|worldSize|setGusts|setMimic|setOwner|setPitch|setSkill|setWPPos|setWaves|showChat|shownGPS|shownHUD|shownMap|shownPad|sideChat|skipTime|someAmmo|taskHint|taskName|taskNull|taskType|teamName|teamType|titleCut|titleObj|titleRsc|toString|tvCurSel|tvDelete|tvExpand|typeName|vectorUp|vehicles|velocity|setDate|setFace|setFuel|setMass|setName|setRain|setRank|setSide|setSize|setText|setType|setWind|showGPS|showHUD|showMap|showPad|speaker|stopped|targets|textLog|toArray|toFixed|toLower|toUpper|tvClear|tvCount|tvValue|uniform|unitPos|vehicle|weapons|windDir|windRTD|windStr|setDir|setFog|setHit|setPos|sizeOf|stance|toJSON|tvData|tvSort|tvText|typeOf|uiTime|values|skill|speed|teams|tvAdd|units|waves|side|size|sort|sqrt|stop|text|time|trim|type|vest|west|wind|sin|str|tan|tg)\\b))|(\\b_+[A-Za-z_0-9]+\\b)|(\\b[A-Za-z_][A-Za-z_0-9]*\\b))",
+          "captures": {
+            "1": {
+              "name": "keyword.control.sqf"
+            },
+            "2": {
+              "name": "entity.name.function.sqf"
+            },
+            "3": {
+              "name": "entity.name.function.sqf"
+            },
+            "4": {
+              "name": "constant.language.boolean.sqf"
+            },
+            "5": {
+              "name": "constant.language.null.sqf"
+            },
+            "6": {
+              "name": "variable.language.reserved.sqf"
+            },
+            "7": {
+              "name": "variable.language.vobject.sqf"
+            },
+            "8": {
+              "name": "storage.modifier.sqf"
+            },
+            "9": {
+              "name": "keyword.control.sqf"
+            },
+            "10": {
+              "name": "support.function.sqf"
+            },
+            "11": {
+              "name": "keyword.operator.sqf"
+            },
+            "12": {
+              "name": "support.function.sqf"
+            },
+            "13": {
+              "name": "support.function.sqf"
+            },
+            "14": {
+              "name": "support.function.sqf"
+            },
+            "15": {
+              "name": "support.function.sqf"
+            },
+            "16": {
+              "name": "variable.other.private.sqf"
+            },
+            "17": {
+              "name": "variable.other.sqf"
+            }
+          }
         }
       ]
     },
-    "expression": {
-      "name": "meta.expression.sqf",
-      "patterns": [
-        {
-          "include": "#string"
-        },
-        {
-          "include": "#comment"
-        },
-        {
-          "include": "#literal"
-        },
-        {
-          "include": "#paren-expression"
-        },
-        {
-          "include": "#block"
-        },
-        {
-          "include": "#comparison-operator"
-        },
-        {
-          "include": "#condition-operator"
-        },
-        {
-          "include": "#manipulative-operator"
-        },
-        {
-          "include": "#assignment-operator"
-        },
-        {
-          "include": "#control-statement"
-        },
-        {
-          "include": "#code-managers"
-        },
-        {
-          "include": "#statements"
-        },
-        {
-          "include": "#other"
-        },
-        {
-          "include": "#declaration"
-        }
-      ]
-    },
-    "statements": {
-      "name": "meta.expression.sqf",
-      "patterns": [
-        {
-          "include": "#vObject-statements"
-        },
-        {
-          "include": "#commands-1"
-        },
-        {
-          "include": "#commands-2"
-        },
-        {
-          "include": "#commands-3"
-        },
-        {
-          "include": "#commands-4"
-        }
-      ]
-    },
-    "declaration": {
-      "name": "meta.declaration.sqf",
-      "patterns": [
-        {
-          "include": "#fnc-call"
-        },
-        {
-          "include": "#fnc-declaration"
-        },
-        {
-          "include": "#fnc-declaration-compile"
-        },
-        {
-          "include": "#var-declaration-priv"
-        },
-        {
-          "include": "#var-declaration"
-        },
-        {
-          "include": "#var-call-priv"
-        },
-        {
-          "include": "#var-call"
-        }
-      ]
-    },
-    "var-declaration": {
-      "begin": "([_a-zA-Z_0-9]+)(\\s*)(=+)",
-      "beginCaptures": {
-        "1": {
-          "name": "variable.other.sqf"
-        },
-        "3": {
-          "name": "keyword.operator.assignment.sqf"
-        }
-      },
-      "end": " |;|{|}|\t|=|(|)|[|]",
-      "endCaptures": {
-        "1": {
-          "name": "meta.brace.curly.sqf"
-        }
-      },
-      "name": "meta.declaration.object.sqf"
-    },
-    "var-declaration-priv": {
-      "begin": "(_+)([_a-zA-Z_0-9]+)(\\s*)(=+)",
-      "beginCaptures": {
-        "1": {
-          "name": "variable.other.private.sqf"
-        },
-        "2": {
-          "name": "variable.other.private.sqf"
-        },
-        "4": {
-          "name": "keyword.operator.assignment.sqf"
-        }
-      },
-      "end": " |;|{|}|\t|=|(|)|[|]",
-      "endCaptures": {
-        "1": {
-          "name": "meta.brace.curly.sqf"
-        }
-      },
-      "name": "meta.declaration.object.sqf"
-    },
-    "fnc-declaration": {
-      "begin": "(\\s*)([_a-zA-Z_0-9]+)(\\s*)(=)(\\s*)({)",
-      "beginCaptures": {
-        "2": {
-          "name": "support.function.sqf"
-        },
-        "4": {
-          "name": "keyword.operator.assignment.sqf"
-        },
-        "6": {
-          "name": "meta.brace.curly.sqf"
-        }
-      },
-      "end": " |;|{|}|\t",
-      "endCaptures": {
-        "1": {
-          "name": "meta.brace.curly.sqf"
-        }
-      },
-      "name": "meta.declaration.object.sqf"
-    },
-    "fnc-declaration-compile": {
-      "begin": "(\\s*)([_a-zA-Z_0-9]+)(\\s*)(=)(\\s*)(compileFinal|compile)",
-      "beginCaptures": {
-        "2": {
-          "name": "support.function.sqf"
-        },
-        "4": {
-          "name": "keyword.operator.assignment.sqf"
-        },
-        "6": {
-          "name": "support.class.sqf"
-        }
-      },
-      "end": " |;|{|}|\t",
-      "endCaptures": {
-        "1": {
-          "name": "meta.brace.curly.sqf"
-        }
-      },
-      "name": "meta.declaration.object.sqf"
-    },
-    "code-managers": {
-      "match": "(\\s*)(compile|compileFinal|exec|execFSM|execVM|callExtension)\\b",
-      "name": "support.class.sqf"
-    },
-    "fnc-call": {
-      "begin": "(\\s*)(call|spawn)(\\s+)([a-zA-Z_0-9]+)",
-      "beginCaptures": {
-        "2": {
-          "name": "support.class.sqf"
-        },
-        "4": {
-          "name": "support.function.sqf"
-        }
-      },
-      "end": " |;|{|}|(|)",
-      "endCaptures": {
-        "1": {
-          "name": "keyword.operator.sqf"
-        }
-      },
-      "name": "meta.declaration.object.sqf"
-    },
-    "var-call": {
-      "begin": "(\\s*)([a-zA-Z_0-9]+)([^a-zA-Z_0-9]|\\s+)",
-      "beginCaptures": {
-        "2": {
-          "name": "variable.other.sqf"
-        }
-      },
-      "end": " |;|{|}|(|)|[|]",
-      "endCaptures": {
-        "1": {
-          "name": "keyword.operator.sqf"
-        }
-      },
-      "name": "meta.declaration.object.sqf"
-    },
-    "var-call-priv": {
-      "match": "(\\s*)(_+[a-zA-Z_0-9]+)",
-      "name": "variable.other.private.sqf"
-    },
-    "indexer-parameter": {
-      "captures": {
-        "1": {
-          "name": "variable.parameter.sqf"
-        }
-      },
-      "match": "([a-zA-Z_$][\\w$]*)(?=\\:)",
-      "name": "meta.indexer.parameter.sqf"
-    },
-    "literal": {
-      "name": "literal.sqf",
-      "patterns": [
-        {
-          "include": "#numeric-literal"
-        },
-        {
-          "include": "#boolean-literal"
-        },
-        {
-          "include": "#null-literal"
-        },
-        {
-          "include": "#array-literal"
-        },
-        {
-          "include": "#reserved-literal"
-        }
-      ]
-    },
-    "manipulative-operator": {
-      "match": "\\*|/|\\-|\\+|%|\\^|plus|\\%",
-      "name": "keyword.operator.manipulative.sqf"
-    },
-    "null-literal": {
-      "match": "\\b(null|nil|controlNull|displayNull|grpNull|locationNull|netObjNull|objNull|scriptNull|taskNull|teamMemberNull|configNull)\\b",
-      "name": "constant.language.null.sqf"
-    },
-    "numeric-literal": {
-      "match": "\\s*(?<=[^$])((0(x|X)[0-9a-fA-F]+)|([0-9]+(\\.[0-9]+)?))\\b",
-      "name": "constant.numeric.sqf"
-    },
-    "": {
-      "begin": "\\(",
-      "beginCaptures": {
-        "0": {
-          "name": "meta.brace.paren.sqf"
-        }
-      },
-      "end": "\\)",
-      "endCaptures": {
-        "0": {
-          "name": "meta.brace.paren.sqf"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#expression"
-        }
-      ]
-    },
-    "property-accessor": {
-      "match": "\\s*(?i)(get|set|select)\\b",
-      "name": "storage.type.property.sqf"
-    },
-    "qstring-double": {
-      "begin": "\"",
-      "end": "\"",
-      "name": "string.double.sqf",
-      "patterns": [
-        {
-          "match": "%[0-9]+",
-          "name": "variable.other.format.sqf"
-        }
-      ]
-    },
-    "qstring-single": {
-      "begin": "'",
-      "end": "'",
-      "name": "string.single.sqf"
-    },
-    "string": {
-      "name": "string.sqf",
-      "patterns": [
-        {
-          "include": "#qstring-single"
-        },
-        {
-          "include": "#qstring-double"
-        }
-      ]
-    },
-    "reserved-literal": {
-      "match": "\\s*(?i)(this|_this|_x|_y|_forEachIndex|_exception|_thisScript|_thisFSM|thisList|thisTrigger|west|east|resistance|civilian|independent|blufor|opfor)\\b",
-      "name": "variable.language.reserved.sqf"
+    "word-operators": {
+      "match": "(?i)\\b(?:and|or|not)\\b",
+      "name": "keyword.operator.sqf"
     }
   },
   "scopeName": "sqf"

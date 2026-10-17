@@ -34,6 +34,7 @@ class EditorFeatures {
   }
   async start() {
     this.names = new Set((await this.session.host.request('commands')).map(n => n.toLowerCase()));
+    this.session.highlighting.fire();
     const selector = [{ language: 'sqf', scheme: 'file', pattern: new vscode.RelativePattern(this.session.folder, '**/*.sqf') }];
     const disposables = this.session.disposables;
     disposables.push(this.diagnostics,
@@ -111,6 +112,7 @@ class EditorFeatures {
     this.running = this.build().then(index => {
       if (this.disposed || revision !== this.revision) return;
       this.functions = index.functions; this.findings = index.findings; this.cachedRevision = revision;
+      this.session.highlighting.fire();
       this.diagnostics.clear();
       const groups = new Map();
       for (const finding of this.findings) {

@@ -465,3 +465,35 @@ Only scalar results are published. Raw inventories, overlap records, source
 snapshots and valid-Git provenance stay in the consuming repository's local
 evidence directory. This is a documentation follow-up to the immutable 0.2.5
 release; its VSIX and tested source revision are unchanged.
+
+## Syntax highlighting candidate 0.2.6 (local, 2026-10-17)
+
+Sequential TextMate measurements cover the same 2,120 source/config files and
+270,722 lines, with source bytes hashed before and after. The inherited grammar
+took 42.335 seconds with 84 incomplete lines; the candidate took 6.829 seconds
+with one incomplete line. These elapsed totals are not a complete-work speed
+comparison because timed-out lines retain incomplete work. Both variants use
+the same aggressive 50 ms per-line budget, and every line is measured.
+
+The candidate completes every line within VS Code 1.105.1's default
+20,000-character tokenization coverage. Its remaining incomplete line has
+204,155 characters, beyond that default. The baseline has 51 incomplete lines
+within default coverage. Lazy grammar setup/compilation is measured separately:
+62.370 ms before and 35.735 ms after. Identifier classification is anchored at
+the current word and avoids TextMate capture retokenization copying line prefixes.
+
+The pure semantic classifier takes 614.875 ms across the corpus: median 0.072 ms,
+p95 0.779 ms and maximum 124.948 ms per file. These are one-run lexical timings,
+not end-to-end editor latency or measured human reading speed. The corpus uses
+the shared command snapshot and pinned BIS catalog; actual project registrations
+and unsaved config refresh are covered separately by packaged editor tests.
+
+The matched analyzer sequence retains all 4,836 findings with identical source
+and control-input hashes. Startup analysis is 7.462 / 7.504 seconds and median
+dirty-edit completion is 22.365 / 22.137 ms before/after. This is a regression
+check, not evidence of an analyzer speed improvement. An earlier comparison was
+invalidated by two concurrent source-line changes; its raw failure is retained
+privately and no findings were discarded or normalized away to obtain a pass.
+
+Raw reports, line locations and diagnostic inventories remain ignored/local.
+No compiler, native Arma or multiplayer improvement is claimed.

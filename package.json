@@ -2,7 +2,7 @@
   "name": "lyl-sqf",
   "displayName": "LiveYourLife SQF",
   "description": "Local mission-aware SQF/config analysis using the LYL HEMTT fork and shared command-context gate.",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "publisher": "liveyourlife",
   "license": "MIT AND GPL-2.0-only",
   "engines": {
@@ -153,11 +153,38 @@
         "language": "sqf",
         "path": "./snippets/sqf.json"
       }
+    ],
+    "semanticTokenScopes": [
+      {
+        "language": "sqf",
+        "scopes": {
+          "macro": [
+            "variable.other.constant.macro.sqf"
+          ],
+          "parameter": [
+            "variable.parameter.sqf"
+          ],
+          "function": [
+            "entity.name.function.sqf"
+          ],
+          "function.defaultLibrary": [
+            "support.function.sqf"
+          ]
+        }
+      },
+      {
+        "language": "arma-config",
+        "scopes": {
+          "macro": [
+            "variable.other.constant.macro.arma_config"
+          ]
+        }
+      }
     ]
   },
   "scripts": {
     "build": "esbuild src/extension.js --bundle --platform=node --format=cjs --external:vscode --outfile=dist/extension.js",
-    "test": "node --test test/unit.test.js test/authoring.test.js",
+    "test": "node --test test/unit.test.js test/authoring.test.js test/highlighting.test.js",
     "test:integration": "node test/integration.js",
     "profile": "node test/performance.js",
     "package": "npm run build && vsce package --no-dependencies"
@@ -167,9 +194,11 @@
     "vscode-jsonrpc": "8.2.1"
   },
   "devDependencies": {
-    "esbuild": "0.25.10",
+    "@vscode/test-electron": "2.5.2",
     "@vscode/vsce": "3.6.0",
-    "@vscode/test-electron": "2.5.2"
+    "esbuild": "0.25.10",
+    "vscode-oniguruma": "1.7.0",
+    "vscode-textmate": "9.2.0"
   },
   "repository": {
     "type": "git",

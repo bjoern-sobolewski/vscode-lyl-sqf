@@ -8,11 +8,13 @@ const { LanguageClient } = require('vscode-languageclient/node');
 const { provision, verifySharedSources, Host, hoverMarkdown } = require('./shared');
 const { startTransport } = require('./transport');
 const { EditorFeatures, registerReferences } = require('./editor-features');
+const { registerHighlighting } = require('./semantic-highlighting');
 
 let active;
 async function activate(context) {
   const log = vscode.window.createOutputChannel('LYL SQF'); context.subscriptions.push(log);
   const sessions = [];
+  const highlighting = registerHighlighting(context, document => sessions.find(s => s.owns(document))?.features);
   const find = uri => sessions.find(s => uri && vscode.workspace.getWorkspaceFolder(uri)?.uri.toString() === s.folder.uri.toString()) || sessions[0];
   registerReferences(context, find);
   if (!vscode.workspace.isTrusted) return;
@@ -24,7 +26,7 @@ async function activate(context) {
   const output = text => log.appendLine(text);
   for (const folder of roots) {
     await verifySharedSources(folder.uri.fsPath, tools.manifest);
-    const session = new Session(context, folder, tools, log); sessions.push(session);
+    const session = new Session(context, folder, tools, log, highlighting); sessions.push(session);
     try { await session.start(); } catch (error) { for (const started of sessions) await started.stop(); throw error; }
   }
   active = { sessions, tools, async dispose() { for (const session of sessions) await session.stop(); } };
@@ -64,8 +66,9 @@ async function activate(context) {
 }
 
 class Session {
-  constructor(context, folder, tools, log) {
+  constructor(context, folder, tools, log, highlighting) {
     this.context = context; this.folder = folder; this.root = folder.uri.fsPath; this.tools = tools; this.log = log;
+    this.highlighting = highlighting;
     this.disposables = []; this.timers = new Map(); this.contextFindings = vscode.languages.createDiagnosticCollection('LYL command context');
     context.subscriptions.push(this.contextFindings);
     this.jobs = new Set(); this.generation = 0;

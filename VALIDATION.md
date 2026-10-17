@@ -388,3 +388,34 @@ source stamps match. Reload existing editor windows to activate the update.
 Final sequential launcher diagnostic comparisons preserve every finding; see the
 final consumer table in PERFORMANCE.md for timings and five-second limitations.
 No native Arma/multiplayer result is claimed. Commit hooks remain disabled.
+
+## Syntax highlighting candidate 0.2.6 (local, 2026-10-17)
+
+The candidate adds theme-controlled semantic function/command, explicit parameter
+and local macro tokens, repairs SQF/config fallback scopes, and adds indentation
+and documentation-comment Enter rules. It does not provide whole-document
+formatting. Parameter references stay in their exact explicit code block;
+dynamic callbacks, included macro definitions and unknown function registrations
+are not inferred. Registration remains provisional discovery, never validation.
+
+Local validation passes 22 JavaScript tests, the actual bundled HLS integration
+regressions and 17 isolated packaged VS Code checks. Coverage includes UTF-16
+offsets, CRLF directives, doubled quotes and literal backslash paths, scientific
+and hex numbers, config classes/properties, parameter shadowing, macro undef,
+dirty semantic refresh/repair, included CfgFunctions changes and discard, and
+SQF/config Enter indentation. Packaged editor checks preserve source/config disk
+bytes and execute the existing loot.matching SQF-VM suite. Existing diagnostic
+failures remain visible.
+
+Sequential full-workspace analyzer comparisons retain all 4,836 findings after
+source/control hashes are checked. The 2,120-file highlighting stress run completes
+every line within the editor's default line-length coverage; one generated line
+beyond that limit remains incomplete at the 50 ms stress budget. PERFORMANCE.md
+records setup, corpus timings and the limits of those measurements.
+
+The HEMTT source/executable and corresponding-source archive retain their existing
+pins. The host was rebuilt from the same pinned shared sources and its new binary
+hash is recorded in server/tools.json. Original notices and corresponding source
+remain packaged. This is local static/editor/SQF-VM evidence; no new Rust/parser,
+native engine or multiplayer behavior is claimed. Nothing is published, installed
+into the user's profile or added to the Arma release pins by this candidate.

@@ -43,6 +43,35 @@ fake headers are created. Arma content is not distributed in the package.
 
 ## Analysis and commands
 
+### Syntax colors and indentation
+
+SQF and Arma config grammars distinguish control flow, callable names, variables,
+classes, directives, macro declarations, numbers, strings and comments using
+standard theme scopes. Scientific/hex numbers, doubled quotes and literal
+backslash paths retain their Arma spelling. Blocks, arrays and parentheses have
+indentation rules; Enter also continues documentation comments. This supplies
+editing indentation, not a whole-document formatter or format-on-save provider.
+
+Semantic highlighting adds the shared host's engine-command names, the pinned
+BIS catalog and the existing exact-root CfgFunctions registration index. Dirty
+config updates and discard refresh those function colors alongside completion.
+Locally defined macros are case-sensitive and stop being classified after
+`#undef`; includes are not expanded by the color provider. Explicit `params`
+names and subsequent uses in that same code block receive parameter tokens.
+Nested callbacks, private shadow declarations and dynamic parameter lists do not
+gain guessed parameter bindings. Coloring establishes no runtime/type contract
+and does not change validation or provisional registration findings.
+
+The selected theme and `editor.semanticHighlighting.enabled` control appearance;
+no theme, fixed palette or font styling is forced. To opt into italic SQF
+parameters, add this user setting:
+
+```json
+"editor.semanticTokenColorCustomizations": {
+  "rules": { "parameter:sqf": { "italic": true } }
+}
+```
+
 ### Authoring and reference coverage (0.2.0)
 
 **Open BI Wiki Documentation** opens the canonical command or BIS function under
