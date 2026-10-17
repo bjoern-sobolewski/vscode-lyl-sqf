@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "hemttRevision": "b3bde43580a6a6756bb2fd20ebfbcfbde95009a5",
+  "method": "Sequential frozen committed sources, identical tool/game inputs, no overlapping builds/tests, warm verified dependency caches",
+  "fullVerification": [
+    {
+      "label": "release-accepted-cold",
+      "seconds": 19.30332240000007,
+      "exit": 1,
+      "complete": true,
+      "records": 3428,
+      "commit": "cc9a140a1f87ab8d11cc88d953a43c8f2eefddd6",
+      "analysis": {
+        "mode": "analysis executed",
+        "checked": 1805,
+        "reused": 0
+      }
+    },
+    {
+      "label": "release-accepted-repeat-0",
+      "seconds": 2.052802899999733,
+      "exit": 1,
+      "complete": true,
+      "records": 3428,
+      "commit": "cc9a140a1f87ab8d11cc88d953a43c8f2eefddd6",
+      "analysis": {
+        "mode": "complete report reused after content validation"
+      }
+    },
+    {
+      "label": "release-accepted-repeat-1",
+      "seconds": 2.02878310000051,
+      "exit": 1,
+      "complete": true,
+      "records": 3428,
+      "commit": "cc9a140a1f87ab8d11cc88d953a43c8f2eefddd6",
+      "analysis": {
+        "mode": "complete report reused after content validation"
+      }
+    },
+    {
+      "label": "release-accepted-repeat-2",
+      "seconds": 1.985561299999972,
+      "exit": 1,
+      "complete": true,
+      "records": 3428,
+      "commit": "cc9a140a1f87ab8d11cc88d953a43c8f2eefddd6",
+      "analysis": {
+        "mode": "complete report reused after content validation"
+      }
+    },
+    {
+      "label": "release-accepted-source-edit",
+      "seconds": 6.1941735999998855,
+      "exit": 1,
+      "complete": true,
+      "records": 3428,
+      "commit": "e8036ad7d6ad2b52183c3621dbe1a35744fede7e",
+      "analysis": {
+        "mode": "analysis executed",
+        "checked": 1,
+        "reused": 1804
+      }
+    },
+    {
+      "label": "release-accepted-source-fresh",
+      "seconds": 17.89775650000047,
+      "exit": 1,
+      "complete": true,
+      "records": 3428,
+      "commit": "e8036ad7d6ad2b52183c3621dbe1a35744fede7e",
+      "analysis": {
+        "mode": "analysis executed",
+        "checked": 1805,
+        "reused": 0
+      }
+    },
+    {
+      "label": "release-accepted-header-edit",
+      "seconds": 18.913169399999788,
+      "exit": 1,
+      "complete": true,
+      "records": 3428,
+      "commit": "05ac49e948bc6773a1b3e0a871217d418dcc0f98",
+      "analysis": {
+        "mode": "analysis executed",
+        "checked": 1805,
+        "reused": 0
+      }
+    },
+    {
+      "label": "release-accepted-header-fresh",
+      "seconds": 18.031724100000247,
+      "exit": 1,
+      "complete": true,
+      "records": 3428,
+      "commit": "05ac49e948bc6773a1b3e0a871217d418dcc0f98",
+      "analysis": {
+        "mode": "analysis executed",
+        "checked": 1805,
+        "reused": 0
+      }
+    }
+  ],
+  "compiler": [
+    {
+      "label": "reference-0",
+      "seconds": 8.266694500000085,
+      "checked": 1837,
+      "sqf": 1833,
+      "configs": 4,
+      "sameInventory": true
+    },
+    {
+      "label": "optimized-0",
+      "seconds": 4.501521700000012,
+      "checked": 1837,
+      "sqf": 1833,
+      "configs": 4,
+      "sameInventory": true
+    },
+    {
+      "label": "reference-1",
+      "seconds": 8.458622099999957,
+      "checked": 1837,
+      "sqf": 1833,
+      "configs": 4,
+      "sameInventory": true
+    },
+    {
+      "label": "optimized-1",
+      "seconds": 4.470854099999997,
+      "checked": 1837,
+      "sqf": 1833,
+      "configs": 4,
+      "sameInventory": true
+    },
+    {
+      "label": "reference-2",
+      "seconds": 8.247796499999822,
+      "checked": 1837,
+      "sqf": 1833,
+      "configs": 4,
+      "sameInventory": true
+    },
+    {
+      "label": "optimized-2",
+      "seconds": 4.688275200000135,
+      "checked": 1837,
+      "sqf": 1833,
+      "configs": 4,
+      "sameInventory": true
+    }
+  ],
+  "limitations": [
+    "Five seconds demonstrated only for unchanged repeat verification",
+    "Source edits and global invalidation exceed five seconds",
+    "Production findings still fail; completed means coverage, not a pass",
+    "No native Arma or multiplayer execution"
+  ]
+}

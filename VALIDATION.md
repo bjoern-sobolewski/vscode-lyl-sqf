@@ -308,3 +308,36 @@ launcher is rebuilt from the shared implementation. Editor validation continues
 to use JavaScript units, real HLS integration and the packaged isolated VS Code
 suite; it includes source preservation and the existing loot.matching VM suite.
 There is no new native Arma or multiplayer claim.
+
+## Release 0.2.4: saved-source service and compiler optimization
+
+HEMTT source revision `b3bde43580a6a6756bb2fd20ebfbcfbde95009a5`
+adds saved-source batch analysis and an optimized SQF lexer. The matching shared
+host/source stamps include the new verification service. Source-byte inventories,
+failed/new includes, headers, macros, command/rule metadata, configuration and
+workspace membership govern invalidation. Restored timestamps cannot reuse stale
+results. Infrastructure failures are incomplete and retried. Config analysis
+failures do not prevent the new analyzer from checking selected SQF.
+
+Rust common/workspace/config/preprocessor/SQF/HLS suites passed 538 tests with
+two inherited ignored tests. The final service rerun passed 33 tests. Serial CLI
+unit/integration suites passed; an inherited C++ example incorrectly marked as a
+Rust doctest was corrected and its doctest rerun passed. CLI tests require serial
+execution because the inherited temporary-directory helper races process CWD
+restoration. No test or lint was disabled. The lexer differential test covers
+12,000 generated inputs plus existing numeric/Unicode/compatibility fixtures.
+
+The focused shared C# run passed 167 tests. Regressions cover content fingerprints,
+restored mtimes, extensionless/missing/new includes, conservative dynamic includes,
+deleted aliases, unchanged copies, rules and headers. The sequential complete
+command comparison retains all 3,428 stage records and complete findings; the
+separate compiler A/B retains every diagnostic across six runs. PERFORMANCE.md
+reports fresh/repeated/edit timings and the remaining five-second limitations.
+
+Matching editor validation requires JavaScript units, actual bundled HLS, isolated
+packaged VS Code tests, source preservation and the existing loot.matching SQF-VM
+suite. Corresponding source includes exact Git sources, locked vendored crates,
+embedded wiki, original build script, documented offline convenience patch and
+licenses. The Arma launcher is rebuilt from the same shared sources; Git commit
+hooks remain disabled. Static/editor/VM evidence does not verify native Arma or
+real multiplayer execution.

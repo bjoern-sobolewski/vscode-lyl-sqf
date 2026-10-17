@@ -66,8 +66,10 @@ public static class LYLSourceHashes {
     $updatedChecksums = @{ package=$checksums.package; files=[LYLSourceHashes]::Scan($wikiCrate) }
     [IO.File]::WriteAllText($checksumPath, ($updatedChecksums | ConvertTo-Json -Depth 5), [Text.UTF8Encoding]::new($false))
     $archive = Join-Path $extensionRoot 'source/HEMTT-source.zip'
-    & git archive --format=zip -o $archive HEAD
+    # Archive raw committed bytes even on hosts with core.autocrlf enabled.
+    & git -c core.autocrlf=false archive --format=zip -o $archive HEAD
     if ($LASTEXITCODE) { throw 'Could not archive exact HEMTT fork source.' }
+    Add-Type -AssemblyName System.IO.Compression
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $zip = [IO.Compression.ZipFile]::Open($archive, [IO.Compression.ZipArchiveMode]::Update)
     try {

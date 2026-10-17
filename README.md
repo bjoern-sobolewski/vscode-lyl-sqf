@@ -162,7 +162,7 @@ Use the Command Palette or Explorer selection:
 | Command | Scope |
 | --- | --- |
 | Verify Selected Files | Same combined verifier as agents; configs use HEMTT, SQF additionally uses the existing parser |
-| Verify Changed Files | Same Git selection/header expansion as `-VerifyChanged` and the local pre-commit gate |
+| Verify Changed Files | Same Git selection/header expansion as manual `-VerifyChanged` |
 | Run Relevant Existing Tests | Uses dependency declarations (including transitive dependencies) and offers only existing suite/runtime pairs |
 | Show Preprocessed Buffer | Fork's existing macro-expanded preview, including unsaved text |
 | Rebuild Analysis Workspace | Restarts analysis and reloads layout, game headers and reviewed rules |
@@ -172,6 +172,18 @@ existing JSON report path in Output. They never silently save buffers. No mapped
 test is a coverage gap, not a pass. Arma tests use the existing isolated native
 runner; choose SQF-VM explicitly when offered. Native server/HC tests do not
 verify real player networking, locality or UI paths.
+
+Version 0.2.4 shares the saved-source verification service with the launcher.
+Manual verification retains a separate HEMTT process and prepared workspace for
+ten idle minutes. It hashes saved sources, include probes, rules, configuration,
+tool executables and installed game headers before reuse. Unchanged complete
+reports retain their original failures and explicitly identify reuse; source
+edits recheck affected units. Header/config/rule changes conservatively rebuild
+the workspace and analysis. Dynamic includes disable whole-report reuse.
+The editor's dirty-buffer language-server session remains separate. Set
+`LYL_VERIFY_FRESH=1` for an independent fresh command, or pass
+`--verification-stop` to the shared test host to stop its current-version service.
+Commit hooks remain disabled. See PERFORMANCE.md for measured scope and limits.
 
 Diagnostics retain original code/severity and carry one of four labels:
 

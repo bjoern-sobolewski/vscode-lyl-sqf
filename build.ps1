@@ -17,7 +17,7 @@ $sharedSources = @(
     'z_cmd/Arma3.DevTools/Arma3.DevTools.Core/Arma3.DevTools.Core.csproj'
 )
 $core = 'z_cmd/Arma3.DevTools/Arma3.DevTools.Core/'
-foreach ($name in @('SqfAnalysisWorkspace', 'SqfEditorAnalysis', 'SqfCommandReference', 'SqfCommandContextCheck', 'SqfExecutionContexts', 'SqfStaticCheck', 'SqfSyntaxCheck', 'SqfFileVerification', 'SqfChangedFiles', 'SqfTestCommand', 'SqfTestSources', 'SqfTestDependencies', 'DependencyProvisioning')) { $sharedSources += $core + $name + '.cs' }
+foreach ($name in @('SqfAnalysisWorkspace', 'SqfEditorAnalysis', 'SqfCommandReference', 'SqfCommandContextCheck', 'SqfExecutionContexts', 'SqfStaticCheck', 'SqfSyntaxCheck', 'SqfFileVerification', 'SqfVerificationService', 'SqfChangedFiles', 'SqfTestCommand', 'SqfTestSources', 'SqfTestDependencies', 'DependencyProvisioning')) { $sharedSources += $core + $name + '.cs' }
 function SourceHashes {
     $hashes = [ordered]@{}
     foreach ($file in $sharedSources) {

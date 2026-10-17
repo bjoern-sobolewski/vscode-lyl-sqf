@@ -303,3 +303,69 @@ parsed by the VM, while HEMTT still fails during config analysis. They do not
 measure complete HEMTT SQF compilation or native gameplay. Early fixture probes
 without a valid Git commit/ignore rules were discarded; accepted comparisons
 require nonempty matching HEMTT heading and annotation inventories.
+
+## Release 0.2.4: persistent saved verification and Rust lexing
+
+The shared host keeps a per-user saved-source verifier and separate HEMTT
+`--verify-stdio` process alive for ten idle minutes. Content hashes cover sources,
+literal/missing includes, rules, configuration, executable bytes and installed
+game headers. Whole-report reuse retains all failures and is explicitly marked.
+Source edits invalidate affected analysis units and parser results; header/rule,
+configuration and membership changes conservatively rebuild. Dynamic includes
+disable whole-report reuse. Transient infrastructure failures are retried.
+Dirty editor buffers continue to use their independent HLS session.
+
+The new analyzer stage runs SQF and config units independently alongside the
+existing CLI gate. A failed config gate no longer hides the selected SQF analysis.
+It uses HEMTT's shared checkers and preserves complete diagnostic severities,
+messages, ranges, notes, help and suggestions. Project blocking-warning policy
+remains in the Arma adapter. Failed findings remain failures.
+
+Sequential complete-command measurements use a valid committed frozen checkout,
+1,713 production SQF inputs, 92 config units, identical tool/game inputs and no
+overlapping builds/tests. Warm dependency caches exclude initial downloads.
+The command includes Git selection, content validation and report writing:
+
+| Workload | Seconds | Analysis work |
+| --- | ---: | --- |
+| Fresh service/full verification | 19.30 | 1,805 units checked |
+| Unchanged repeats | 2.05 / 2.03 / 1.99 | Complete prior report reused after content checks |
+| One saved SQF edit | 6.19 | 1 checked / 1,804 reused; one VM input reparsed |
+| Independent fresh check of same SQF edit | 17.90 | All units checked |
+| Shared-header edit | 18.91 | All units checked |
+| Independent fresh check of same header edit | 18.03 | All units checked |
+
+All 3,428 stage records/outcomes, context/parser details and complete analyzer
+inventories match fresh results. CLI text inventories match after generated-path
+normalization and sorting only inherited CCHU expected-token alternatives; raw
+reports/differences remain local. Durations and process/report IDs are excluded
+from diagnostic comparison. All runs finish with existing config/context/parser
+and analysis failures, exit 1, and zero infrastructure failures. Successful
+completion describes coverage, not a passing repository.
+
+The five-second target is demonstrated for unchanged repeats only. A source edit
+still exceeds it; global invalidation and fresh full verification remain much
+slower. The CLI gate, context scanning, content hashing, workspace preparation and
+report serialization remain costs. Earlier 0.2.3 timings excluded the newly
+added complete SQF/config analysis and are not an equivalent full-analysis baseline.
+
+Rust profiling identified lexing as the largest measured parser subphase
+(11.45 aggregate seconds versus grammar 3.00, inspection 3.45, analysis 2.58;
+preprocessing 8.67). Parallel aggregate timers are not wall time. The common-token
+lexer dispatcher preserves the reference implementation for malformed/unusual
+input and UTF-8 spans, verified by 12,000 generated differential cases.
+`HEMTT_REFERENCE_LEXER=1` selects that reference in the same binary.
+
+On a separate frozen valid-config compiler workload (1,833 actual SQF files,
+four passing synthetic configs), three alternating reference runs took
+8.267 / 8.459 / 8.248 seconds; optimized runs took 4.502 / 4.471 / 4.688.
+Medians improve **8.267 to 4.502 seconds (45.5%)**. All six complete diagnostic
+inventories match exactly, and source hashes remain unchanged. This narrower
+workload is separate from production config validation. Earlier raw comparison
+exposed 315 nondeterministic tied spelling-help strings in 138 units; lexical
+tie-breaking now stabilizes them without removing findings.
+
+Scalar results are in `persistent-performance-results.json`. Private raw reports,
+frozen Git commits and source hashes stay in the consuming repository under
+`z_cmd/.generated/verification-persistent-20261017/`. No mission sources/game
+archives are distributed here. No native Arma or multiplayer claim is made.
