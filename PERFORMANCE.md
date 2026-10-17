@@ -369,3 +369,11 @@ Scalar results are in `persistent-performance-results.json`. Private raw reports
 frozen Git commits and source hashes stay in the consuming repository under
 `z_cmd/.generated/verification-persistent-20261017/`. No mission sources/game
 archives are distributed here. No native Arma or multiplayer claim is made.
+
+Post-publication consumer validation uses the exact public pins and final
+repository launcher on committed frozen sources. Fresh full verification takes
+**19.007s**; three unchanged repeats take **2.184/2.198/2.261s**. All 3,428 stage
+records/findings match the accepted candidate, and 2,188 CLI annotation records
+are retained verbatim across repeats. These final-consumer measurements confirm
+the unchanged-repeat target; the separate source/header edit limitations remain.
+The scalar file includes these final launcher measurements.

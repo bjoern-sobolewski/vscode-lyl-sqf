@@ -157,5 +157,80 @@
     "Source edits and global invalidation exceed five seconds",
     "Production findings still fail; completed means coverage, not a pass",
     "No native Arma or multiplayer execution"
-  ]
+  ],
+  "publishedLauncher": {
+    "measurements": [
+      {
+        "label": "published-cold",
+        "seconds": 19.006665399999292,
+        "exit": 1,
+        "complete": true,
+        "stageRecords": 3428,
+        "wholeReportReused": false,
+        "commit": "fcfa3dbebf1323878c49c2f22b5c13507d710df3",
+        "launcherSha256": "fbb761eabcd36d867de935c988c98898535f3e78c91c39f1042fcfe8ba55ba72"
+      },
+      {
+        "label": "published-repeat-0",
+        "seconds": 2.1838975000000573,
+        "exit": 1,
+        "complete": true,
+        "stageRecords": 3428,
+        "wholeReportReused": true,
+        "commit": "fcfa3dbebf1323878c49c2f22b5c13507d710df3",
+        "launcherSha256": "fbb761eabcd36d867de935c988c98898535f3e78c91c39f1042fcfe8ba55ba72"
+      },
+      {
+        "label": "published-repeat-1",
+        "seconds": 2.197570000000269,
+        "exit": 1,
+        "complete": true,
+        "stageRecords": 3428,
+        "wholeReportReused": true,
+        "commit": "fcfa3dbebf1323878c49c2f22b5c13507d710df3",
+        "launcherSha256": "fbb761eabcd36d867de935c988c98898535f3e78c91c39f1042fcfe8ba55ba72"
+      },
+      {
+        "label": "published-repeat-2",
+        "seconds": 2.2607573000004777,
+        "exit": 1,
+        "complete": true,
+        "stageRecords": 3428,
+        "wholeReportReused": true,
+        "commit": "fcfa3dbebf1323878c49c2f22b5c13507d710df3",
+        "launcherSha256": "fbb761eabcd36d867de935c988c98898535f3e78c91c39f1042fcfe8ba55ba72"
+      }
+    ],
+    "inventory": [
+      {
+        "before": "release-accepted-cold",
+        "after": "published-cold",
+        "stageRecords": 3428,
+        "stageInventoryIdentical": true,
+        "normalizedCliTextIdentical": true
+      },
+      {
+        "before": "published-cold",
+        "after": "published-repeat-0",
+        "stageRecords": 3428,
+        "stageInventoryIdentical": true,
+        "normalizedCliTextIdentical": true
+      },
+      {
+        "before": "published-cold",
+        "after": "published-repeat-1",
+        "stageRecords": 3428,
+        "stageInventoryIdentical": true,
+        "normalizedCliTextIdentical": true
+      },
+      {
+        "before": "published-cold",
+        "after": "published-repeat-2",
+        "stageRecords": 3428,
+        "stageInventoryIdentical": true,
+        "normalizedCliTextIdentical": true
+      }
+    ],
+    "annotationRecords": 2188
+  }
 }

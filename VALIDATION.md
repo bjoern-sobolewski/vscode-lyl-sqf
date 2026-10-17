@@ -341,3 +341,17 @@ embedded wiki, original build script, documented offline convenience patch and
 licenses. The Arma launcher is rebuilt from the same shared sources; Git commit
 hooks remain disabled. Static/editor/VM evidence does not verify native Arma or
 real multiplayer execution.
+
+Final public-pin consumer validation passed 167 focused C# tests, 15 JavaScript
+tests, actual-HLS regressions, 14 isolated packaged VS Code checks and six installer
+checks, including the existing loot.matching VM suite. Empty caches downloaded
+and verified the public CLI/analyzer/VM/editor pins; selected SQF/config analysis
+completed with existing failures and zero infrastructure errors. Source audit:
+1,528 exact Git files, 33,276 vendor file hashes across 561 packages, and extracted
+locked offline CLI/HLS checking passed. The package is installed in Arma3;
+settings, profile definitions, unrelated extensions and ten other profile inventories
+are unchanged. All 16 installed shared-source stamps and tool/source hashes match.
+The final launcher independently confirms 19.007s fresh / 2.184–2.261s unchanged
+repeats with every diagnostic preserved. Public release source pins remain the
+tested immutable tag revisions; this post-publication record changes documentation
+and scalar evidence only.
