@@ -242,3 +242,30 @@ records rise 4,101 to 4,104 and headings 4,857 to 4,860 solely for the same thre
 L-S05 additions. Raw strict comparison failure is retained; repeated inventories
 within each version are exact. Staged and production source hashes are unchanged.
 These findings are not passing-file counts or native/multiplayer evidence.
+
+## Release 0.2.2: explicit verification throughput
+
+The shared verifier batches at most 64 parse-only SQF inputs per pinned VM
+process, with a conservative Windows command-line budget. Every file uses a
+fresh preprocessor macro instance. Failed/noisy batches are subdivided until
+per-file diagnostics are reproduced; diagnostic paths guide subdivision but
+never establish a passing result. Unknown output, crashes, timeout, cancellation
+and unreproduced batch diagnostics cannot pass. SQF is never executed by parsing.
+Combined verification reuses its command-context stage instead of running it
+twice. Large selections log summaries and retain diagnostic reports, requiring
+complete captured output rather than silently accepting a truncated stream.
+
+One controlled sequential before/after run on the same Windows host selected
+1,713 SQF files. Total manual verification fell from 69.19s to 28.17s (59.3%);
+parser time fell from 54.38s to 12.16s, using 129 VM processes instead of 1,713.
+These are single-run measurements, not medians or editor startup timings.
+The prior 27.02s candidate preceded the complete-output safeguard; it is not the
+final shipped timing. Header-triggered selection remains deliberately broad.
+
+All 3,427 unique stage keys/outcomes are unchanged: 3,078 passing and 349 failing,
+with zero infrastructure errors. Removed rows were 1,713 identical duplicate
+command-context results. Context/parser details match after generated-path
+normalization; HEMTT's 2,188 annotation records and heading inventories match
+after sorting only its inherited CCHU expected-token alternatives. Raw differences
+and reports stay in the private Arma checkout. HEMTT still fails during config
+preflight, so this does not establish full SQF compilation or native execution.

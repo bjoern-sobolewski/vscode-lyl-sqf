@@ -257,3 +257,34 @@ claimed; existing native investigation remains historical evidence. Full reposit
 static findings and unresolved contexts remain failures/reviews. No source,
 execution-context contract or category was changed to obtain a pass. Releases
 use local verification only, immutable GitHub assets and no Marketplace publishing.
+
+## Release 0.2.2: matching shared verifier update (2026-10-17)
+
+The package refreshes the shared host/source stamps for batched parse-only
+verification, single-pass command-context analysis and bounded complete diagnostic
+capture. The Arma launcher is republished from the same shared source. Manual
+verification stays explicit; this package does not install a Git commit hook.
+The Arma change-selection policy and unresolved execution contracts are retained.
+See PERFORMANCE.md for the controlled timing and complete finding comparison.
+
+The shared C# run passes 118 focused parser, selection, command-safety, editor and
+process-runner tests. Real pinned-VM tests cover fresh macros across batched files,
+physical includes, non-execution, mixed syntax/include failures and cancellation.
+Editor validation uses the 15 JavaScript tests, actual bundled HLS protocol tests
+and the packaged VS Code 1.105.1 suite in an isolated profile. Production sources
+and ordinary profile settings are preserved by these tests.
+
+The previously prepared HEMTT revision
+`e8427928bfcd4d2e5537ac5a6f23c7a73663bebb` and its PBO extraction fix are retained.
+Its corresponding-source archive SHA-256 is
+`79eb34ab8848c5b634d4015a56694f3ade4524d845d2b1298651747aaa84c43f`;
+the existing integrity evidence verifies 1,526 Git files and 33,276 vendored files
+across 561 packages. Tools, licenses and exact source stamps remain bundled.
+The separate Arma HEMTT CLI pin is unchanged by this editor release.
+
+The full manual gate retains its 349 unique failing records (299 unresolved
+command contexts, 49 parser failures and one HEMTT stage), with no infrastructure
+errors or outcome changes. These are stage records, not unique bugs. No production
+SQF/config or execution-context declaration was changed to obtain a pass.
+This is tooling/static/editor evidence; no new native Arma or multiplayer
+execution is claimed.
