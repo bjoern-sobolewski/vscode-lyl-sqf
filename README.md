@@ -173,13 +173,16 @@ test is a coverage gap, not a pass. Arma tests use the existing isolated native
 runner; choose SQF-VM explicitly when offered. Native server/HC tests do not
 verify real player networking, locality or UI paths.
 
-Version 0.2.4 shares the saved-source verification service with the launcher.
+Version 0.2.5 shares the saved-source verification service with the launcher.
 Manual verification retains a separate HEMTT process and prepared workspace for
 ten idle minutes. It hashes saved sources, include probes, rules, configuration,
 tool executables and installed game headers before reuse. Unchanged complete
 reports retain their original failures and explicitly identify reuse; source
-edits recheck affected units. Header/config/rule changes conservatively rebuild
-the workspace and analysis. Dynamic includes disable whole-report reuse.
+edits recheck affected units. Literal header edits invalidate their transitive
+consumers across aliases and missing include probes. Unchanged context/parser
+results and prepared aliases are retained. Configuration, rules and inventory
+changes conservatively rebuild; dynamic includes disable reuse. HEMTT retains
+unchanged raw header tokens and loads each effective saved source once per request.
 The editor's dirty-buffer language-server session remains separate. Set
 `LYL_VERIFY_FRESH=1` for an independent fresh command, or pass
 `--verification-stop` to the shared test host to stop its current-version service.

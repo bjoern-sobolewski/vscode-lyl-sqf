@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "release": "0.2.5",
+  "hemttRelease": "v1.22.1-lyl.4",
+  "forkRevision": "fb450f8c243688c7bc65362a6a7912f0fc5c317d",
+  "method": "Sequential complete commands, frozen identical source bytes, valid Git commits, warm verified dependencies; no overlapping builds/tests. Existing findings remain failures.",
+  "baseline": {
+    "source": [
+      6.614883199999895,
+      6.130297100000462,
+      6.022429299999203
+    ],
+    "header": [
+      19.966651299999285,
+      19.81708339999932,
+      19.94646599999942
+    ]
+  },
+  "candidate": {
+    "source": [
+      3.6326525999993464,
+      3.6170320000001084,
+      3.565200300001379
+    ],
+    "header": [
+      6.302773499999603,
+      6.2177840000003926,
+      6.582760299999791
+    ]
+  },
+  "freshSeconds": 17.0682242999992,
+  "sourceFreshSeconds": 16.139552799999365,
+  "headerFreshSeconds": 16.082646599999862,
+  "sqfUnits": 1713,
+  "configUnits": 92,
+  "stageRecords": 3428,
+  "cliAnnotations": 2188,
+  "sourceChecked": 1,
+  "sourceReused": 1804,
+  "headerChecked": 921,
+  "headerReused": 884,
+  "headerParserChecked": 920,
+  "completeInventoriesIdentical": true,
+  "fiveSecondTarget": {
+    "singleSqfEdit": true,
+    "sharedHeaderEdit": false,
+    "freshFull": false
+  },
+  "nativeArmaOrMultiplayerEvidence": false
+}

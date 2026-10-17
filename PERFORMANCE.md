@@ -377,3 +377,48 @@ records/findings match the accepted candidate, and 2,188 CLI annotation records
 are retained verbatim across repeats. These final-consumer measurements confirm
 the unchanged-repeat target; the separate source/header edit limitations remain.
 The scalar file includes these final launcher measurements.
+
+
+## Saved-source edit follow-up: 0.2.5 / HEMTT v1.22.1-lyl.4
+
+Separate stage keys retain unchanged command-context and parser results. Literal
+include keys cover transitive physical/virtual overlays and missing probes;
+metadata, rules, inventory changes and uncertain macro includes remain conservative.
+Prepared aliases are updated by content and selected overlay bytes are checked
+again. CLI and independent analyzer checks overlap without dropping either stage.
+
+Inside Rust, existing header edits invalidate recorded consumers, including failed
+preprocessing units. Unchanged raw header tokens survive requests. Effective VFS
+sources are loaded once at each saved request boundary instead of rereading shared
+headers for every consumer. Content inventories before and after remain mandatory.
+
+Sequential complete-command measurements on identical frozen valid-Git snapshots:
+
+| Workload | Previous release | Candidate |
+| --- | ---: | ---: |
+| Single SQF edit, three samples | 6.615 / 6.130 / 6.022 s | 3.633 / 3.617 / 3.565 s |
+| Broad shared-header edit, three samples | 19.967 / 19.817 / 19.946 s | 6.303 / 6.218 / 6.583 s |
+| Fresh service/full command | 20.549 s | 17.068 s |
+
+The medians improve **6.130 to 3.617 s (41.0%)** for a single edit and
+**19.946 to 6.303 s (68.4%)** for the shared header. Independent fresh checks
+of the same edits take 16.140 s and 16.083 s. All 3,428 stage records, complete
+analyzer findings and 2,188 CLI annotation records match; zero infrastructure
+errors. Existing findings still exit 1. Config preflight failure is not counted
+as SQF coverage: the independent analyzer checks 1,713 SQF and 92 config units.
+
+The single-edit target is demonstrated for this fixed selection and warm session.
+The broad header still exceeds five seconds: it rechecks 921 analyzer units and
+920 VM inputs. Membership/configuration changes and fresh sessions may rebuild
+everything. The samples append source/header comments in disposable committed
+snapshots; macro changes, BOM failures and missing-include repairs have separate
+fresh-inventory regressions. Equal preprocessed text alone cannot authorize lint
+reuse because source pragmas, macro metadata and diagnostic mappings affect findings.
+Further parser/preprocessor work is needed for broad-header sub-five-second checks.
+
+The source/token snapshot follow-up reduced header median 7.243 to 6.303 s versus
+the earlier candidate; the complete inventories also match fresh analysis. This
+is a separate sequential step comparison, not a same-binary compiler A/B.
+See incremental-performance-results.json for scalar data. Raw diagnostics, hashes
+and rejected setup probes stay private in the consuming evidence directory.
+Commit hooks remain disabled. No native Arma or multiplayer evidence is claimed.

@@ -355,3 +355,23 @@ The final launcher independently confirms 19.007s fresh / 2.184–2.261s unchang
 repeats with every diagnostic preserved. Public release source pins remain the
 tested immutable tag revisions; this post-publication record changes documentation
 and scalar evidence only.
+
+
+## Saved-source header follow-up: 0.2.5
+
+The Rust common/config/preprocessor/SQF/workspace/HLS suites pass 538 tests,
+with two inherited tests ignored. Fresh/incremental header regressions cover
+transitive consumers, macro changes, BOM failure/repair, missing includes,
+configuration resets and infrastructure retries. Shared C# tests cover content
+keys with restored timestamps, physical/virtual overlay aliases, missing and
+extensionless probes, global rules included as text, selected overlay rejection
+and retained parser/context findings. The matching consumer also requires real
+HLS, packaged editor, source-bundle, installer and fresh-cache validation.
+
+The controlled workload retains every complete finding: 3,428 stage records,
+1,805 analyzer units and 2,188 CLI annotations. Raw CCHU alternative-order and
+path-only differences are retained privately; only those alternatives, disposable
+paths, ordering, timings and run IDs are normalized. No findings are suppressed.
+PERFORMANCE.md distinguishes the achieved single-edit target from the remaining
+broad-header and fresh-full latency. Static/editor/VM checks do not establish
+native Arma or real multiplayer behavior.
