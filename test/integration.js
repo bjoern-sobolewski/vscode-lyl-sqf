@@ -35,6 +35,10 @@ async function main() {
     await fs.appendFile(path.join(fixture, 'mission/description.ext'), '#include "functions.hpp"\n');
     const compatibility = 'private _text = "a\u00a0b\u202fc\u200bd\u0001e";\nprivate _a=1, _b=2;\nif (isNil"_missing") then {};\nfor"_i"from 0 to 1 do {};\nobjNull setDammage 0;\nobjNull addWeapon ["arifle_MX_F",true];\ncontrolNull ctrlWebBrowserAction ["Deflate","data"];\n#if __has_include("test.hpp")\nprivate _available = true;\n#endif\n/* native preprocessing removes this';
     await fs.writeFile(path.join(fixture, 'mission/compat.sqf'), compatibility);
+    const nativeDiagnostics = 'format ["%2", "unused", "two"];\nformat ["%1", 1, 2];\nformat ["%3", 1];\n"probe" addPublicVariableEventHandler {};\n';
+    await fs.writeFile(path.join(fixture, 'mission/native-diagnostics.sqf'), nativeDiagnostics);
+    await fs.writeFile(path.join(fixture, 'mission/consumer.ext'), '#define WIDTH 42\n#include "fragment.cpp"\n');
+    await fs.writeFile(path.join(fixture, 'mission/fragment.cpp'), 'class Compat { name = "original"; width = WIDTH; };\n');
     await fs.writeFile(path.join(fixture, 'mission/disk-bom.sqf'), '\uFEFFprivate _text = "Grüße";\n');
     // Exercise backend shared forwarding includes too.
     await fs.writeFile(path.join(fixture, '@life_shared/script_macros.hpp'), '#include "test.hpp"\n');
@@ -73,6 +77,19 @@ async function main() {
     const change = async (file, text, version) => rpc.sendNotification('textDocument/didChange', { textDocument: { uri: uri(file), version }, contentChanges: [{ text }] });
     await open('mission/live.sqf', script);
     await open('mission/compat.sqf', compatibility);
+    await open('mission/native-diagnostics.sqf', nativeDiagnostics);
+    await eventually(() => diagnostics('mission/native-diagnostics.sqf').some(d => d.code === 'L-S09'), 'native diagnostic findings');
+    const nativeFindings = diagnostics('mission/native-diagnostics.sqf');
+    assert.ok(!nativeFindings.some(d => d.code === 'L-S08' && d.range.start.line === 0), 'skipped indices are supported');
+    assert.ok(nativeFindings.some(d => d.code === 'L-S08' && d.range.start.line === 1 && d.severity === 2), 'unused argument is advisory');
+    assert.ok(nativeFindings.some(d => d.code === 'L-S08' && d.range.start.line === 2 && d.severity === 1), 'missing argument remains an error');
+    assert.ok(nativeFindings.some(d => d.code === 'L-S09' && d.severity === 2), 'ordinary public variable handler is advisory');
+    await open('mission/fragment.cpp', 'class Compat { name = "original"; width = WIDTH; };\n');
+    await change('mission/fragment.cpp', 'class Compat { name = "dirty"; width = WIDTH; };\n', 2);
+    await eventually(async () => JSON.stringify(await rpc.sendRequest('hemtt/config/structure', { url: uri('mission/consumer.ext'), classes: ['Compat'] })).includes('dirty'), 'included CPP dirty refresh through its parent macro context');
+    assert.ok(!diagnostics('mission/fragment.cpp').some(d => d.code === 'L-C01'), 'fragment is not independently parsed without parent macros');
+    assert.equal(await fs.readFile(path.join(fixture, 'mission/fragment.cpp'), 'utf8'), 'class Compat { name = "original"; width = WIDTH; };\n');
+    console.log('PASS native diagnostic severities and included CPP parent/dirty context');
     // Request barrier: hover/token processing means the initial open ran.
     await eventually(async () => {
       const result = await rpc.sendRequest('hemtt/processed', { url: uri('mission/live.sqf') });

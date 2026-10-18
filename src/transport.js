@@ -49,7 +49,7 @@ async function startTransport(exe, host, snapshot, root, log) {
             // stalls the VS Code extension host. Skip identical republishing.
             for (const findings of byFile.get(key).values()) {
               for (const finding of findings) {
-                const kind = category(String(finding.code || ''), finding.message);
+                const kind = category(String(finding.code || ''), finding.message, finding.severity);
                 const diagnostic = { ...finding, source: `LYL HEMTT · ${kind}`, message: `[${kind}] ${finding.message}` };
                 combined.set(JSON.stringify(diagnostic), diagnostic);
               }

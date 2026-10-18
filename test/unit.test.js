@@ -20,14 +20,18 @@ test('disk BOM survives editor text normalization and encoding-only saves clear 
 });
 
 test('diagnostic labels keep syntax, runtime, limitations and policy distinct', () => {
-  assert.equal(category('SPE2', 'expected expression'), 'syntax');
-  assert.equal(category('PE12', 'Include not found'), 'compatibility limitation');
-  assert.equal(category('L-S12'), 'likely runtime defect');
+  assert.equal(category('SPE2', 'expected expression'), 'requires review');
+  assert.equal(category('PE12', 'Include not found'), 'requires review');
+  assert.equal(category('L-S12'), 'requires review');
+  assert.equal(category('LYL-SQF101', 'Unresolved scheduling context'), 'requires review');
+  assert.equal(category('L-S08', 'unused args', 2), 'recommendation');
+  assert.equal(category('L-S08', 'undefined tokens', 1), 'potential defect');
+  assert.equal(category('L-S09', 'deprecated ordinary form', 2), 'recommendation');
   assert.equal(category('L-S23'), 'policy');
   assert.equal(category('BOM', 'UTF-8 BOM is disallowed by encoding policy'), 'policy');
   assert.equal(category('PW6', 'Include uses forward slash'), 'policy');
   assert.equal(category('ULC', 'Unused lint configuration'), 'policy');
-  assert.equal(category('UNKNOWN'), 'compatibility limitation');
+  assert.equal(category('UNKNOWN'), 'requires review');
 });
 test('rich hover retains every overload, raw prose, locality and explicit unknown restrictions', () => {
   const md = hoverMarkdown({ revision: 'pinned', command: { name: 'test', source: 'https://example.test', description: 'Do not use in event handlers', syntax: [{ params: [{ name: 'x', type: 'Boolean' }], ret: ['String'] }, { params: [], ret: ['Nothing'] }] } });

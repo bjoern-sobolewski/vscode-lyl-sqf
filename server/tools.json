@@ -1,34 +1,34 @@
 {
-  "tools": {
-    "hls": {
-      "sha256": "68a5fe2cf4f3a7e515afc064c8e60dbe4732746e4b2faffe89ff33f2f38c5154",
-      "file": "hemtt-language-server.exe"
-    },
-    "host": {
-      "sha256": "56cbf90e663476c69119c1d5f51c9531561973e325ac0140ceb3ecf732653bfa",
-      "file": "LYL.Sqf.EditorHost.exe"
-    }
-  },
-  "correspondingSourceSha256": "bc326c42a31cc9fd2d620f423c04b14b0e08d3f9f48e44798803c8adcf0afac9",
-  "forkRevision": "fb450f8c243688c7bc65362a6a7912f0fc5c317d",
   "sharedSources": {
     "z_cmd/Arma3.DevTools/Directory.Build.props": "3a0a348eee1e324ad2d8a931d38ea24cbf6d4d7a7f8d193bf22d7b34a10677c9",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/Arma3.DevTools.Core.csproj": "c82270a011d137a2c8f3b83ec1834151477b8a063f80be28839b2515bbb6877b",
-    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfAnalysisWorkspace.cs": "ba8b956a7238424c65ca8b17f05d1da47648327b0ef250c15b0ad34e6ebe2f12",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfAnalysisWorkspace.cs": "903a060b084c5a459cbad599c3fe6dc3c605e01db39bf60eb9b758340beed41f",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfEditorAnalysis.cs": "2997fe6fa4aa6cf51c9c3d2a88fbe9dd83dde6c1fd12d9c912ae955c60382035",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfCommandReference.cs": "1dcc048cf3c218174d6cdadc66d8f1d64fb20d98fd2eb750545becd1190a9941",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfCommandContextCheck.cs": "0ab07990a485f4c51e8251b2632f20a1262bf666263bac3f8abe266e8322b449",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfExecutionContexts.cs": "8b50405b66099690df88b4bc9f122de177d01ab556dd5d2ea1ff0a99240be8be",
-    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfStaticCheck.cs": "97240810ed3afcf3db5326bb3de6454ab609c3d1767752737b3645ea01c5190c",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfStaticCheck.cs": "04dfa7ff575daae8263dbd7a10155f8e775f9578caaea5d91492989a548a73cc",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfSyntaxCheck.cs": "d649cd8c5948669b0edd168d761f087fbcc078d2654267f524436bbc4ada816d",
-    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfFileVerification.cs": "155bcf215c2fb6aae4416efc67dea82d564a17743782efd2b229e1a460931786",
-    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfVerificationService.cs": "2a8eb135000b6ee4d996ed884de4ec45df902bb8ba33614d0fae356deec97a10",
-    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfChangedFiles.cs": "eb22ebb33676b02248c6c7e0bd4fb368176af0c8a162a1df335ead8783a0bcca",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfFileVerification.cs": "82e5ac13d2c9ba079b04587959ecc021303fdfeb33a73009410c161cd0d7ce16",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfVerificationService.cs": "b5da47aa8c4acdcdf0d60e546dc0b9a6c7cd70f83bd4b3b80cc1a06f1bfb30db",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfChangedFiles.cs": "ffe7b45b16a8b48a42e879fdd5050e04e654d163c6f2b27f32f8b28d5c9304fe",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfTestCommand.cs": "89ed1c8b3444e8f092fc0aa4a96bd5b74b3479baff418926835bebe83c1ceb85",
-    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfTestSources.cs": "b816d883821bad760ce0dd63eb553b7558d281ee587eea499fc642eeb150103f",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfTestSources.cs": "dfa0ab779dad2aa39c4c7b9544a8f95854e42980bddb0125b919daf04d9f2f99",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfTestDependencies.cs": "40bad9b1afa93124319e5e5c4e67927a609c37ba341417971dbc69a9be25aa05",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/DependencyProvisioning.cs": "4656daec4794c27e2d3c975eeff510aae0688cb798bca268aac34cc8df231b01"
   },
+  "correspondingSourceSha256": "2d5343a2cb83f7a1426224a75a102260566a1dcc38485dea23aef481032c4bbf",
   "forkRepository": "https://github.com/bjoern-sobolewski/HEMTT",
-  "schema": 1
+  "forkRevision": "c93f2c6bb1c79daff0b539f31c870627593db12e",
+  "schema": 1,
+  "tools": {
+    "hls": {
+      "file": "hemtt-language-server.exe",
+      "sha256": "c3339ac080d034100aa5957cfdb548f1af7f7bd5d5646695a024f5918078e9dc"
+    },
+    "host": {
+      "file": "LYL.Sqf.EditorHost.exe",
+      "sha256": "df70098b04f8cf65a26b123917ce8274d4188498bce74e54f962bcc932db4da7"
+    }
+  }
 }

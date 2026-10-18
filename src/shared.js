@@ -84,16 +84,17 @@ class Host {
   dispose() { this.process.kill(); }
 }
 
-function category(code, message = '') {
-  if (['BOM', 'PW6', 'ULC'].includes(code)) return 'policy';
-  if (/^(CCHU|L-C(?:01|06|07|08|10))$/.test(code)) return 'syntax';
-  if (code === 'L-C04') return 'compatibility limitation';
-  if (/^(SPE|PE)/.test(code)) return /unsupported|not supported|has_include|missing|not found/i.test(message) ? 'compatibility limitation' : 'syntax';
-  if (/^LYL-SQF/.test(code)) return /unresolved|unknown|review/i.test(message) ? 'compatibility limitation' : 'likely runtime defect';
-  if (/^L-S(?:08|09|12)$/.test(code)) return 'likely runtime defect';
-  if (/^L-/.test(code)) return 'policy';
-  if (/^(CPE|CE)/.test(code)) return 'syntax';
-  return 'compatibility limitation';
+function category(code, message = '', severity = 1) {
+  if (['BOM', 'PW6', 'ULC', 'L-S23'].includes(code)) return 'policy';
+  if (/^(CCHU|L-C(?:01|06|07|08|10))$/.test(code)) return 'potential defect';
+  if (code === 'L-C04') return 'requires review';
+  if (/^(SPE|PE)/.test(code)) return /unsupported|not supported|has_include/i.test(message) ? 'compatibility limitation' : 'requires review';
+  if (/^LYL-SQF/.test(code)) return /unresolved|unknown|review/i.test(message) ? 'requires review' : 'potential defect';
+  if (code === 'L-S12') return 'requires review';
+  if (/^L-S(?:08|09)$/.test(code)) return severity === 1 ? 'potential defect' : 'recommendation';
+  if (/^L-/.test(code)) return severity === 1 ? 'potential defect' : 'recommendation';
+  if (/^(CPE|CE)/.test(code)) return 'potential defect';
+  return 'requires review';
 }
 
 // Preserve all fields, overloads, notes and unknown values from the shared snapshot.

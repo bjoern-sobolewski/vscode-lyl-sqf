@@ -190,7 +190,7 @@ Use the Command Palette or Explorer selection:
 
 | Command | Scope |
 | --- | --- |
-| Verify Selected Files | Same combined verifier as agents; configs use HEMTT, SQF additionally uses the existing parser |
+| Verify Selected Files | Same HEMTT/context verifier as agents; no automatic SQF-VM parsing |
 | Verify Changed Files | Same Git selection/header expansion as manual `-VerifyChanged` |
 | Run Relevant Existing Tests | Uses dependency declarations (including transitive dependencies) and offers only existing suite/runtime pairs |
 | Show Preprocessed Buffer | Fork's existing macro-expanded preview, including unsaved text |
@@ -217,15 +217,20 @@ The editor's dirty-buffer language-server session remains separate. Set
 `--verification-stop` to the shared test host to stop its current-version service.
 Commit hooks remain disabled. See PERFORMANCE.md for measured scope and limits.
 
-Diagnostics retain original code/severity and carry one of four labels:
+Diagnostics retain original code/severity and carry the following labels:
 
 | Label | Meaning |
 | --- | --- |
-| syntax | Parser/preprocessor rejection or structurally invalid config; not proof the native engine rejects it |
-| likely runtime defect | Argument/format/broken-command findings or proven context-contract violation; inspect actual branch and engine behavior |
-| compatibility limitation | Missing includes, unsupported/unknown analysis capability, unresolved context or unknown diagnostic category |
-| policy | Other HEMTT lint/style findings; inspect the original rule and severity |
+| potential defect | Error-severity argument/format/broken-command findings, structurally invalid config or established context violations; inspect actual branch and engine behavior |
+| compatibility limitation | Explicitly unsupported preprocessing capability; missing includes need investigation |
+| requires review | Uncertain type inference, unresolved context, parser rejection or unknown diagnostic category |
+| recommendation | Advisory findings, including unused format arguments and ordinary deprecated public-variable handlers |
+| policy | Explicit encoding/reserved-assignment/include-style/configuration policy findings; inspect the original rule and severity |
 
+HEMTT .5 accepts skipped format indices and keeps real missing-argument/unescaped-percent findings.
+The shared adapter checks included config fragments through their consumers with exact bytes/macros.
+Raw CLI, independent SQF/config findings, coverage and compatibility classifications remain separate.
+SQF-VM is for focused named suites; explicit Check File is an optional VM compatibility probe.
 No category is suppressed. `BOM` is a blocking **policy** finding: save Arma source/config files as UTF-8
 without BOM. The CLI and HLS reject leading markers in files, included headers
 and dirty buffers. The adapter preserves a disk BOM hidden by VS Code's text
