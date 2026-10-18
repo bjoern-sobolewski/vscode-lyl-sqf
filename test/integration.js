@@ -37,6 +37,8 @@ async function main() {
     await fs.writeFile(path.join(fixture, 'mission/compat.sqf'), compatibility);
     const nativeDiagnostics = 'format ["%2", "unused", "two"];\nformat ["%1", 1, 2];\nformat ["%3", 1];\n"probe" addPublicVariableEventHandler {};\n';
     await fs.writeFile(path.join(fixture, 'mission/native-diagnostics.sqf'), nativeDiagnostics);
+    const callbackDiagnostics = 'params [["_sentinel", "", [[]]]];\nG_stop = {G_first = nil};\nG_first = addMissionEventHandler ["Ended", {call G_stop}];\nprivate _second = addMissionEventHandler ["MPEnded", {call G_stop}];\nremoveMissionEventHandler ["Ended", G_first];\naddMissionEventHandler ["Ended", {player setFuel true}];\nparams [["_broken", 0, "wrong schema"]];\n';
+    await fs.writeFile(path.join(fixture, 'mission/callback-diagnostics.sqf'), callbackDiagnostics);
     await fs.writeFile(path.join(fixture, 'mission/consumer.ext'), '#define WIDTH 42\n#include "fragment.cpp"\n');
     await fs.writeFile(path.join(fixture, 'mission/fragment.cpp'), 'class Compat { name = "original"; width = WIDTH; };\n');
     await fs.writeFile(path.join(fixture, 'mission/disk-bom.sqf'), '\uFEFFprivate _text = "Grüße";\n');
@@ -78,6 +80,13 @@ async function main() {
     await open('mission/live.sqf', script);
     await open('mission/compat.sqf', compatibility);
     await open('mission/native-diagnostics.sqf', nativeDiagnostics);
+    await open('mission/callback-diagnostics.sqf', callbackDiagnostics);
+    await eventually(() => diagnostics('mission/callback-diagnostics.sqf').filter(d => d.code === 'L-S12').length >= 2, 'callback body and malformed schema diagnostics');
+    const callbackFindings = diagnostics('mission/callback-diagnostics.sqf').filter(d => d.code === 'L-S12');
+    assert.ok(callbackFindings.every(d => [5, 6].includes(d.range.start.line)), JSON.stringify(callbackFindings));
+    assert.ok(callbackFindings.some(d => d.range.start.line === 5), 'invalid callback body still diagnosed');
+    assert.ok(callbackFindings.some(d => d.range.start.line === 6), 'invalid params schema still diagnosed');
+    console.log('PASS native params sentinels and callback registration state');
     await eventually(() => diagnostics('mission/native-diagnostics.sqf').some(d => d.code === 'L-S09'), 'native diagnostic findings');
     const nativeFindings = diagnostics('mission/native-diagnostics.sqf');
     assert.ok(!nativeFindings.some(d => d.code === 'L-S08' && d.range.start.line === 0), 'skipped indices are supported');

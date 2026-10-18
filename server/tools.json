@@ -1,5 +1,18 @@
 {
-  "correspondingSourceSha256": "2d5343a2cb83f7a1426224a75a102260566a1dcc38485dea23aef481032c4bbf",
+  "tools": {
+    "hls": {
+      "file": "hemtt-language-server.exe",
+      "sha256": "442c6362fa21822290851ce427b1acf1feda132f74dce556ab22cfccdaffb426"
+    },
+    "host": {
+      "file": "LYL.Sqf.EditorHost.exe",
+      "sha256": "3edd8a81f8bcddceca44f5b8841cb8a3ed41b630b2b54f83286ef900fddcf18c"
+    }
+  },
+  "forkRevision": "df9f4c461b736fd9b5159ad52f41a0ffdf6e572b",
+  "schema": 1,
+  "forkRepository": "https://github.com/bjoern-sobolewski/HEMTT",
+  "correspondingSourceSha256": "b3f2159eae3757f1c05d3485609666e332bae7ed4724c71cf0315aaabc311536",
   "sharedSources": {
     "z_cmd/Arma3.DevTools/Directory.Build.props": "3a0a348eee1e324ad2d8a931d38ea24cbf6d4d7a7f8d193bf22d7b34a10677c9",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/Arma3.DevTools.Core.csproj": "c82270a011d137a2c8f3b83ec1834151477b8a063f80be28839b2515bbb6877b",
@@ -17,18 +30,5 @@
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfTestSources.cs": "dfa0ab779dad2aa39c4c7b9544a8f95854e42980bddb0125b919daf04d9f2f99",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfTestDependencies.cs": "40bad9b1afa93124319e5e5c4e67927a609c37ba341417971dbc69a9be25aa05",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/DependencyProvisioning.cs": "4656daec4794c27e2d3c975eeff510aae0688cb798bca268aac34cc8df231b01"
-  },
-  "forkRevision": "c93f2c6bb1c79daff0b539f31c870627593db12e",
-  "tools": {
-    "hls": {
-      "sha256": "c3339ac080d034100aa5957cfdb548f1af7f7bd5d5646695a024f5918078e9dc",
-      "file": "hemtt-language-server.exe"
-    },
-    "host": {
-      "sha256": "ba45d84d0a2a41b44e6c696a37e58b672506265f5bae36e0da231f578486fa8d",
-      "file": "LYL.Sqf.EditorHost.exe"
-    }
-  },
-  "forkRepository": "https://github.com/bjoern-sobolewski/HEMTT",
-  "schema": 1
+  }
 }

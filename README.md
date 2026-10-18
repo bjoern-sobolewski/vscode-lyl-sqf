@@ -372,3 +372,9 @@ then publish once and verify public digests. Keep exact executable/source pins,
 vendored corresponding source, embedded wiki data and all license notices. The
 source archive documents offline builds for both CLI and HLS. See VALIDATION.md
 and PERFORMANCE.md for this update's findings, regressions and measured limits.
+
+
+Version 0.2.9 bundles the exact HEMTT v1.22.1-lyl.6 source revision recorded in
+server/tools.json. Native-compatible params sentinels and callback global-state
+analysis are covered by actual-HLS regressions, including retained invalid-schema
+and callback-body diagnostics.
