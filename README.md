@@ -229,6 +229,8 @@ Diagnostics retain original code/severity and carry the following labels:
 
 HEMTT .5 accepts skipped format indices and keeps real missing-argument/unescaped-percent findings.
 The shared adapter checks included config fragments through their consumers with exact bytes/macros.
+Its include graph visits config entry points and their transitive includes; it
+does not read unrelated SQF aliases to establish config consumers.
 Raw CLI, independent SQF/config findings, coverage and compatibility classifications remain separate.
 SQF-VM is for focused named suites; explicit Check File is an optional VM compatibility probe.
 No category is suppressed. `BOM` is a blocking **policy** finding: save Arma source/config files as UTF-8

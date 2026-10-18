@@ -2,7 +2,7 @@
   "name": "lyl-sqf",
   "displayName": "LiveYourLife SQF",
   "description": "Local mission-aware SQF/config analysis using the LYL HEMTT fork and shared command-context gate.",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "publisher": "liveyourlife",
   "license": "MIT AND GPL-2.0-only",
   "engines": {

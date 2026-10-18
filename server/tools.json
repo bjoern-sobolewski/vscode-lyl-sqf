@@ -2,7 +2,7 @@
   "sharedSources": {
     "z_cmd/Arma3.DevTools/Directory.Build.props": "3a0a348eee1e324ad2d8a931d38ea24cbf6d4d7a7f8d193bf22d7b34a10677c9",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/Arma3.DevTools.Core.csproj": "c82270a011d137a2c8f3b83ec1834151477b8a063f80be28839b2515bbb6877b",
-    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfAnalysisWorkspace.cs": "903a060b084c5a459cbad599c3fe6dc3c605e01db39bf60eb9b758340beed41f",
+    "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfAnalysisWorkspace.cs": "a2ea2489ff16e1b135ce50964589723efa27d7d0d90e164eeb09066ea34fdd6d",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfEditorAnalysis.cs": "2997fe6fa4aa6cf51c9c3d2a88fbe9dd83dde6c1fd12d9c912ae955c60382035",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfCommandReference.cs": "1dcc048cf3c218174d6cdadc66d8f1d64fb20d98fd2eb750545becd1190a9941",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfCommandContextCheck.cs": "0ab07990a485f4c51e8251b2632f20a1262bf666263bac3f8abe266e8322b449",
@@ -17,10 +17,9 @@
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/SqfTestDependencies.cs": "40bad9b1afa93124319e5e5c4e67927a609c37ba341417971dbc69a9be25aa05",
     "z_cmd/Arma3.DevTools/Arma3.DevTools.Core/DependencyProvisioning.cs": "4656daec4794c27e2d3c975eeff510aae0688cb798bca268aac34cc8df231b01"
   },
+  "schema": 1,
   "correspondingSourceSha256": "2d5343a2cb83f7a1426224a75a102260566a1dcc38485dea23aef481032c4bbf",
   "forkRepository": "https://github.com/bjoern-sobolewski/HEMTT",
-  "forkRevision": "c93f2c6bb1c79daff0b539f31c870627593db12e",
-  "schema": 1,
   "tools": {
     "hls": {
       "file": "hemtt-language-server.exe",
@@ -28,7 +27,8 @@
     },
     "host": {
       "file": "LYL.Sqf.EditorHost.exe",
-      "sha256": "df70098b04f8cf65a26b123917ce8274d4188498bce74e54f962bcc932db4da7"
+      "sha256": "5ed7d7544808b9a63caa5f7abbff143cbe81dcc2e34bd94cda7ec94d1d505df6"
     }
-  }
+  },
+  "forkRevision": "c93f2c6bb1c79daff0b539f31c870627593db12e"
 }
