@@ -20,9 +20,13 @@ async function main() {
   const log = [];
   let host, transport, rpc;
   try {
-    for (const folder of ['tests/sqf/commands', 'mission', 'shared', '@life_server', '@life_hc', '@life_shared', 'z_cmd']) await fs.mkdir(path.join(fixture, folder), { recursive: true });
+    const layoutPath = path.join(root, 'tests/sqf/syntax.json');
+    const { mounts } = JSON.parse(await fs.readFile(layoutPath, 'utf8'));
+    for (const folder of ['tests/sqf/commands', ...new Set(mounts.flatMap(mount => mount.sources))]) {
+      await fs.mkdir(path.join(fixture, folder), { recursive: true });
+    }
     for (const name of ['reference.json', 'contracts.json']) await fs.copyFile(path.join(root, 'tests/sqf/commands', name), path.join(fixture, 'tests/sqf/commands', name));
-    await fs.copyFile(path.join(root, 'tests/sqf/syntax.json'), path.join(fixture, 'tests/sqf/syntax.json'));
+    await fs.copyFile(layoutPath, path.join(fixture, 'tests/sqf/syntax.json'));
     await fs.writeFile(path.join(fixture, 'tests/sqf/commands/contexts.json'), JSON.stringify({ schema: 1, files: { 'mission/context.sqf': { role: 'hc', scheduling: 'unscheduled', evidence: 'Integration fixture' } } }));
     await fs.writeFile(path.join(fixture, 'shared/test.hpp'), '#define VALUE 1\n');
     const script = '#include "test.hpp"\nprivate _x = VALUE;\n_x';
@@ -168,11 +172,22 @@ async function main() {
     await open('mission/description.ext', '#define BAD(a,b) a\n__EXEC(_value = call { str (1 + 2) }; _text = "a ) (";)\nunsupported = {not_a_config_literal};\nunknown = BAD(1);\n#include "functions.hpp"\n');
     await eventually(async () => {
       const structure = await rpc.sendRequest('hemtt/config/structure', { url: uri(rootConfig.path), classes: ['CfgFunctions'] });
-      return structure.provisional?.some(message => message.includes('PE25') && message.includes('not executed')) && structure.provisional.some(message => message.includes('PE9')) &&
+      return structure.provisional?.some(message => message.includes('PN1') && message.includes('not executed')) && structure.provisional.some(message => message.includes('PE9')) &&
         registrations(structure.properties, rootConfig).functions.some(f => f.name === 'TEST_fnc_registered');
-    }, 'unsupported EXEC retains literal registrations with explicit provisional findings');
-    await eventually(() => [...diags.values()].flat().some(d => d.code === 'PE25'), 'ordinary diagnostics retain unsupported EXEC failure');
-    await change('mission/description.ext', 'class CfgFunctions {};\n', 2);
+    }, 'deferred EXEC retains literal registrations with explicit provisional findings');
+    await eventually(() => diagnostics(rootConfig.path).some(d => d.code === 'PE9'), 'ordinary diagnostics retain invalid macro arity after EXEC');
+    const execConfig = '__EXEC(_value = call { str [(1 + 2)] };);\n';
+    await change(rootConfig.path, execConfig + 'class Broken { value = ; };\n', 2);
+    await eventually(() => {
+      const findings = diagnostics(rootConfig.path);
+      return findings.some(d => d.code === 'PN1' && d.severity === 3) &&
+        findings.some(d => d.severity === 1 && d.range.start.line === 1);
+    }, 'ordinary diagnostics report EXEC as a note and catch a following config error');
+    await change(rootConfig.path, execConfig + 'class CfgFunctions {};\n', 3);
+    await eventually(() => {
+      const findings = diagnostics(rootConfig.path);
+      return findings.some(d => d.code === 'PN1') && !findings.some(d => d.severity === 1);
+    }, 'repair clears the config error without clearing the EXEC note');
     await eventually(async () => !registrations((await rpc.sendRequest('hemtt/config/structure', { url: uri(rootConfig.path), classes: ['CfgFunctions'] })).properties, rootConfig).functions.length, 'dirty root include removal clears registrations');
     await change('mission/live.sqf', '#define TEST_MACRO(first,second) [first,second]\nTEST_MACRO(1,2)', 7);
     await eventually(async () => {
@@ -180,7 +195,7 @@ async function main() {
       return signature?.signatures.some(s => s.label.includes('TEST_MACRO(first, second)'));
     }, 'existing function-like macro signature help');
     console.log('PASS exact config roots, dirty included registrations, overrides, discard, provisional EXEC, root include removal and preserved macro signatures');
-    await change('mission/description.ext', '#include "config.hpp"\n', 3);
+    await change('mission/description.ext', '#include "config.hpp"\n', 4);
     await open('shared/config.hpp', '#define CFG_VALUE 1\nclass Test { value = CFG_VALUE; };\n');
     await change('shared/config.hpp', '\uFEFF#define CFG_VALUE 1\nclass Test { value = CFG_VALUE; };\n', 2);
     await eventually(() => diagnostics('shared/config.hpp').some(d => d.code === 'BOM'), 'included config-header BOM policy');

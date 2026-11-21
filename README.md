@@ -116,11 +116,11 @@ registrations are not guessed. Fix the declaration/evidence or inspect the
 finding; empty/unavailable discovery is not a successful complete index.
 
 The structural endpoint can retain literal registrations when a config contains
-unsupported `__EXEC(...)` bodies, unresolved macro values (PE9), or parser-recovered analysis findings. It never
-executes those bodies or guesses their effects: all registrations from that root
-are marked provisional/unresolved, with compatibility findings on the root.
-Dynamic expression fields remain unknown. Normal diagnostics and the local gate
-retain their failures; completion is not evidence that a config is valid.
+`__EXEC(...)` bodies, unresolved macro values (PE9), or parser-recovered analysis
+findings. Runtime effects and dynamic expression values remain unknown, so the
+registrations are marked provisional. Live diagnostics and the local gate
+report balanced `__EXEC` statements as note `PN1` and check the surrounding
+config. Malformed delimiters and other preprocessing errors still fail.
 If unrelated config syntax prevents a full parse, the adapter requests a generic
 top-level `CfgFunctions` projection. It still preprocesses the actual complete root
 and parses selected declarations with HEMTT's config parser. Balanced boundaries

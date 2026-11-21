@@ -2521,6 +2521,12 @@
   },
   {
     "kind": "dotnet",
+    "name": "Microsoft.NETCore.App-runtime-10.0.15",
+    "license": "See upstream notices",
+    "notices": 2
+  },
+  {
+    "kind": "dotnet",
     "name": "Microsoft.NETCore.App-runtime-10.0.7",
     "license": "See upstream notices",
     "notices": 2
