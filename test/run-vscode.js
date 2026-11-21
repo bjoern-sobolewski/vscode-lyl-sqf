@@ -26,8 +26,11 @@ async function main() {
     }); zip.readEntry();
   }));
   const workspace = path.join(output, 'repository.code-workspace');
+  const relativeOutput = path.relative(root, output).split(path.sep).join('/');
+  const watchesTestOutput = !path.isAbsolute(relativeOutput) && !relativeOutput.startsWith('../');
   await fs.writeFile(workspace, JSON.stringify({ folders: [{ path: root }], settings: {
     'files.autoSave': 'off', 'files.associations': { '*.sqf': 'sqf', '*.hpp': 'arma-config', '*.inc': 'arma-config', '*.ext': 'arma-config' },
+    ...(watchesTestOutput ? { 'files.watcherExclude': { [relativeOutput + '/**']: true } } : {}),
     '[sqf]': { 'files.autoSave': 'off' },
     '[arma-config]': { 'files.autoSave': 'off' },
     'security.workspace.trust.enabled': false, 'extensions.autoCheckUpdates': false, 'extensions.autoUpdate': false,
